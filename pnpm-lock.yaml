@@ -14,15 +14,6 @@ importers:
       crypto-js:
         specifier: ^4.2.0
         version: 4.2.0
-      electron:
-        specifier: ^39.2.7
-        version: 39.5.1
-      electron-builder:
-        specifier: ^26.0.12
-        version: 26.7.0(electron-builder-squirrel-windows@26.7.0)
-      esbuild:
-        specifier: ^0.25.0
-        version: 0.25.12
       file-saver:
         specifier: ^2.0.5
         version: 2.0.5
@@ -63,6 +54,15 @@ importers:
       '@vue/tsconfig':
         specifier: ^0.8.1
         version: 0.8.1(typescript@5.9.3)(vue@3.5.27(typescript@5.9.3))
+      electron:
+        specifier: ^39.2.7
+        version: 39.5.1
+      electron-builder:
+        specifier: ^26.0.12
+        version: 26.7.0(electron-builder-squirrel-windows@26.7.0)
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.12
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
