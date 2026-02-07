@@ -50,6 +50,9 @@ jobs:
       - name: 构建前端项目
         run: pnpm run build
 
+      - name: 禁用 Jekyll
+        run: touch docs/.nojekyll
+
       - name: 验证构建产物
         run: |
           if [ ! -d "docs" ]; then
