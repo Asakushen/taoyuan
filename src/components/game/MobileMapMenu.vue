@@ -129,34 +129,6 @@
 </script>
 
 <style scoped>
-  /* 移动端地图按钮 */
-  .mobile-map-btn {
-    position: fixed;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    right: 12px;
-    z-index: 40;
-    width: 48px;
-    height: 48px;
-    border-radius: 2px;
-    background: var(--color-panel);
-    border: 2px solid var(--color-accent);
-    color: var(--color-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    transition:
-      background-color 0.15s,
-      color 0.15s;
-  }
-
-  .mobile-map-btn:hover,
-  .mobile-map-btn:active {
-    background: var(--color-accent);
-    color: var(--color-bg);
-  }
-
   /* 地图菜单 */
   .map-area {
     border: 1px dashed oklch(from var(--color-accent) l c h / 0.3);
