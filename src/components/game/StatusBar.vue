@@ -78,13 +78,14 @@
   import { computed } from 'vue'
   import { useGameStore, usePlayerStore, SEASON_NAMES, WEATHER_NAMES } from '@/stores'
   import { useAudio } from '@/composables/useAudio'
-  import { handleEndDay } from '@/composables/useEndDay'
   import { DAY_START_HOUR, DAY_END_HOUR } from '@/data/timeConstants'
   import { Zap, Heart, Clock, Coins, Volume2, VolumeX, Music, Moon } from 'lucide-vue-next'
 
+  const emit = defineEmits<{ 'request-sleep': [] }>()
+
   const gameStore = useGameStore()
   const playerStore = usePlayerStore()
-  const { sfxEnabled, bgmEnabled, toggleSfx, toggleBgm, switchToSeasonalBgm } = useAudio()
+  const { sfxEnabled, bgmEnabled, toggleSfx, toggleBgm } = useAudio()
 
   const staminaBarColor = computed(() => {
     const pct = playerStore.staminaPercent
@@ -127,7 +128,6 @@
   })
 
   const handleSleep = () => {
-    handleEndDay()
-    switchToSeasonalBgm()
+    emit('request-sleep')
   }
 </script>

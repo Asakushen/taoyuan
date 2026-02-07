@@ -146,6 +146,7 @@
   const handleSelectNpc = (npcId: string) => {
     if (npcAvailable(npcId)) {
       selectedNpc.value = npcId
+      dialogueText.value = null
     }
   }
 

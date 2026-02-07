@@ -169,21 +169,87 @@ body {
   animation: staminaPulse 1s ease-in-out infinite;
 }
 
-/* 移动端底部导航 */
-.mobile-nav {
+/* 移动端地图按钮 */
+.mobile-map-btn {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--color-panel);
-  border-top: 1px solid oklch(from var(--color-accent) l c h / 0.3);
-  padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  right: 12px;
   z-index: 40;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 2px;
+  background: var(--color-panel);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.15s, color 0.15s;
 }
 
-.mobile-nav::-webkit-scrollbar {
-  display: none;
+.mobile-map-btn:hover,
+.mobile-map-btn:active {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* 地图菜单 */
+.map-area {
+  border: 1px dashed oklch(from var(--color-accent) l c h / 0.3);
+  border-radius: 2px;
+  padding: 8px;
+}
+
+.map-area-title {
+  font-size: 10px;
+  color: var(--color-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.1em;
+}
+
+.map-area-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.map-loc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  min-width: 52px;
+  font-family: var(--font-game);
+  font-size: 10px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid oklch(from var(--color-accent) l c h / 0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.map-loc:hover,
+.map-loc:active {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: var(--color-accent);
+}
+
+.map-loc-active {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: var(--color-accent);
+}
+
+.map-path {
+  text-align: center;
+  color: oklch(from var(--color-accent) l c h / 0.3);
+  font-size: 10px;
+  line-height: 1;
+  padding: 4px 0;
+  letter-spacing: 0.3em;
 }

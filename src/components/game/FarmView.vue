@@ -46,12 +46,21 @@
       <button
         v-for="plot in farmStore.plots"
         :key="plot.id"
-        class="aspect-square border border-accent/20 rounded-[2px] flex flex-col items-center justify-center text-sm cursor-pointer transition-colors hover:border-accent/60 hover:bg-panel/80 relative"
-        :class="getPlotDisplay(plot).color"
+        class="aspect-square rounded-[2px] flex flex-col items-center justify-center text-sm cursor-pointer transition-colors hover:border-accent/60 hover:bg-panel/80 relative"
+        :class="[
+          getPlotDisplay(plot).color,
+          needsWater(plot) ? 'border-2 border-danger/50' : 'border border-accent/20'
+        ]"
         :title="getPlotTooltip(plot)"
         @click="handlePlotAction(plot.id)"
       >
         {{ getPlotDisplay(plot).text }}
+        <!-- 需浇水标记 -->
+        <Droplets
+          v-if="(plot.state === 'planted' || plot.state === 'growing') && !plot.watered"
+          :size="8"
+          class="absolute bottom-0 right-0 text-danger"
+        />
         <!-- 洒水器标记 -->
         <Droplet v-if="hasSprinkler(plot.id)" :size="8" class="absolute top-0 right-0 text-water" />
         <!-- 肥料标记 -->
@@ -78,6 +87,10 @@
         =生长中
       </span>
       <span>
+        <span class="text-water">润</span>
+        =已浇水
+      </span>
+      <span>
         <span class="text-accent">熟</span>
         =可收获
       </span>
@@ -89,7 +102,15 @@
         <CirclePlus :size="12" class="text-success inline" />
         =肥料
       </span>
+      <span>
+        <Droplets :size="12" class="text-danger inline" />
+        =需浇水
+      </span>
     </div>
+    <!-- 浇水提示 -->
+    <p v-if="unwateredCount > 0" class="text-xs text-danger mt-1">
+      还有 {{ unwateredCount }} 块地需要浇水
+    </p>
 
     <!-- 果树区 -->
     <div class="mt-4 border-t border-accent/20 pt-3">
@@ -292,6 +313,14 @@
     return farmStore.sprinklers.some(s => s.plotId === plotId)
   }
 
+  /** 判断地块是否需要浇水 */
+  const needsWater = (plot: (typeof farmStore.plots)[number]): boolean => {
+    return (plot.state === 'planted' || plot.state === 'growing') && !plot.watered
+  }
+
+  /** 未浇水地块数量 */
+  const unwateredCount = computed(() => farmStore.plots.filter(needsWater).length)
+
   const handlePlotAction = (plotId: number) => {
     if (farmMode.value === 'sprinkler' && selectedSprinkler.value) {
       // 放置洒水器
@@ -345,13 +374,13 @@
       case 'tilled':
         return { text: '耕', color: 'text-earth' }
       case 'planted':
-        return { text: '苗', color: 'text-success/60' }
+        return { text: plot.watered ? '润' : '苗', color: plot.watered ? 'text-water' : 'text-success/60' }
       case 'growing': {
         const crop = getCropById(plot.cropId!)
         const progress = crop ? Math.floor((plot.growthDays / crop.growthDays) * 100) : 0
         return {
           text: plot.watered ? '润' : '长',
-          color: progress > 60 ? 'text-success' : 'text-success/80'
+          color: plot.watered ? 'text-water' : progress > 60 ? 'text-success' : 'text-success/80'
         }
       }
       case 'harvestable':
