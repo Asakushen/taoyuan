@@ -290,12 +290,13 @@
   import { useRouter } from 'vue-router'
   import { useGameStore, useSaveStore, useFarmStore, useAnimalStore, usePlayerStore, useQuestStore, SEASON_NAMES } from '@/stores'
   import { FARM_MAP_DEFS } from '@/data/farmMaps'
-  import pkg from '../../package.json'
+  import _pkg from '../../package.json'
   import { useAudio } from '@/composables/useAudio'
   import type { FarmMapType, Gender } from '@/types'
 
   const router = useRouter()
   const { startBgm } = useAudio()
+  const pkg = _pkg as typeof _pkg & { title: string; qq: string; version: string; name: string }
 
   const gameStore = useGameStore()
   const saveStore = useSaveStore()
