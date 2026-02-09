@@ -1,5 +1,5 @@
 <template>
-  <div v-if="gameStore.isGameStarted" class="flex flex-col gap-2 md:gap-4 h-screen p-2 md:p-4" :class="{ 'my-5': isWebView }">
+  <div v-if="gameStore.isGameStarted" class="flex flex-col gap-2 md:gap-4 h-screen p-2 md:p-4" :class="{ 'py-5': isWebView }">
     <!-- 状态栏 -->
     <StatusBar @request-sleep="showSleepConfirm = true" />
 
@@ -9,17 +9,12 @@
     </button>
 
     <!-- 内容 -->
-    <div class="flex flex-col md:flex-row gap-2 md:gap-4 flex-1 min-h-0">
-      <div class="flex flex-col gap-2 md:gap-4 flex-1 min-w-0">
-        <!-- 主面板（带过渡） -->
-        <div class="game-panel flex-1 min-h-0 overflow-y-auto">
-          <router-view v-slot="{ Component }">
-            <Transition name="panel-fade" mode="out-in">
-              <component :is="Component" :key="$route.path" />
-            </Transition>
-          </router-view>
-        </div>
-      </div>
+    <div class="game-panel flex-1 min-h-0 overflow-y-auto">
+      <router-view v-slot="{ Component }">
+        <Transition name="panel-fade" mode="out-in">
+          <component :is="Component" :key="$route.path" />
+        </Transition>
+      </router-view>
     </div>
 
     <!-- 移动端地图按钮 -->
@@ -175,12 +170,8 @@
   )
 
   // 判断是否webview环境
-  const isWebView = computed(() => {
-    const ua = navigator.userAgent || ''
-    const isAndroidWV = /wv/.test(ua)
-    const isIOSWV = /iPad|iPhone|iPod/.test(ua) && !/Safari/.test(ua)
-    return isAndroidWV || isIOSWV
-  })
+  const ua = navigator.userAgent || ''
+  const isWebView = /wv/.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !/Safari/.test(ua))
 
   /** 从路由名称获取当前面板标识 */
   const currentPanel = computed(() => {
@@ -244,8 +235,8 @@
     bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     right: 12px;
     z-index: 40;
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 2px;
     background: var(--color-panel);
     border: 2px solid var(--color-accent);

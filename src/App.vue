@@ -74,6 +74,7 @@
   /* 像素风按钮基础样式 */
   .btn {
     display: inline-flex;
+    justify-content: center;
     align-items: center;
     gap: var(--spacing-2);
     padding: var(--spacing-2) var(--spacing-4);

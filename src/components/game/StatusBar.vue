@@ -57,7 +57,7 @@
           </div>
         </div>
       </div>
-      <!-- 时间控制 + 音频控制 -->
+      <!-- 操作按钮 -->
       <div class="flex items-center gap-1 shrink-0">
         <button class="!hidden btn text-xs py-0 px-2 min-h-0 md:!flex" @click="showMobileMap = true">
           <Map :size="12" />
@@ -67,21 +67,16 @@
           <Moon :size="12" />
           {{ sleepLabel }}
         </button>
-        <button class="btn text-xs py-0 px-1 min-h-0" :class="{ '!bg-accent !text-bg': !isPaused }" @click="togglePause">
-          <Pause v-if="!isPaused" :size="12" />
-          <Play v-else :size="12" />
-        </button>
-        <button class="btn text-xs py-0 px-1 min-h-0" @click="cycleSpeed">{{ gameSpeed }}×</button>
-        <button class="btn text-xs py-0 px-1 min-h-0" @click="toggleSfx">
-          <Volume2 v-if="sfxEnabled" :size="14" />
-          <VolumeX v-else :size="14" />
-        </button>
-        <button class="btn text-xs py-0 px-1 min-h-0" @click="toggleBgm">
-          <Music :size="14" :class="{ 'opacity-30': !bgmEnabled }" />
+        <button class="btn text-xs py-0 px-1 min-h-0" @click="showSettings = true">
+          <SettingsIcon :size="14" />
+          <span class="hidden md:flex">设置</span>
         </button>
       </div>
     </div>
     <MobileMapMenu :open="showMobileMap" :current="currentPanel" @close="showMobileMap = false" />
+    <Transition name="panel-fade">
+      <SettingsDialog v-if="showSettings" @close="showSettings = false" />
+    </Transition>
   </div>
 </template>
 
@@ -89,22 +84,22 @@
   import { computed, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { useGameStore, usePlayerStore, SEASON_NAMES, WEATHER_NAMES } from '@/stores'
-  import { useAudio } from '@/composables/useAudio'
-  import { useGameClock } from '@/composables/useGameClock'
   import MobileMapMenu from '@/components/game/MobileMapMenu.vue'
+  import SettingsDialog from '@/components/game/SettingsDialog.vue'
   import { DAY_START_HOUR, DAY_END_HOUR } from '@/data/timeConstants'
-  import { Zap, Heart, Clock, Coins, Volume2, VolumeX, Music, Moon, Map, Pause, Play } from 'lucide-vue-next'
+  import { Zap, Heart, Clock, Coins, Moon, Map, Settings as SettingsIcon } from 'lucide-vue-next'
 
   const emit = defineEmits<{ 'request-sleep': [] }>()
 
   const route = useRoute()
   const gameStore = useGameStore()
   const playerStore = usePlayerStore()
-  const { sfxEnabled, bgmEnabled, toggleSfx, toggleBgm } = useAudio()
-  const { isPaused, gameSpeed, togglePause, cycleSpeed } = useGameClock()
 
   /** 地图菜单 */
   const showMobileMap = ref(false)
+
+  /** 设置弹窗 */
+  const showSettings = ref(false)
 
   /** 从路由名称获取当前面板标识 */
   const currentPanel = computed(() => {

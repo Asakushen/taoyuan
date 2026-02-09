@@ -2,13 +2,13 @@
   <div
     class="flex min-h-screen flex-col items-center justify-center gap-8 px-4"
     @click.once="startBgm"
-    :class="{ 'my-5': isWebView }"
+    :class="{ 'py-5': isWebView }"
     @click="slotMenuOpen = null"
   >
     <!-- 标题 -->
     <div class="flex items-center gap-3">
       <div class="logo" />
-      <h1 class="text-accent text-2xl md:text-4xl tracking-widest">桃源乡</h1>
+      <h1 class="text-accent text-2xl md:text-4xl tracking-widest">{{ pkg.title }}</h1>
     </div>
 
     <!-- 主菜单 -->
@@ -22,15 +22,15 @@
         <!-- 存档列表 -->
         <div v-for="info in slots" :key="info.slot" class="w-full">
           <div v-if="info.exists" class="flex gap-1 w-full">
-            <button class="btn flex-1 justify-between" @click="handleLoadGame(info.slot)">
-              <span>
-                <FolderOpen :size="14" class="inline" />
+            <button class="btn flex-1 !justify-between" @click="handleLoadGame(info.slot)">
+              <span class="inline-flex items-center gap-1">
+                <FolderOpen :size="14" />
                 存档 {{ info.slot + 1 }}
               </span>
               <span class="text-muted text-xs">
                 {{ info.playerName ?? '未命名' }} · 第{{ info.year }}年 {{ SEASON_NAMES[info.season as keyof typeof SEASON_NAMES] }} 第{{
                   info.day
-                }}天 · {{ info.money }}文
+                }}天
               </span>
             </button>
             <div class="relative">
@@ -41,7 +41,11 @@
                 v-if="slotMenuOpen === info.slot"
                 class="absolute right-0 top-full mt-1 z-10 flex flex-col border border-accent/30 rounded-[2px] overflow-hidden w-30"
               >
-                <button class="btn text-center !rounded-none justify-center text-sm" @click="handleExportSlot(info.slot)">
+                <button
+                  v-if="!isAndroidWebView"
+                  class="btn text-center !rounded-none justify-center text-sm"
+                  @click="handleExportSlot(info.slot)"
+                >
                   <Download :size="12" />
                   导出
                 </button>
@@ -55,12 +59,13 @@
         </div>
 
         <!-- 导入存档 -->
-        <button class="btn text-center justify-center text-sm" @click="triggerImport">
-          <Upload :size="14" />
-          导入存档
-        </button>
-        <input ref="fileInputRef" type="file" accept=".tyx" class="hidden" @change="handleImportFile" />
-
+        <template v-if="!isAndroidWebView">
+          <button class="btn text-center justify-center text-sm" @click="triggerImport">
+            <Upload :size="14" />
+            导入存档
+          </button>
+          <input ref="fileInputRef" type="file" accept=".tyx" class="hidden" @change="handleImportFile" />
+        </template>
         <!-- 关于 -->
         <button class="btn text-center justify-center text-sm text-muted" @click="showAbout = true">
           <Info :size="14" />
@@ -72,22 +77,24 @@
     <!-- 关于页面 -->
     <template v-else-if="showAbout">
       <div class="game-panel w-full max-w-md text-center">
-        <h2 class="text-accent text-lg mb-4">关于桃源乡</h2>
-        <p class="text-xs text-muted mb-4">一款文字田园物语，灵感来自 Stardew Valley</p>
-
+        <h2 class="text-accent text-lg mb-4">关于{{ pkg.title }}</h2>
+        <p class="text-xs text-muted mb-2">一款文字田园物语，灵感来自 Stardew Valley</p>
         <div class="flex flex-col gap-3 text-sm">
           <div class="border border-accent/20 rounded-[2px] p-3">
+            <p class="text-muted text-xs mb-1">当前版本</p>
+            <p class="text-accent">v{{ pkg.version }}</p>
+          </div>
+          <div class="border border-accent/20 rounded-[2px] p-3">
             <p class="text-muted text-xs mb-1">QQ 交流群</p>
-            <p class="text-accent">920930589</p>
+            <p class="text-accent">{{ pkg.qq }}</p>
           </div>
           <div class="border border-accent/20 rounded-[2px] p-3">
             <p class="text-muted text-xs mb-1">GitHub 仓库</p>
-            <a href="https://github.com/setube/taoyuan" target="_blank" rel="noopener" class="text-accent underline break-all">
-              https://github.com/setube/taoyuan
+            <a :href="`https://github.com/setube/${pkg.name}`" target="_blank" rel="noopener" class="text-accent underline break-all">
+              https://github.com/setube/{{ pkg.name }}
             </a>
           </div>
         </div>
-
         <button class="btn text-sm mt-4" @click="showAbout = false">
           <ArrowLeft :size="14" />
           返回
@@ -98,7 +105,6 @@
     <!-- 角色创建 -->
     <template v-else-if="showCharCreate && !showFarmSelect">
       <p class="text-muted text-sm">创建你的角色</p>
-
       <div class="flex flex-col gap-4 w-full max-w-xs px-4">
         <!-- 名字输入 -->
         <div>
@@ -154,9 +160,8 @@
         <button
           v-for="farm in FARM_MAP_DEFS"
           :key="farm.type"
-          class="border rounded-lg p-4 text-left transition-all cursor-pointer"
-          :class="selectedMap === farm.type ? 'border-accent bg-accent/10' : 'border-border hover:border-accent/50'"
-          @click="selectedMap = farm.type"
+          class="border rounded-[2px] p-4 text-left transition-all cursor-pointer border-accent/30 hover:border-accent/50"
+          @click="handleSelectFarm(farm.type)"
         >
           <div class="font-bold mb-1">{{ farm.name }}</div>
           <div class="text-muted text-xs mb-2">{{ farm.description }}</div>
@@ -164,16 +169,33 @@
         </button>
       </div>
 
-      <div class="flex gap-3">
-        <button class="btn" @click="handleBackToCharCreate">
-          <ArrowLeft :size="14" />
-          返回
-        </button>
-        <button class="btn text-lg px-6" @click="handleNewGame">
-          <Play :size="14" />
-          开始旅程
-        </button>
-      </div>
+      <!-- 田庄确认弹窗 -->
+      <Transition name="panel-fade">
+        <div
+          v-if="showFarmConfirm"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-bg/80"
+          @click.self="showFarmConfirm = false"
+        >
+          <div class="game-panel w-full max-w-xs mx-4 text-center relative">
+            <button class="absolute top-2 right-2 text-muted hover:text-text" @click="showFarmConfirm = false">
+              <X :size="14" />
+            </button>
+            <p class="text-accent text-sm mb-3">—— {{ selectedFarmDef?.name }} ——</p>
+            <p class="text-xs text-muted mb-2">{{ selectedFarmDef?.description }}</p>
+            <p class="text-xs text-accent mb-4">{{ selectedFarmDef?.bonus }}</p>
+            <div class="flex gap-3 justify-center">
+              <button class="btn" @click="handleBackToCharCreate">
+                <ArrowLeft :size="12" />
+                返回
+              </button>
+              <button class="btn text-xs px-6" @click="handleNewGame">
+                <Play :size="12" />
+                开始旅程
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
     </template>
 
     <!-- 旧存档身份设置 -->
@@ -263,11 +285,12 @@
 </template>
 
 <script setup lang="ts">
-  import { Play, FolderOpen, ArrowLeft, Trash2, Download, Upload, Info, Settings, ShieldCheck } from 'lucide-vue-next'
+  import { Play, FolderOpen, ArrowLeft, Trash2, Download, Upload, Info, Settings, ShieldCheck, X } from 'lucide-vue-next'
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useGameStore, useSaveStore, useFarmStore, useAnimalStore, usePlayerStore, useQuestStore, SEASON_NAMES } from '@/stores'
   import { FARM_MAP_DEFS } from '@/data/farmMaps'
+  import pkg from '../../package.json'
   import { useAudio } from '@/composables/useAudio'
   import type { FarmMapType, Gender } from '@/types'
 
@@ -291,14 +314,19 @@
   const charName = ref('')
   const charGender = ref<Gender>('male')
   const showPrivacy = ref(false)
+  const showFarmConfirm = ref(false)
+
+  const selectedFarmDef = computed(() => FARM_MAP_DEFS.find(f => f.type === selectedMap.value))
+
+  const handleSelectFarm = (type: FarmMapType) => {
+    selectedMap.value = type
+    showFarmConfirm.value = true
+  }
 
   // 判断是否webview环境
-  const isWebView = computed(() => {
-    const ua = navigator.userAgent || ''
-    const isAndroidWV = /wv/.test(ua)
-    const isIOSWV = /iPad|iPhone|iPod/.test(ua) && !/Safari/.test(ua)
-    return isAndroidWV || isIOSWV
-  })
+  const ua = navigator.userAgent || ''
+  const isWebView = /wv/.test(ua) || (/iPad|iPhone|iPod/.test(ua) && !/Safari/.test(ua))
+  const isAndroidWebView = /Android/.test(ua) && /wv/.test(ua)
 
   const handlePrivacyAgree = () => {
     localStorage.setItem('taoyuan_privacy_agreed', '1')
@@ -328,6 +356,7 @@
 
   const handleBackToCharCreate = () => {
     showFarmSelect.value = false
+    showFarmConfirm.value = false
   }
 
   const handleNewGame = () => {
