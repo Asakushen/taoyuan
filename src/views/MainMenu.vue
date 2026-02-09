@@ -1,5 +1,10 @@
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center gap-8 px-4" @click.once="startBgm" @click="slotMenuOpen = null">
+  <div
+    class="flex min-h-screen flex-col items-center justify-center gap-8 px-4"
+    @click.once="startBgm"
+    :class="{ 'my-5': isWebView }"
+    @click="slotMenuOpen = null"
+  >
     <!-- 标题 -->
     <div class="flex items-center gap-3">
       <div class="logo" />
@@ -259,7 +264,7 @@
 
 <script setup lang="ts">
   import { Play, FolderOpen, ArrowLeft, Trash2, Download, Upload, Info, Settings, ShieldCheck } from 'lucide-vue-next'
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useGameStore, useSaveStore, useFarmStore, useAnimalStore, usePlayerStore, useQuestStore, SEASON_NAMES } from '@/stores'
   import { FARM_MAP_DEFS } from '@/data/farmMaps'
@@ -286,6 +291,14 @@
   const charName = ref('')
   const charGender = ref<Gender>('male')
   const showPrivacy = ref(false)
+
+  // 判断是否webview环境
+  const isWebView = computed(() => {
+    const ua = navigator.userAgent || ''
+    const isAndroidWV = /wv/.test(ua)
+    const isIOSWV = /iPad|iPhone|iPod/.test(ua) && !/Safari/.test(ua)
+    return isAndroidWV || isIOSWV
+  })
 
   const handlePrivacyAgree = () => {
     localStorage.setItem('taoyuan_privacy_agreed', '1')
