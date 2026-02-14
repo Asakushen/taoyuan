@@ -292,10 +292,14 @@
           id: b.id,
           name: b.name,
           description: b.description,
-          materials: b.craftCost,
+          materials: b.id === 'mega_bomb'
+            ? [{ itemId: 'mega_bomb_recipe', quantity: 1 }, ...b.craftCost]
+            : b.craftCost,
           cost: b.craftMoney,
           onCraft: () => handleCraftBomb(b.id),
-          canCraft: () => processingStore.canCraft(b.craftCost, b.craftMoney)
+          canCraft: () =>
+            (b.id !== 'mega_bomb' || inventoryStore.hasItem('mega_bomb_recipe')) &&
+            processingStore.canCraft(b.craftCost, b.craftMoney)
         })),
         {
           id: 'jade_ring',

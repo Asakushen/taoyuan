@@ -16,11 +16,19 @@ import {
   fightCricket,
   CARD_BET_AMOUNT,
   CARD_WIN_MULTIPLIER,
-  dealCards
+  dealCards,
+  getTexasTier,
+  dealTexas,
+  BUCKSHOT_BET_AMOUNT,
+  BUCKSHOT_WIN_MULTIPLIER,
+  BUCKSHOT_PLAYER_HP,
+  BUCKSHOT_DEALER_HP,
+  loadShotgun
 } from '@/data/hanhai'
 import { usePlayerStore } from './usePlayerStore'
 import { useInventoryStore } from './useInventoryStore'
 import { addLog } from '@/composables/useGameLog'
+import type { TexasSetup, TexasTierId, BuckshotSetup } from '@/types'
 
 export const useHanhaiStore = defineStore('hanhai', () => {
   /** 是否已解锁瀚海 */
@@ -56,6 +64,44 @@ export const useHanhaiStore = defineStore('hanhai', () => {
     return { success: true, message: `购买了${item.name}。` }
   }
 
+  /** 使用藏宝图寻宝 */
+  const useTreasureMap = (): { success: boolean; message: string; rewards: { name: string; quantity: number }[] } => {
+    const inventoryStore = useInventoryStore()
+    if (!inventoryStore.removeItem('hanhai_map')) {
+      return { success: false, message: '没有藏宝图。', rewards: [] }
+    }
+    const playerStore = usePlayerStore()
+    // 随机奖励池
+    const roll = Math.random()
+    const rewards: { itemId: string; name: string; quantity: number }[] = []
+    if (roll < 0.05) {
+      // 5% 大奖：金钱+稀有物品
+      playerStore.earnMoney(5000)
+      rewards.push({ itemId: '', name: '5000文', quantity: 1 })
+      rewards.push({ itemId: 'hanhai_turquoise', name: '绿松石', quantity: 2 })
+      inventoryStore.addItem('hanhai_turquoise', 2)
+    } else if (roll < 0.20) {
+      // 15% 中奖：金钱+材料
+      playerStore.earnMoney(2000)
+      rewards.push({ itemId: '', name: '2000文', quantity: 1 })
+      rewards.push({ itemId: 'hanhai_spice', name: '西域香料', quantity: 3 })
+      inventoryStore.addItem('hanhai_spice', 3)
+    } else if (roll < 0.45) {
+      // 25% 小奖：金钱
+      playerStore.earnMoney(1000)
+      rewards.push({ itemId: '', name: '1000文', quantity: 1 })
+      rewards.push({ itemId: 'hanhai_silk', name: '丝绸', quantity: 1 })
+      inventoryStore.addItem('hanhai_silk', 1)
+    } else {
+      // 55% 安慰奖
+      playerStore.earnMoney(500)
+      rewards.push({ itemId: '', name: '500文', quantity: 1 })
+    }
+    const rewardText = rewards.map(r => r.name + (r.quantity > 1 ? `×${r.quantity}` : '')).join('、')
+    addLog(`使用藏宝图寻宝，发现了：${rewardText}！`)
+    return { success: true, message: `寻宝成功！获得：${rewardText}`, rewards }
+  }
+
   /** 玩幸运轮盘 */
   const playRoulette = (betTier: number): { success: boolean; message: string; multiplier: number; winnings: number } => {
     if (!canBet.value) return { success: false, message: '今天的赌博次数已用完。', multiplier: 0, winnings: 0 }
@@ -74,8 +120,6 @@ export const useHanhaiStore = defineStore('hanhai', () => {
     }
     if (outcome.multiplier === 0) {
       addLog(`轮盘停在了"${outcome.label}"，损失了${betTier}文。`)
-    } else if (outcome.multiplier <= 1) {
-      addLog(`轮盘停在了"${outcome.label}"，收回${winnings}文。`)
     } else {
       addLog(`轮盘停在了"${outcome.label}"！赢得${winnings}文！`)
     }
@@ -184,6 +228,70 @@ export const useHanhaiStore = defineStore('hanhai', () => {
     return { success: true, message: won ? '翻到宝了！' : '空牌…', treasures: result.treasures, won, winnings }
   }
 
+  /** 开始瀚海扑克（扣入场费+抽水，发牌） */
+  const startTexas = (tierId: TexasTierId): { success: boolean; message: string } & Partial<TexasSetup> => {
+    if (!canBet.value) return { success: false, message: '今天的赌博次数已用完。' }
+    const tier = getTexasTier(tierId)
+    const playerStore = usePlayerStore()
+    if (playerStore.money < tier.minMoney) {
+      return { success: false, message: `需要至少持有${tier.minMoney}文才能入场。` }
+    }
+    const totalCost = tier.entryFee + tier.rake
+    if (!playerStore.spendMoney(totalCost)) {
+      return { success: false, message: '金钱不足。' }
+    }
+    casinoBetsToday.value++
+    const deal = dealTexas()
+    return {
+      success: true,
+      message: `${tier.name}开始！`,
+      playerHole: deal.playerHole,
+      dealerHole: deal.dealerHole,
+      community: deal.community,
+      tier
+    }
+  }
+
+  /** 结束瀚海扑克（结算：返还剩余筹码） */
+  const endTexas = (finalChips: number, tierName: string) => {
+    const playerStore = usePlayerStore()
+    if (finalChips > 0) {
+      playerStore.earnMoney(finalChips)
+    }
+    addLog(`瀚海扑克（${tierName}）结束，收回筹码${finalChips}文。`)
+  }
+
+  /** 开始恶魔轮盘（下注+生成初始状态） */
+  const startBuckshot = (): { success: boolean; message: string } & Partial<BuckshotSetup> => {
+    if (!canBet.value) return { success: false, message: '今天的赌博次数已用完。' }
+    const playerStore = usePlayerStore()
+    if (!playerStore.spendMoney(BUCKSHOT_BET_AMOUNT)) {
+      return { success: false, message: '金钱不足。' }
+    }
+    casinoBetsToday.value++
+    return {
+      success: true,
+      message: '恶魔轮盘开始！',
+      shells: loadShotgun(),
+      playerHP: BUCKSHOT_PLAYER_HP,
+      dealerHP: BUCKSHOT_DEALER_HP
+    }
+  }
+
+  /** 恶魔轮盘结算 */
+  const endBuckshot = (won: boolean, draw: boolean) => {
+    const playerStore = usePlayerStore()
+    if (won) {
+      playerStore.earnMoney(BUCKSHOT_BET_AMOUNT * BUCKSHOT_WIN_MULTIPLIER)
+      addLog(`恶魔轮盘胜利！赢得${BUCKSHOT_BET_AMOUNT * BUCKSHOT_WIN_MULTIPLIER}文！`)
+    } else if (draw) {
+      playerStore.earnMoney(BUCKSHOT_BET_AMOUNT)
+      addLog(`恶魔轮盘平局，退还${BUCKSHOT_BET_AMOUNT}文。`)
+    } else {
+      addLog(`恶魔轮盘落败，损失了${BUCKSHOT_BET_AMOUNT}文。`)
+    }
+  }
+
   /** 每日重置赌博次数 */
   const resetDailyBets = () => {
     casinoBetsToday.value = 0
@@ -206,11 +314,16 @@ export const useHanhaiStore = defineStore('hanhai', () => {
     betsRemaining,
     unlockHanhai,
     buyShopItem,
+    useTreasureMap,
     playRoulette,
     playDice,
     playCup,
     playCricketFight,
     playCardFlip,
+    startTexas,
+    endTexas,
+    startBuckshot,
+    endBuckshot,
     resetDailyBets,
     serialize,
     deserialize

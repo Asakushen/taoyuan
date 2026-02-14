@@ -132,6 +132,7 @@ export const useShopStore = defineStore('shop', () => {
     { itemId: 'felt', name: '毛毡', price: 600, description: '用兔毛压制的毛毡' },
     { itemId: 'silk_ribbon', name: '丝帕', price: 500, description: '精心绣制的丝帕' },
     { itemId: 'jade_ring', name: '翡翠戒指', price: 1500, description: '可以用来求婚' },
+    { itemId: 'zhiji_jade', name: '知己玉佩', price: 1500, description: '赠予同性挚友可结为知己' },
     { itemId: 'pine_incense', name: '松香', price: 250, description: '清新的松香' },
     { itemId: 'camphor_incense', name: '樟脑香', price: 400, description: '提神醒脑' },
     { itemId: 'osmanthus_incense', name: '桂花香', price: 800, description: '馥郁的桂花香' }
@@ -333,7 +334,6 @@ export const useShopStore = defineStore('shop', () => {
     shippingHistory: shippingHistory.value
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const deserialize = (data: any) => {
     travelingStockKey.value = data?.travelingStockKey ?? ''
     travelingStock.value = data?.travelingStock ?? []

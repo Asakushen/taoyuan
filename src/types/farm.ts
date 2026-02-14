@@ -1,5 +1,6 @@
 import type { FertilizerType } from './processing'
 import type { SeedGenetics } from './breeding'
+import type { Season } from './game'
 
 /** 地块状态 */
 export type PlotState = 'wasteland' | 'tilled' | 'planted' | 'growing' | 'harvestable'
@@ -39,7 +40,7 @@ export interface CropDef {
   id: string
   name: string
   seedId: string
-  season: import('./game').Season[]
+  season: Season[]
   growthDays: number
   sellPrice: number
   seedPrice: number

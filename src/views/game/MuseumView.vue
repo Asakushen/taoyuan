@@ -45,7 +45,8 @@
           "
           @click="selectedItem = item"
         >
-          {{ museumStore.isDonated(item.id) ? item.name : '???' }}
+          <template v-if="museumStore.isDonated(item.id)">{{ item.name }}</template>
+          <Lock v-else :size="12" class="mx-auto text-muted/30" />
         </div>
       </div>
 
@@ -128,7 +129,8 @@
           </button>
 
           <p class="text-sm mb-2" :class="museumStore.isDonated(selectedItem.id) ? 'text-success' : 'text-accent'">
-            {{ museumStore.isDonated(selectedItem.id) ? selectedItem.name : '???' }}
+            <template v-if="museumStore.isDonated(selectedItem.id)">{{ selectedItem.name }}</template>
+            <Lock v-else :size="14" class="inline text-muted/30" />
           </p>
 
           <!-- 来源提示 -->
@@ -179,7 +181,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { Landmark, Send, X, CircleCheck, Circle, Package } from 'lucide-vue-next'
+  import { Landmark, Send, X, CircleCheck, Circle, Package, Lock } from 'lucide-vue-next'
   import { useMuseumStore } from '@/stores'
   import { MUSEUM_ITEMS, MUSEUM_CATEGORIES, MUSEUM_MILESTONES } from '@/data/museum'
   import type { MuseumItemDef, MuseumCategory } from '@/types'

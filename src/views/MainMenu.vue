@@ -451,7 +451,7 @@
       )
     }
     questStore.initMainQuest()
-    router.push('/game')
+    void router.push('/game')
   }
 
   const handleLoadGame = (slot: number) => {
@@ -460,7 +460,7 @@
         // 旧存档没有性别/名字数据，先让玩家设置
         showIdentitySetup.value = true
       } else {
-        router.push('/game')
+        void router.push('/game')
       }
     }
   }
@@ -469,7 +469,7 @@
   const handleIdentityConfirm = () => {
     playerStore.setIdentity((charName.value.trim() || '未命名').slice(0, 4), charGender.value)
     showIdentitySetup.value = false
-    router.push('/game')
+    void router.push('/game')
   }
 
   const handleDeleteSlot = (slot: number) => {

@@ -69,9 +69,8 @@ export const QUEST_TEMPLATES: QuestTemplateDef[] = [
   }
 ]
 
-// 委托类型描述映射
-// @ts-expect-error reserved for future use
-const QUEST_TYPE_LABELS: Record<QuestType, string> = {
+// 委托类型描述映射（预留）
+export const QUEST_TYPE_LABELS: Record<QuestType, string> = {
   delivery: '送',
   fishing: '钓',
   mining: '采',

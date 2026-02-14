@@ -1788,7 +1788,7 @@ export const BOMBS: BombDef[] = [
       { itemId: 'ruby', quantity: 3 }
     ],
     craftMoney: 500,
-    shopPrice: 1500
+    shopPrice: null
   }
 ]
 

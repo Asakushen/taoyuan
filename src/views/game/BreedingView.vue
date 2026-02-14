@@ -164,7 +164,8 @@
           "
           @click="isDiscovered(hybrid.id) && (activeHybrid = hybrid)"
         >
-          {{ isDiscovered(hybrid.id) ? hybrid.name : '???' }}
+          <template v-if="isDiscovered(hybrid.id)">{{ hybrid.name }}</template>
+          <Lock v-else :size="12" class="mx-auto text-muted/30" />
         </div>
       </div>
 
@@ -358,7 +359,12 @@
               @click="toggleSeedSelect(seed.genetics.id)"
             >
               <span :class="seedStarColor(seed.genetics)">{{ getCropName(seed.genetics.cropId) }} G{{ seed.genetics.generation }}</span>
-              <span class="text-muted flex items-center gap-1"><span class="flex items-center gap-px"><Star v-for="n in getStarRating(seed.genetics)" :key="n" :size="10" /></span> {{ getTotalStats(seed.genetics) }}</span>
+              <span class="text-muted flex items-center gap-1">
+                <span class="flex items-center gap-px">
+                  <Star v-for="n in getStarRating(seed.genetics)" :key="n" :size="10" />
+                </span>
+                {{ getTotalStats(seed.genetics) }}
+              </span>
             </button>
           </div>
 
@@ -410,7 +416,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { FlaskConical, Plus, Check, X, Dna, Trash2, Sprout, PackageOpen, Star } from 'lucide-vue-next'
+  import { FlaskConical, Plus, Check, X, Dna, Trash2, Sprout, PackageOpen, Star, Lock } from 'lucide-vue-next'
   import { useBreedingStore, usePlayerStore, useInventoryStore, useGameStore } from '@/stores'
   import { getCropById } from '@/data/crops'
   import { getItemById } from '@/data/items'

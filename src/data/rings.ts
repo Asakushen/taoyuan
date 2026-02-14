@@ -322,6 +322,148 @@ export const RINGS: RingDef[] = [
     recipeMoney: 0,
     obtainSource: 'BOSS掉落：熔岩君主（60层）',
     sellPrice: 1200
+  },
+
+  // ===== 新增合成戒指 =====
+  {
+    id: 'endurance_ring',
+    name: '持久指环',
+    description: '铜环镶嵌石英，增强持久力。',
+    effects: [{ type: 'stamina_reduction', value: 0.05 }],
+    recipe: [
+      { itemId: 'copper_bar', quantity: 3 },
+      { itemId: 'quartz', quantity: 1 }
+    ],
+    recipeMoney: 200,
+    obtainSource: '合成',
+    sellPrice: 120
+  },
+  {
+    id: 'fish_jade_ring',
+    name: '渔获碧环',
+    description: '翡翠蕴含水灵之气，钓到的鱼品质更好。',
+    effects: [
+      { type: 'fish_quality_bonus', value: 0.08 },
+      { type: 'fishing_calm', value: 0.05 }
+    ],
+    recipe: [
+      { itemId: 'iron_bar', quantity: 2 },
+      { itemId: 'jade', quantity: 2 }
+    ],
+    recipeMoney: 500,
+    obtainSource: '合成',
+    sellPrice: 350
+  },
+  {
+    id: 'growth_ring',
+    name: '催生指环',
+    description: '月光与草药之力催发生机，作物更快成熟。',
+    effects: [{ type: 'crop_growth_bonus', value: 0.12 }],
+    recipe: [
+      { itemId: 'gold_bar', quantity: 2 },
+      { itemId: 'herb', quantity: 5 },
+      { itemId: 'moonstone', quantity: 1 }
+    ],
+    recipeMoney: 1200,
+    obtainSource: '合成',
+    sellPrice: 750
+  },
+  {
+    id: 'travel_ring',
+    name: '行路指环',
+    description: '兔足与金的融合赋予轻盈步伐，赶路更快。',
+    effects: [
+      { type: 'travel_speed', value: 0.15 },
+      { type: 'stamina_reduction', value: 0.05 }
+    ],
+    recipe: [
+      { itemId: 'gold_bar', quantity: 3 },
+      { itemId: 'rabbit_foot', quantity: 1 }
+    ],
+    recipeMoney: 2000,
+    obtainSource: '合成',
+    sellPrice: 1100
+  },
+
+  // ===== 新增BOSS掉落 =====
+  {
+    id: 'crystal_king_seal',
+    name: '晶王之印',
+    description: '水晶之王碎裂后留下的印环，蕴含悟道之力。',
+    effects: [
+      { type: 'exp_bonus', value: 0.12 },
+      { type: 'luck', value: 0.06 }
+    ],
+    recipe: null,
+    recipeMoney: 0,
+    obtainSource: 'BOSS掉落：水晶之王（80层）',
+    sellPrice: 1800
+  },
+  {
+    id: 'shadow_sovereign_ring',
+    name: '暗影君戒',
+    description: '暗影君主灵魂凝成的指环，暴击致命且吸噬生命。',
+    effects: [
+      { type: 'crit_rate_bonus', value: 0.1 },
+      { type: 'vampiric', value: 0.06 }
+    ],
+    recipe: null,
+    recipeMoney: 0,
+    obtainSource: 'BOSS掉落：暗影君主（100层）',
+    sellPrice: 2500
+  },
+  {
+    id: 'abyss_dragon_ring',
+    name: '龙王指环',
+    description: '深渊龙王的逆鳞化成的至高指环，攻守兼备。',
+    effects: [
+      { type: 'attack_bonus', value: 10 },
+      { type: 'defense_bonus', value: 0.1 }
+    ],
+    recipe: null,
+    recipeMoney: 0,
+    obtainSource: 'BOSS掉落：深渊龙王（120层）',
+    sellPrice: 4000
+  },
+
+  // ===== 新增怪物掉落 =====
+  {
+    id: 'shallow_guard',
+    name: '浅矿护环',
+    description: '浅矿层石蟹壳制成的简陋护环。',
+    effects: [{ type: 'defense_bonus', value: 0.05 }],
+    recipe: null,
+    recipeMoney: 0,
+    obtainSource: '浅矿层怪物掉落',
+    sellPrice: 80
+  },
+  {
+    id: 'crystal_prism_band',
+    name: '棱晶护带',
+    description: '水晶层怪物身上凝结的棱晶带，蕴含好运。',
+    effects: [
+      { type: 'luck', value: 0.05 },
+      { type: 'ore_bonus', value: 1 }
+    ],
+    recipe: null,
+    recipeMoney: 0,
+    obtainSource: '水晶层怪物掉落',
+    sellPrice: 900
+  },
+
+  // ===== 新增宝箱掉落 =====
+  {
+    id: 'ancient_jade_ring',
+    name: '古玉指环',
+    description: '宝箱中沉睡的古老翡翠指环，带来财运。',
+    effects: [
+      { type: 'sell_price_bonus', value: 0.06 },
+      { type: 'shop_discount', value: 0.04 }
+    ],
+    recipe: null,
+    recipeMoney: 0,
+    obtainSource: '矿洞宝箱',
+    sellPrice: 600
   }
 ]
 
@@ -335,10 +477,13 @@ export const CRAFTABLE_RINGS: RingDef[] = RINGS.filter(r => r.recipe !== null)
 
 /** 各区域怪物可掉落的戒指 */
 export const MONSTER_DROP_RINGS: Record<string, { ringId: string; chance: number }[]> = {
-  shallow: [],
+  shallow: [{ ringId: 'shallow_guard', chance: 0.02 }],
   frost: [{ ringId: 'jade_guard_ring', chance: 0.02 }],
   lava: [{ ringId: 'jade_spirit_ring', chance: 0.02 }],
-  crystal: [{ ringId: 'moonlight_ring', chance: 0.02 }],
+  crystal: [
+    { ringId: 'moonlight_ring', chance: 0.02 },
+    { ringId: 'crystal_prism_band', chance: 0.015 }
+  ],
   shadow: [{ ringId: 'shadow_ring', chance: 0.02 }],
   abyss: [{ ringId: 'dragon_ring', chance: 0.015 }]
 }
@@ -347,15 +492,24 @@ export const MONSTER_DROP_RINGS: Record<string, { ringId: string; chance: number
 export const BOSS_DROP_RINGS: Record<number, string> = {
   20: 'mud_golem_band',
   40: 'frost_queen_circlet',
-  60: 'lava_lord_seal'
+  60: 'lava_lord_seal',
+  80: 'crystal_king_seal',
+  100: 'shadow_sovereign_ring',
+  120: 'abyss_dragon_ring'
 }
 
 /** 宝箱层可掉落的戒指（按区域） */
 export const TREASURE_DROP_RINGS: Record<string, { ringId: string; chance: number }[]> = {
   shallow: [{ ringId: 'quartz_ring', chance: 0.08 }],
   frost: [{ ringId: 'farmers_ring', chance: 0.08 }],
-  lava: [{ ringId: 'anglers_ring', chance: 0.08 }],
-  crystal: [{ ringId: 'exp_ring', chance: 0.06 }],
+  lava: [
+    { ringId: 'anglers_ring', chance: 0.08 },
+    { ringId: 'ancient_jade_ring', chance: 0.04 }
+  ],
+  crystal: [
+    { ringId: 'exp_ring', chance: 0.06 },
+    { ringId: 'ancient_jade_ring', chance: 0.035 }
+  ],
   shadow: [{ ringId: 'treasure_hunter_ring', chance: 0.06 }],
   abyss: [{ ringId: 'fortune_ring', chance: 0.05 }]
 }

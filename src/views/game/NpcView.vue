@@ -25,6 +25,7 @@
             <Gift :size="10" :class="npcGiftClass(npc.id)" />
             <Heart v-if="npcStore.getNpcState(npc.id)?.married" :size="10" class="text-danger" />
             <Heart v-else-if="npcStore.getNpcState(npc.id)?.dating" :size="10" class="text-danger/50" />
+            <Heart v-else-if="npcStore.getNpcState(npc.id)?.zhiji" :size="10" class="text-accent" />
             <Heart v-else-if="npc.marriageable" :size="10" class="text-muted/30" />
             <Cake v-if="npcStore.isBirthday(npc.id)" :size="10" class="text-danger" />
           </div>
@@ -36,6 +37,7 @@
               {{ npc.name }}
               <span v-if="npcStore.getNpcState(npc.id)?.married" class="text-danger text-[10px] ml-0.5">[伴侣]</span>
               <span v-else-if="npcStore.getNpcState(npc.id)?.dating" class="text-danger/70 text-[10px] ml-0.5">[约会中]</span>
+              <span v-else-if="npcStore.getNpcState(npc.id)?.zhiji" class="text-accent text-[10px] ml-0.5">[知己]</span>
             </span>
             <div class="flex items-center gap-1">
               <MessageCircle :size="10" :class="npcStore.getNpcState(npc.id)?.talkedToday ? 'text-muted/20' : 'text-success'" />
@@ -77,6 +79,9 @@
                 </span>
                 <span v-else-if="selectedNpcState?.dating" class="text-[10px] text-danger/70 border border-danger/20 rounded-xs px-1 ml-1">
                   约会中
+                </span>
+                <span v-else-if="selectedNpcState?.zhiji" class="text-[10px] text-accent border border-accent/30 rounded-xs px-1 ml-1">
+                  知己
                 </span>
               </p>
               <p class="text-[10px] text-muted/60 mt-0.5">{{ selectedNpcDef?.personality }}</p>
@@ -236,6 +241,64 @@
             </template>
           </div>
 
+          <!-- 知己面板（同性可婚NPC，未约会/未结婚） -->
+          <div
+            v-if="
+              selectedNpcDef?.marriageable &&
+              !selectedNpcState?.married &&
+              !selectedNpcState?.dating &&
+              selectedNpcDef.gender === playerStore.gender
+            "
+            class="border border-accent/20 rounded-xs p-2 mb-3"
+          >
+            <p class="text-xs text-accent/80 mb-1.5 flex items-center gap-1">
+              <Heart :size="12" />
+              知己
+            </p>
+            <template v-if="selectedNpcState?.zhiji">
+              <p class="text-[10px] text-accent/60 mb-1">{{ selectedNpcDef.gender === 'male' ? '蓝颜知己' : '红颜知己' }} ♦</p>
+              <button class="btn w-full text-xs text-danger border-danger/40" @click="showZhijiDissolveConfirm = true">断缘</button>
+            </template>
+            <template v-else-if="npcStore.npcStates.some(s => s.zhiji)">
+              <p class="text-[10px] text-muted/50">你已有知己，无法再结缘。</p>
+            </template>
+            <template v-else>
+              <div class="flex flex-col gap-0.5 mb-1.5">
+                <span
+                  class="text-[10px] flex items-center gap-0.5"
+                  :class="(selectedNpcState?.friendship ?? 0) >= 2000 ? 'text-success' : 'text-muted/50'"
+                >
+                  <CircleCheck v-if="(selectedNpcState?.friendship ?? 0) >= 2000" :size="10" />
+                  <Circle v-else :size="10" />
+                  好感≥2000（8心）
+                  <span class="text-muted/40">— 当前{{ selectedNpcState?.friendship ?? 0 }}</span>
+                </span>
+                <span
+                  class="text-[10px] flex items-center gap-0.5"
+                  :class="inventoryStore.hasItem('zhiji_jade') ? 'text-success' : 'text-muted/50'"
+                >
+                  <CircleCheck v-if="inventoryStore.hasItem('zhiji_jade')" :size="10" />
+                  <Circle v-else :size="10" />
+                  持有知己玉佩
+                  <span class="text-muted/40">— 绸缎庄有售</span>
+                </span>
+              </div>
+              <button class="btn w-full text-xs text-accent border-accent/40" :disabled="!canBecomeZhiji" @click="handleBecomeZhiji">
+                <Heart :size="14" />
+                赠玉（结为知己）
+              </button>
+            </template>
+          </div>
+
+          <!-- 断缘确认 -->
+          <div v-if="showZhijiDissolveConfirm" class="game-panel mb-3 border-accent/40">
+            <p class="text-xs text-danger mb-2">确定要与{{ selectedNpcDef?.name }}断缘吗？（花费10000文）</p>
+            <div class="flex gap-2">
+              <button class="btn text-xs text-danger" @click="handleDissolveZhiji">确认</button>
+              <button class="btn text-xs" @click="showZhijiDissolveConfirm = false">取消</button>
+            </div>
+          </div>
+
           <!-- 离婚确认 -->
           <div v-if="showDivorceConfirm" class="game-panel mb-3 border-danger/40">
             <p class="text-xs text-danger mb-2">确定要与{{ selectedNpcDef?.name }}和离吗？（花费30000文）</p>
@@ -356,6 +419,7 @@
   const selectedNpc = ref<string | null>(null)
   const dialogueText = ref<string | null>(null)
   const showDivorceConfirm = ref(false)
+  const showZhijiDissolveConfirm = ref(false)
   const activeGiftKey = ref<string | null>(null)
 
   const activeGiftItem = computed(() => {
@@ -381,6 +445,7 @@
       selectedNpc.value = npcId
       dialogueText.value = null
       showDivorceConfirm.value = false
+      showZhijiDissolveConfirm.value = false
     }
   }
 
@@ -448,6 +513,17 @@
     if (npcStore.weddingCountdown > 0) return false
     if ((selectedNpcState.value?.friendship ?? 0) < 2500) return false
     if (!inventoryStore.hasItem('jade_ring')) return false
+    return true
+  })
+
+  /** 是否可以结为知己 */
+  const canBecomeZhiji = computed(() => {
+    if (!selectedNpcDef.value?.marriageable) return false
+    if (selectedNpcDef.value.gender !== playerStore.gender) return false
+    if (selectedNpcState.value?.zhiji || selectedNpcState.value?.dating || selectedNpcState.value?.married) return false
+    if (npcStore.npcStates.some(s => s.zhiji)) return false
+    if ((selectedNpcState.value?.friendship ?? 0) < 2000) return false
+    if (!inventoryStore.hasItem('zhiji_jade')) return false
     return true
   })
 
@@ -568,6 +644,28 @@
     } else {
       addLog(result.message)
     }
+  }
+
+  const handleBecomeZhiji = () => {
+    if (!selectedNpc.value) return
+    const result = npcStore.becomeZhiji(selectedNpc.value)
+    if (result.success) {
+      dialogueText.value = result.message
+      addLog(result.message)
+    } else {
+      addLog(result.message)
+    }
+  }
+
+  const handleDissolveZhiji = () => {
+    const result = npcStore.dissolveZhiji()
+    if (result.success) {
+      addLog(result.message)
+      dialogueText.value = result.message
+    } else {
+      addLog(result.message)
+    }
+    showZhijiDissolveConfirm.value = false
   }
 
   const handleDivorce = () => {

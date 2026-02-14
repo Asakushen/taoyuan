@@ -1,11 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { InventoryItem, Quality, Tool, ToolType, ToolTier, OwnedWeapon, OwnedRing, RingEffectType } from '@/types'
+import type { InventoryItem, Quality, Tool, ToolType, ToolTier, OwnedWeapon, OwnedRing, RingEffectType, OwnedHat, OwnedShoe } from '@/types'
 import { showFloat } from '@/composables/useGameLog'
 import { getItemById } from '@/data/items'
 import { getWeaponById, getEnchantmentById, getWeaponSellPrice } from '@/data/weapons'
 import { getRingById } from '@/data/rings'
+import { getHatById } from '@/data/hats'
+import { getShoeById } from '@/data/shoes'
 import { usePlayerStore } from './usePlayerStore'
+import { useAchievementStore } from './useAchievementStore'
 
 const INITIAL_CAPACITY = 24
 const MAX_CAPACITY = 60
@@ -35,6 +38,16 @@ export const useInventoryStore = defineStore('inventory', () => {
   /** 装备的戒指索引（2个槽位，-1 = 空） */
   const equippedRingSlot1 = ref(-1)
   const equippedRingSlot2 = ref(-1)
+
+  /** 拥有的帽子列表 */
+  const ownedHats = ref<OwnedHat[]>([])
+  /** 当前装备的帽子索引（-1 = 空） */
+  const equippedHatIndex = ref(-1)
+
+  /** 拥有的鞋子列表 */
+  const ownedShoes = ref<OwnedShoe[]>([])
+  /** 当前装备的鞋子索引（-1 = 空） */
+  const equippedShoeIndex = ref(-1)
 
   /** 正在升级中的工具（2天等待期） */
   const pendingUpgrade = ref<{ toolType: ToolType; targetTier: ToolTier; daysRemaining: number } | null>(null)
@@ -81,6 +94,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   /** 添加武器到收藏 */
   const addWeapon = (defId: string, enchantmentId: string | null = null): boolean => {
     ownedWeapons.value.push({ defId, enchantmentId })
+    useAchievementStore().discoverItem(defId)
     return true
   }
 
@@ -116,6 +130,8 @@ export const useInventoryStore = defineStore('inventory', () => {
 
   /** 添加物品到背包 */
   const addItem = (itemId: string, quantity: number = 1, quality: Quality = 'normal'): boolean => {
+    // 自动注册到图鉴
+    useAchievementStore().discoverItem(itemId)
     let remaining = quantity
 
     // 先填充已有的同类栈
@@ -376,6 +392,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   /** 添加戒指到收藏 */
   const addRing = (defId: string): boolean => {
     ownedRings.value.push({ defId })
+    useAchievementStore().discoverItem(defId)
     return true
   }
 
@@ -431,11 +448,12 @@ export const useInventoryStore = defineStore('inventory', () => {
     return { success: true, message: `卖出了${def?.name ?? '戒指'}，获得${price}文。` }
   }
 
-  /** 查询某种戒指效果的合计值（两个槽位叠加） */
-  const getRingEffectValue = (effectType: RingEffectType): number => {
+  /** 查询某种装备效果的合计值（戒指+帽子+鞋子叠加） */
+  const getEquipmentBonus = (effectType: RingEffectType): number => {
     let total = 0
-    const indices = [equippedRingSlot1.value, equippedRingSlot2.value]
-    for (const idx of indices) {
+    // 戒指（2槽位）
+    const ringIndices = [equippedRingSlot1.value, equippedRingSlot2.value]
+    for (const idx of ringIndices) {
       if (idx < 0 || idx >= ownedRings.value.length) continue
       const ring = ownedRings.value[idx]!
       const def = getRingById(ring.defId)
@@ -445,7 +463,32 @@ export const useInventoryStore = defineStore('inventory', () => {
         }
       }
     }
+    // 帽子（1槽位）
+    if (equippedHatIndex.value >= 0 && equippedHatIndex.value < ownedHats.value.length) {
+      const hat = ownedHats.value[equippedHatIndex.value]!
+      const def = getHatById(hat.defId)
+      if (def) {
+        for (const eff of def.effects) {
+          if (eff.type === effectType) total += eff.value
+        }
+      }
+    }
+    // 鞋子（1槽位）
+    if (equippedShoeIndex.value >= 0 && equippedShoeIndex.value < ownedShoes.value.length) {
+      const shoe = ownedShoes.value[equippedShoeIndex.value]!
+      const def = getShoeById(shoe.defId)
+      if (def) {
+        for (const eff of def.effects) {
+          if (eff.type === effectType) total += eff.value
+        }
+      }
+    }
     return total
+  }
+
+  /** 查询某种戒指效果的合计值（代理到 getEquipmentBonus，包含帽子/鞋子加成） */
+  const getRingEffectValue = (effectType: RingEffectType): number => {
+    return getEquipmentBonus(effectType)
   }
 
   /** 合成戒指 */
@@ -478,6 +521,142 @@ export const useInventoryStore = defineStore('inventory', () => {
     return { success: true, message: `合成了${def.name}！` }
   }
 
+  // ============================================================
+  // 帽子系统
+  // ============================================================
+
+  /** 添加帽子到收藏 */
+  const addHat = (defId: string): boolean => {
+    ownedHats.value.push({ defId })
+    useAchievementStore().discoverItem(defId)
+    return true
+  }
+
+  /** 检查是否已拥有某帽子 */
+  const hasHat = (defId: string): boolean => {
+    return ownedHats.value.some(h => h.defId === defId)
+  }
+
+  /** 装备帽子 */
+  const equipHat = (index: number): boolean => {
+    if (index < 0 || index >= ownedHats.value.length) return false
+    equippedHatIndex.value = index
+    return true
+  }
+
+  /** 卸下帽子 */
+  const unequipHat = (): boolean => {
+    if (equippedHatIndex.value < 0) return false
+    equippedHatIndex.value = -1
+    return true
+  }
+
+  /** 卖出帽子 */
+  const sellHat = (index: number): { success: boolean; message: string } => {
+    if (index < 0 || index >= ownedHats.value.length) return { success: false, message: '无效索引。' }
+    const hat = ownedHats.value[index]!
+    const def = getHatById(hat.defId)
+    const price = def?.sellPrice ?? 0
+    // 自动卸下
+    if (equippedHatIndex.value === index) equippedHatIndex.value = -1
+    const playerStore = usePlayerStore()
+    playerStore.earnMoney(price)
+    ownedHats.value.splice(index, 1)
+    // 修正装备索引
+    if (equippedHatIndex.value > index) equippedHatIndex.value--
+    return { success: true, message: `卖出了${def?.name ?? '帽子'}，获得${price}文。` }
+  }
+
+  /** 合成帽子 */
+  const craftHat = (defId: string): { success: boolean; message: string } => {
+    const def = getHatById(defId)
+    if (!def || !def.recipe) return { success: false, message: '该帽子无法合成。' }
+    for (const mat of def.recipe) {
+      if (getItemCount(mat.itemId) < mat.quantity) {
+        const matName = getItemById(mat.itemId)?.name ?? mat.itemId
+        return { success: false, message: `材料不足：${matName}。` }
+      }
+    }
+    const playerStore = usePlayerStore()
+    if (playerStore.money < def.recipeMoney) {
+      return { success: false, message: `金币不足（需要${def.recipeMoney}文）。` }
+    }
+    for (const mat of def.recipe) {
+      removeItem(mat.itemId, mat.quantity)
+    }
+    playerStore.spendMoney(def.recipeMoney)
+    addHat(defId)
+    return { success: true, message: `合成了${def.name}！` }
+  }
+
+  // ============================================================
+  // 鞋子系统
+  // ============================================================
+
+  /** 添加鞋子到收藏 */
+  const addShoe = (defId: string): boolean => {
+    ownedShoes.value.push({ defId })
+    useAchievementStore().discoverItem(defId)
+    return true
+  }
+
+  /** 检查是否已拥有某鞋子 */
+  const hasShoe = (defId: string): boolean => {
+    return ownedShoes.value.some(s => s.defId === defId)
+  }
+
+  /** 装备鞋子 */
+  const equipShoe = (index: number): boolean => {
+    if (index < 0 || index >= ownedShoes.value.length) return false
+    equippedShoeIndex.value = index
+    return true
+  }
+
+  /** 卸下鞋子 */
+  const unequipShoe = (): boolean => {
+    if (equippedShoeIndex.value < 0) return false
+    equippedShoeIndex.value = -1
+    return true
+  }
+
+  /** 卖出鞋子 */
+  const sellShoe = (index: number): { success: boolean; message: string } => {
+    if (index < 0 || index >= ownedShoes.value.length) return { success: false, message: '无效索引。' }
+    const shoe = ownedShoes.value[index]!
+    const def = getShoeById(shoe.defId)
+    const price = def?.sellPrice ?? 0
+    // 自动卸下
+    if (equippedShoeIndex.value === index) equippedShoeIndex.value = -1
+    const playerStore = usePlayerStore()
+    playerStore.earnMoney(price)
+    ownedShoes.value.splice(index, 1)
+    // 修正装备索引
+    if (equippedShoeIndex.value > index) equippedShoeIndex.value--
+    return { success: true, message: `卖出了${def?.name ?? '鞋子'}，获得${price}文。` }
+  }
+
+  /** 合成鞋子 */
+  const craftShoe = (defId: string): { success: boolean; message: string } => {
+    const def = getShoeById(defId)
+    if (!def || !def.recipe) return { success: false, message: '该鞋子无法合成。' }
+    for (const mat of def.recipe) {
+      if (getItemCount(mat.itemId) < mat.quantity) {
+        const matName = getItemById(mat.itemId)?.name ?? mat.itemId
+        return { success: false, message: `材料不足：${matName}。` }
+      }
+    }
+    const playerStore = usePlayerStore()
+    if (playerStore.money < def.recipeMoney) {
+      return { success: false, message: `金币不足（需要${def.recipeMoney}文）。` }
+    }
+    for (const mat of def.recipe) {
+      removeItem(mat.itemId, mat.quantity)
+    }
+    playerStore.spendMoney(def.recipeMoney)
+    addShoe(defId)
+    return { success: true, message: `合成了${def.name}！` }
+  }
+
   const serialize = () => {
     return {
       items: items.value,
@@ -489,7 +668,11 @@ export const useInventoryStore = defineStore('inventory', () => {
       pendingUpgrade: pendingUpgrade.value,
       ownedRings: ownedRings.value,
       equippedRingSlot1: equippedRingSlot1.value,
-      equippedRingSlot2: equippedRingSlot2.value
+      equippedRingSlot2: equippedRingSlot2.value,
+      ownedHats: ownedHats.value,
+      equippedHatIndex: equippedHatIndex.value,
+      ownedShoes: ownedShoes.value,
+      equippedShoeIndex: equippedShoeIndex.value
     }
   }
 
@@ -546,6 +729,16 @@ export const useInventoryStore = defineStore('inventory', () => {
     // 修复无效索引
     if (equippedRingSlot1.value >= ownedRings.value.length) equippedRingSlot1.value = -1
     if (equippedRingSlot2.value >= ownedRings.value.length) equippedRingSlot2.value = -1
+
+    // 帽子系统（向后兼容旧存档）
+    ownedHats.value = ((data as Record<string, unknown>).ownedHats as OwnedHat[]) ?? []
+    equippedHatIndex.value = ((data as Record<string, unknown>).equippedHatIndex as number | undefined) ?? -1
+    if (equippedHatIndex.value >= ownedHats.value.length) equippedHatIndex.value = -1
+
+    // 鞋子系统（向后兼容旧存档）
+    ownedShoes.value = ((data as Record<string, unknown>).ownedShoes as OwnedShoe[]) ?? []
+    equippedShoeIndex.value = ((data as Record<string, unknown>).equippedShoeIndex as number | undefined) ?? -1
+    if (equippedShoeIndex.value >= ownedShoes.value.length) equippedShoeIndex.value = -1
   }
 
   return {
@@ -591,7 +784,24 @@ export const useInventoryStore = defineStore('inventory', () => {
     unequipRing,
     sellRing,
     getRingEffectValue,
+    getEquipmentBonus,
     craftRing,
+    ownedHats,
+    equippedHatIndex,
+    addHat,
+    hasHat,
+    equipHat,
+    unequipHat,
+    sellHat,
+    craftHat,
+    ownedShoes,
+    equippedShoeIndex,
+    addShoe,
+    hasShoe,
+    equipShoe,
+    unequipShoe,
+    sellShoe,
+    craftShoe,
     serialize,
     deserialize
   }

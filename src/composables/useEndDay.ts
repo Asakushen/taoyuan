@@ -128,7 +128,9 @@ const FESTIVAL_RECIPE_MAP: Record<string, string> = {
   qi_xi: 'qiao_guo',
   chong_yang: 'chrysanthemum_wine',
   dong_zhi: 'jiaozi',
-  nian_mo: 'tangyuan'
+  nian_mo: 'tangyuan',
+  dou_cha: 'dou_cha_yin',
+  qiu_yuan: 'zhi_yuan_gao'
 }
 
 /** 好感度等级层级顺序 */
@@ -183,6 +185,22 @@ const checkRecipeUnlocks = () => {
         if (cookingStore.unlockRecipe(recipe.id)) {
           addLog(`技能提升解锁了新食谱：${recipe.name}！`)
         }
+      }
+    }
+  }
+
+  // 物品获取解锁食谱（瀚海）
+  const inventoryStore = useInventoryStore()
+  const ITEM_RECIPE_MAP: { itemId: string; recipeId: string; name: string }[] = [
+    { itemId: 'hanhai_spice', recipeId: 'spiced_lamb', name: '香料烤羊' },
+    { itemId: 'hanhai_silk', recipeId: 'silk_dumpling_deluxe', name: '丝路饺子' },
+    { itemId: 'hanhai_cactus', recipeId: 'desert_cactus_soup', name: '仙人掌汤' },
+    { itemId: 'hanhai_date', recipeId: 'date_cake', name: '枣糕' }
+  ]
+  for (const entry of ITEM_RECIPE_MAP) {
+    if (inventoryStore.hasItem(entry.itemId)) {
+      if (cookingStore.unlockRecipe(entry.recipeId)) {
+        addLog(`获得了新食谱：${entry.name}！`)
       }
     }
   }
@@ -390,6 +408,106 @@ export const handleEndDay = () => {
       const food = foods[Math.floor(Math.random() * foods.length)]!
       inventoryStore.addItem(food)
       addLog(`${spouseName}做了一份${getItemById(food)?.name ?? '食物'}。`)
+    }
+  }
+
+  // 知己每日加成（在 dailyReset 之前）
+  const zhiji = npcStore.getZhiji()
+  if (zhiji) {
+    const zhijiDef = getNpcById(zhiji.npcId)
+    const zhijiName = zhijiDef?.name ?? '知己'
+    const bonusChance2 = zhiji.friendship >= 2500 ? 0.15 : 0
+
+    switch (zhiji.npcId) {
+      case 'a_shi':
+        if (Math.random() < 0.3 + bonusChance2) {
+          const ores = ['copper_ore', 'iron_ore', 'gold_ore']
+          const ore = ores[Math.floor(Math.random() * ores.length)]!
+          const qty = 1 + Math.floor(Math.random() * 3)
+          inventoryStore.addItem(ore, qty)
+          addLog(`${zhijiName}送来了${qty}个${getItemById(ore)?.name ?? '矿石'}。`)
+        }
+        break
+      case 'dan_qing':
+        if (Math.random() < 0.2 + bonusChance2) {
+          for (const s of npcStore.npcStates) {
+            if (s.npcId !== zhiji.npcId) s.friendship += 5
+          }
+          addLog(`${zhijiName}在村里替你美言了几句。(全村+5好感)`)
+        }
+        break
+      case 'a_tie':
+        if (Math.random() < 0.3 + bonusChance2) {
+          const mats = ['iron_ore', 'copper_ore', 'charcoal']
+          const mat = mats[Math.floor(Math.random() * mats.length)]!
+          inventoryStore.addItem(mat, 2)
+          addLog(`${zhijiName}送来了一些打铁的材料。`)
+        }
+        break
+      case 'yun_fei':
+        if (Math.random() < 0.3 + bonusChance2) {
+          const items2 = ['wild_mushroom', 'herb', 'pine_cone']
+          const item2 = items2[Math.floor(Math.random() * items2.length)]!
+          inventoryStore.addItem(item2)
+          addLog(`${zhijiName}从山里带回了${getItemById(item2)?.name ?? '东西'}。`)
+        }
+        break
+      case 'da_niu':
+        if (Math.random() < 0.3 + bonusChance2) {
+          const result2 = animalStore.feedAll()
+          if (result2.fedCount > 0) addLog(`${zhijiName}帮你喂了所有牲畜。`)
+        }
+        break
+      case 'mo_bai':
+        if (Math.random() < 0.25 + bonusChance2) {
+          playerStore.restoreStamina(15)
+          addLog(`${zhijiName}弹了一曲舒缓的琴音，你感觉精神好了些。(+15体力)`)
+        }
+        break
+      case 'liu_niang':
+        if (Math.random() < 0.2 + bonusChance2) {
+          for (const s of npcStore.npcStates) {
+            if (s.npcId !== zhiji.npcId) s.friendship += 5
+          }
+          addLog(`${zhijiName}在村里替你说了好话。(全村+5好感)`)
+        }
+        break
+      case 'qiu_yue':
+        if (Math.random() < 0.3 + bonusChance2) {
+          const fish = ['crucian', 'carp', 'grass_carp', 'bass']
+          const f = fish[Math.floor(Math.random() * fish.length)]!
+          inventoryStore.addItem(f)
+          addLog(`${zhijiName}送来了一条${getItemById(f)?.name ?? '鱼'}。`)
+        }
+        break
+      case 'chun_lan':
+        if (Math.random() < 0.25 + bonusChance2) {
+          inventoryStore.addItem('tea')
+          addLog(`${zhijiName}送来了一壶好茶。`)
+        }
+        break
+      case 'xue_qin':
+        if (Math.random() < 0.15 + bonusChance2) {
+          inventoryStore.addItem('bamboo')
+          addLog(`${zhijiName}送来了一捆竹子。`)
+        }
+        break
+      case 'su_su':
+        if (Math.random() < 0.25 + bonusChance2) {
+          const cloths = ['cloth', 'silk_cloth', 'felt']
+          const c = cloths[Math.floor(Math.random() * cloths.length)]!
+          inventoryStore.addItem(c)
+          addLog(`${zhijiName}送来了一匹${getItemById(c)?.name ?? '布料'}。`)
+        }
+        break
+      case 'hong_dou':
+        if (Math.random() < 0.3 + bonusChance2) {
+          const wines = ['peach_wine', 'jujube_wine', 'corn_wine']
+          const w = wines[Math.floor(Math.random() * wines.length)]!
+          inventoryStore.addItem(w)
+          addLog(`${zhijiName}送来了一壶${getItemById(w)?.name ?? '酒'}。`)
+        }
+        break
     }
   }
 
@@ -620,10 +738,11 @@ export const handleEndDay = () => {
   const event = getTodayEvent(gameStore.season, gameStore.day)
   if (event) {
     applyEventEffects(event)
-    const { startFestivalBgm } = useAudio()
-    startFestivalBgm(gameStore.season)
     if (event.interactive && event.festivalType) {
       showFestival(event.festivalType)
+    } else {
+      const { startFestivalBgm } = useAudio()
+      startFestivalBgm(gameStore.season)
     }
     showEvent(event)
   }
@@ -654,13 +773,13 @@ export const handleEndDay = () => {
     addLog(`荒野中发现了${qty}个${oreDef?.name ?? randomOre}。`)
   }
 
-  // 宠物领养触发（第7天且无宠物）
-  if (gameStore.day === 7 && gameStore.year === 1 && gameStore.season === 'spring' && !animalStore.pet) {
+  // 宠物领养触发（春季第一年第7天起，每天检查直到领养）
+  if (gameStore.day >= 7 && gameStore.year === 1 && gameStore.season === 'spring' && !animalStore.pet) {
     triggerPetAdoption()
   }
 
   // 回到农场页面（防止留在商铺等页面继续操作）
-  router.push({ name: 'farm' })
+  void router.push({ name: 'farm' })
 
   // 自动存档
   saveStore.autoSave()

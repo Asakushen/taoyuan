@@ -8,7 +8,7 @@
     <!-- 准备 -->
     <div v-if="phase === 'ready'">
       <p class="text-xs text-muted mb-3">25秒内包尽可能多的饺子！每个饺子需要三步：擀皮 → 放馅 → 捏合。按顺序点击对应按钮！</p>
-      <button class="btn text-xs" @click="startGame">开始包饺子！</button>
+      <button class="btn text-xs w-full" @click="startGame">开始包饺子！</button>
     </div>
 
     <!-- 制作中 -->
@@ -31,7 +31,7 @@
           class="h-full transition-all duration-1000 ease-linear"
           :class="timeLeft <= 5 ? 'bg-danger/60' : 'bg-accent/60'"
           :style="{ width: `${(timeLeft / 25) * 100}%` }"
-        ></div>
+        />
       </div>
 
       <!-- 饺子计数器 -->
@@ -78,8 +78,8 @@
             馅
           </div>
           <div v-else-if="currentStep === 2" :class="{ 'pinch-close': animating }" class="flex items-center gap-1">
-            <div class="w-6 h-9 border-2 border-accent/50 rounded-l-full"></div>
-            <div class="w-6 h-9 border-2 border-accent/50 rounded-r-full"></div>
+            <div class="w-6 h-9 border-2 border-accent/50 rounded-l-full" />
+            <div class="w-6 h-9 border-2 border-accent/50 rounded-r-full" />
           </div>
         </div>
 
@@ -93,19 +93,22 @@
         </div>
       </div>
 
+      <!-- 顺序变更提示 -->
+      <p v-if="showShuffle" class="text-accent text-xs mb-2 text-center shuffle-flash">按钮顺序变了！注意看！</p>
+
       <!-- 操作按钮 -->
       <div class="flex gap-2">
         <button
-          v-for="(s, i) in steps"
-          :key="i"
+          v-for="idx in buttonOrder"
+          :key="idx"
           class="btn text-xs flex-1 py-2 transition-all duration-100"
           :class="{
-            'bg-accent/20! border-accent/50!': currentStep === i,
-            'opacity-60': currentStep !== i
+            'bg-accent/20! border-accent/50!': currentStep === idx,
+            'opacity-60': currentStep !== idx
           }"
-          @click="doStep(i)"
+          @click="doStep(idx)"
         >
-          {{ s.action }}
+          {{ steps[idx]!.action }}
         </button>
       </div>
     </div>
@@ -132,7 +135,7 @@
           文
         </p>
       </div>
-      <button class="btn text-xs" @click="handleClaim">领取奖励</button>
+      <button class="btn text-xs w-full" @click="handleClaim">领取奖励</button>
     </div>
   </div>
 </template>
@@ -140,6 +143,17 @@
 <script setup lang="ts">
   import { ref, computed, onUnmounted } from 'vue'
   import { ChefHat, Timer, Check, Cookie } from 'lucide-vue-next'
+  import {
+    sfxGameStart,
+    sfxRewardClaim,
+    sfxCountdownTick,
+    sfxCountdownFinal,
+    sfxDoughStep,
+    sfxDumplingDone,
+    sfxMiniFail,
+    sfxRankFirst,
+    sfxRankSecond
+  } from '@/composables/useAudio'
 
   const emit = defineEmits<{ complete: [prize: number] }>()
 
@@ -158,22 +172,58 @@
   const animating = ref(false)
   const showError = ref(false)
   const showComplete = ref(false)
+  const buttonOrder = ref([0, 1, 2])
+  const showShuffle = ref(false)
 
   let countdownTimer: ReturnType<typeof setInterval> | null = null
   let animTimeout: ReturnType<typeof setTimeout> | null = null
   let errorTimeout: ReturnType<typeof setTimeout> | null = null
   let completeTimeout: ReturnType<typeof setTimeout> | null = null
+  let shuffleTimeout: ReturnType<typeof setTimeout> | null = null
 
   const prize = computed(() => Math.min(1000, dumplingCount.value * 100))
 
+  /** 打乱按钮顺序：随机交换1-3个位置 */
+  const shuffleButtons = () => {
+    const order = [...buttonOrder.value]
+    const swapCount = 1 + Math.floor(Math.random() * 3) // 1-3次交换
+    for (let s = 0; s < swapCount; s++) {
+      const i = Math.floor(Math.random() * 3)
+      let j = Math.floor(Math.random() * 3)
+      while (j === i) j = Math.floor(Math.random() * 3)
+      const tmp = order[i]!
+      order[i] = order[j]!
+      order[j] = tmp
+    }
+    // 确保确实变了
+    if (order.every((v, idx) => v === buttonOrder.value[idx])) {
+      // 如果没变就强制交换前两个
+      const tmp = order[0]!
+      order[0] = order[1]!
+      order[1] = tmp
+    }
+    buttonOrder.value = order
+    sfxCountdownFinal()
+    showShuffle.value = true
+    if (shuffleTimeout) clearTimeout(shuffleTimeout)
+    shuffleTimeout = setTimeout(() => {
+      showShuffle.value = false
+    }, 1200)
+  }
+
   const startGame = () => {
+    sfxGameStart()
     phase.value = 'making'
     timeLeft.value = 25
     dumplingCount.value = 0
     currentStep.value = 0
+    buttonOrder.value = [0, 1, 2]
+    showShuffle.value = false
 
     countdownTimer = setInterval(() => {
       timeLeft.value--
+      if (timeLeft.value <= 5 && timeLeft.value > 0) sfxCountdownFinal()
+      else if (timeLeft.value > 5) sfxCountdownTick()
       if (timeLeft.value <= 0) {
         endGame()
       }
@@ -185,6 +235,7 @@
 
     if (stepIdx !== currentStep.value) {
       // 错误步骤
+      sfxMiniFail()
       showError.value = true
       currentStep.value = 0
       if (errorTimeout) clearTimeout(errorTimeout)
@@ -203,14 +254,20 @@
 
     if (currentStep.value === 2) {
       // 完成一个饺子
+      sfxDumplingDone()
       dumplingCount.value++
       showComplete.value = true
       if (completeTimeout) clearTimeout(completeTimeout)
       completeTimeout = setTimeout(() => {
         showComplete.value = false
         currentStep.value = 0
+        // 包到3个及以上后，每完成一个有概率打乱按钮顺序
+        if (dumplingCount.value >= 3) {
+          shuffleButtons()
+        }
       }, 500)
     } else {
+      sfxDoughStep()
       currentStep.value++
     }
   }
@@ -219,9 +276,14 @@
     if (countdownTimer) clearInterval(countdownTimer)
     countdownTimer = null
     phase.value = 'finished'
+
+    // 结算音效
+    if (dumplingCount.value >= 8) sfxRankFirst()
+    else if (dumplingCount.value >= 5) sfxRankSecond()
   }
 
   const handleClaim = () => {
+    sfxRewardClaim()
     emit('complete', prize.value)
   }
 
@@ -230,6 +292,7 @@
     if (animTimeout) clearTimeout(animTimeout)
     if (errorTimeout) clearTimeout(errorTimeout)
     if (completeTimeout) clearTimeout(completeTimeout)
+    if (shuffleTimeout) clearTimeout(shuffleTimeout)
   })
 </script>
 
@@ -349,6 +412,20 @@
     }
     80% {
       transform: translateX(2px);
+    }
+  }
+
+  .shuffle-flash {
+    animation: shuffle-flash 0.6s ease-in-out infinite;
+  }
+
+  @keyframes shuffle-flash {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
     }
   }
 </style>

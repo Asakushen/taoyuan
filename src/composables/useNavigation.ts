@@ -107,7 +107,7 @@ export const navigateToPanel = (panelKey: PanelKey) => {
 
   sfxClick()
   startBgm()
-  router.push({ name: panelKey })
+  void router.push({ name: panelKey })
 
   // UI 面板（无地点）暂停时钟，游戏面板恢复
   const { pauseClock, resumeClock } = useGameClock()

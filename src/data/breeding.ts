@@ -1131,6 +1131,116 @@ export const HYBRID_DEFS: HybridDef[] = [
     discoveryText: '韭菜与芥菜的辛辣同盟，开胃下饭。'
   },
   {
+    id: 'jade_bamboo_corn',
+    name: '玉笋棒',
+    parentCropA: 'bamboo_shoot',
+    parentCropB: 'corn',
+    minSweetness: 30,
+    minYield: 35,
+    resultCropId: 'jade_bamboo_corn',
+    baseGenetics: { sweetness: 40, yield: 45, resistance: 35 },
+    discoveryText: '春笋的鲜脆与玉米的甜糯交融，翠玉般的穗棒清甜可口。'
+  },
+  {
+    id: 'ginger_jade_green',
+    name: '姜翠菜',
+    parentCropA: 'cabbage',
+    parentCropB: 'ginger',
+    minSweetness: 25,
+    minYield: 30,
+    resultCropId: 'ginger_jade_green',
+    baseGenetics: { sweetness: 35, yield: 40, resistance: 35 },
+    discoveryText: '青菜的清爽与生姜的暖辣相遇，暖胃又解腻。'
+  },
+  {
+    id: 'spicy_sesame',
+    name: '麻辣仁',
+    parentCropA: 'chili',
+    parentCropB: 'peanut',
+    minSweetness: 30,
+    minYield: 30,
+    resultCropId: 'spicy_sesame',
+    baseGenetics: { sweetness: 35, yield: 40, resistance: 40 },
+    discoveryText: '辣椒的火热与花生的酥脆碰撞，麻辣酥香一口入魂。'
+  },
+  {
+    id: 'honey_gourd',
+    name: '蜜丝瓜',
+    parentCropA: 'loofah',
+    parentCropB: 'peanut',
+    minSweetness: 30,
+    minYield: 35,
+    resultCropId: 'honey_gourd',
+    baseGenetics: { sweetness: 40, yield: 45, resistance: 30 },
+    discoveryText: '丝瓜的柔滑与花生的醇甜相逢，蜜意绵绵。'
+  },
+  {
+    id: 'golden_peanut_yam',
+    name: '花薯',
+    parentCropA: 'peanut',
+    parentCropB: 'sweet_potato',
+    minSweetness: 30,
+    minYield: 35,
+    resultCropId: 'golden_peanut_yam',
+    baseGenetics: { sweetness: 40, yield: 45, resistance: 35 },
+    discoveryText: '花生的酥香与红薯的绵密交融，香甜可口。'
+  },
+  {
+    id: 'spice_jujube',
+    name: '辛枣',
+    parentCropA: 'jujube',
+    parentCropB: 'ginger',
+    minSweetness: 30,
+    minYield: 30,
+    resultCropId: 'spice_jujube',
+    baseGenetics: { sweetness: 40, yield: 35, resistance: 40 },
+    discoveryText: '红枣的甜蜜与大蒜的辛辣奇异融合，回味无穷。'
+  },
+  {
+    id: 'bean_eggplant',
+    name: '豆茄',
+    parentCropA: 'green_bean',
+    parentCropB: 'eggplant',
+    minSweetness: 25,
+    minYield: 30,
+    resultCropId: 'bean_eggplant',
+    baseGenetics: { sweetness: 35, yield: 40, resistance: 35 },
+    discoveryText: '豆角的鲜嫩与茄子的绵软合一，田间双宝。'
+  },
+  {
+    id: 'chrysanthemum_persimmon',
+    name: '菊柿',
+    parentCropA: 'persimmon',
+    parentCropB: 'chrysanthemum',
+    minSweetness: 35,
+    minYield: 30,
+    resultCropId: 'chrysanthemum_persimmon',
+    baseGenetics: { sweetness: 45, yield: 40, resistance: 35 },
+    discoveryText: '柿子的甘甜与菊花的清香交融，秋日极品。'
+  },
+  {
+    id: 'purple_yam',
+    name: '紫玉薯',
+    parentCropA: 'yam',
+    parentCropB: 'eggplant',
+    minSweetness: 30,
+    minYield: 35,
+    resultCropId: 'purple_yam',
+    baseGenetics: { sweetness: 35, yield: 45, resistance: 40 },
+    discoveryText: '山药的润滑与茄子的紫韵交融，通体泛紫光泽。'
+  },
+  {
+    id: 'snow_lotus_pearl',
+    name: '雪莲子',
+    parentCropA: 'lotus_seed',
+    parentCropB: 'snow_lotus',
+    minSweetness: 35,
+    minYield: 30,
+    resultCropId: 'snow_lotus_pearl',
+    baseGenetics: { sweetness: 45, yield: 40, resistance: 45 },
+    discoveryText: '莲子的清心与雪莲的纯净合一，寒冬明珠。'
+  },
+  {
     id: 'melon_tea_fruit',
     name: '蜜茶果',
     parentCropA: 'golden_melon',
@@ -1240,11 +1350,452 @@ export const HYBRID_DEFS: HybridDef[] = [
     baseGenetics: { sweetness: 85, yield: 80, resistance: 70 },
     discoveryText: '凤凰椒的烈焰与月光稻的银辉碰撞，果实圆润如龙珠，至宝！'
   },
+  // --- 新增二代杂交 ---
+  {
+    id: 'emerald_jade_tea',
+    name: '翠玉茗',
+    parentCropA: 'emerald_radish',
+    parentCropB: 'tea',
+    minSweetness: 55,
+    minYield: 50,
+    resultCropId: 'emerald_jade_tea',
+    baseGenetics: { sweetness: 65, yield: 60, resistance: 55 },
+    discoveryText: '翡翠萝卜的碧绿与茶叶的清雅相融，翠色茗香沁人心脾。'
+  },
+  {
+    id: 'pearl_osmanthus',
+    name: '桂珠谷',
+    parentCropA: 'pearl_grain',
+    parentCropB: 'osmanthus',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'pearl_osmanthus',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 55 },
+    discoveryText: '珍珠谷的晶莹与桂花的芬芳合一，颗颗桂香满溢。'
+  },
+  {
+    id: 'ruby_fire',
+    name: '红宝椒',
+    parentCropA: 'ruby_bean',
+    parentCropB: 'chili',
+    minSweetness: 55,
+    minYield: 50,
+    resultCropId: 'ruby_fire',
+    baseGenetics: { sweetness: 65, yield: 60, resistance: 55 },
+    discoveryText: '红宝豆的红润与辣椒的火热碰撞，如烈焰红宝石。'
+  },
+  {
+    id: 'golden_corn_king',
+    name: '金穗王',
+    parentCropA: 'golden_corn',
+    parentCropB: 'rice',
+    minSweetness: 55,
+    minYield: 60,
+    resultCropId: 'golden_corn_king',
+    baseGenetics: { sweetness: 65, yield: 70, resistance: 55 },
+    discoveryText: '金穗玉米的丰硕与稻谷的质朴融合，五谷之王！'
+  },
+  {
+    id: 'jade_melon_tea',
+    name: '碧茗瓜',
+    parentCropA: 'jade_melon',
+    parentCropB: 'tea',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'jade_melon_tea',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 55 },
+    discoveryText: '碧玉瓜的翠绿与茶叶的清香交融，清凉消暑。'
+  },
+  {
+    id: 'twin_golden_bean',
+    name: '金双豆',
+    parentCropA: 'twin_bean',
+    parentCropB: 'peanut',
+    minSweetness: 50,
+    minYield: 50,
+    resultCropId: 'twin_golden_bean',
+    baseGenetics: { sweetness: 60, yield: 60, resistance: 50 },
+    discoveryText: '双子豆的双生与花生的饱满结合，金灿灿成双成对。'
+  },
+  {
+    id: 'peach_rice',
+    name: '桃花饭',
+    parentCropA: 'peach_blossom_tea',
+    parentCropB: 'rice',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'peach_rice',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 55 },
+    discoveryText: '桃花茶的芬芳渗入稻谷，煮出的米饭泛着桃粉。'
+  },
+  {
+    id: 'jade_shoot_ginger',
+    name: '玉笋姜',
+    parentCropA: 'jade_shoot',
+    parentCropB: 'ginger',
+    minSweetness: 55,
+    minYield: 50,
+    resultCropId: 'jade_shoot_ginger',
+    baseGenetics: { sweetness: 65, yield: 60, resistance: 55 },
+    discoveryText: '玉竹芽的鲜嫩与生姜的暖辣碰撞，驱寒暖身。'
+  },
+  {
+    id: 'golden_tuber_lotus',
+    name: '金莲薯',
+    parentCropA: 'golden_tuber',
+    parentCropB: 'lotus_root',
+    minSweetness: 55,
+    minYield: 55,
+    resultCropId: 'golden_tuber_lotus',
+    baseGenetics: { sweetness: 65, yield: 65, resistance: 55 },
+    discoveryText: '金油薯的金黄与莲藕的清润交融，甜糯清香。'
+  },
+  {
+    id: 'frost_chrysanthemum',
+    name: '霜菊',
+    parentCropA: 'frost_garlic',
+    parentCropB: 'chrysanthemum',
+    minSweetness: 65,
+    minYield: 50,
+    resultCropId: 'frost_chrysanthemum',
+    baseGenetics: { sweetness: 75, yield: 60, resistance: 70 },
+    discoveryText: '霜雪蒜的寒气与菊花的傲骨合一，霜中怒放。'
+  },
+  {
+    id: 'phoenix_sesame',
+    name: '凤仁',
+    parentCropA: 'phoenix_pepper',
+    parentCropB: 'sesame',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'phoenix_sesame',
+    baseGenetics: { sweetness: 65, yield: 65, resistance: 60 },
+    discoveryText: '凤凰椒的烈焰与芝麻的醇香熔于一体，麻辣仙果。'
+  },
+  {
+    id: 'moonlight_lotus',
+    name: '月莲',
+    parentCropA: 'moonlight_rice',
+    parentCropB: 'lotus_seed',
+    minSweetness: 65,
+    minYield: 55,
+    resultCropId: 'moonlight_lotus',
+    baseGenetics: { sweetness: 75, yield: 65, resistance: 60 },
+    discoveryText: '月光稻的银辉与莲子的清心交融，月下白莲悄然开放。'
+  },
+  {
+    id: 'jade_snow',
+    name: '翠雪芽',
+    parentCropA: 'jade_tea',
+    parentCropB: 'snow_lotus',
+    minSweetness: 65,
+    minYield: 50,
+    resultCropId: 'jade_snow',
+    baseGenetics: { sweetness: 75, yield: 60, resistance: 70 },
+    discoveryText: '翡翠茶的碧绿遇上雪莲的纯白，冰清玉洁。'
+  },
+  {
+    id: 'golden_pumpkin',
+    name: '金瓜王',
+    parentCropA: 'golden_melon',
+    parentCropB: 'pumpkin',
+    minSweetness: 65,
+    minYield: 60,
+    resultCropId: 'golden_pumpkin',
+    baseGenetics: { sweetness: 75, yield: 70, resistance: 60 },
+    discoveryText: '金蜜瓜的甘甜与南瓜的醇厚碰撞，金色大瓜威风凛凛。'
+  },
+  {
+    id: 'phoenix_corn',
+    name: '火穗',
+    parentCropA: 'phoenix_pepper',
+    parentCropB: 'corn',
+    minSweetness: 55,
+    minYield: 60,
+    resultCropId: 'phoenix_corn',
+    baseGenetics: { sweetness: 65, yield: 70, resistance: 55 },
+    discoveryText: '凤凰椒的烈焰点燃玉米穗，火红穗粒甜中带辣。'
+  },
+  {
+    id: 'moonlight_yam',
+    name: '月光薯',
+    parentCropA: 'moonlight_rice',
+    parentCropB: 'sweet_potato',
+    minSweetness: 60,
+    minYield: 60,
+    resultCropId: 'moonlight_yam',
+    baseGenetics: { sweetness: 70, yield: 70, resistance: 55 },
+    discoveryText: '月光稻的银辉照耀红薯，通体泛着月白柔光。'
+  },
+  {
+    id: 'jade_peanut',
+    name: '翠仁果',
+    parentCropA: 'jade_tea',
+    parentCropB: 'peanut',
+    minSweetness: 55,
+    minYield: 50,
+    resultCropId: 'jade_peanut',
+    baseGenetics: { sweetness: 65, yield: 60, resistance: 55 },
+    discoveryText: '翡翠茶的碧绿渗入花生，壳内仁翠如玉。'
+  },
+  {
+    id: 'frost_radish',
+    name: '霜玉萝卜',
+    parentCropA: 'frost_garlic',
+    parentCropB: 'radish',
+    minSweetness: 60,
+    minYield: 50,
+    resultCropId: 'frost_radish',
+    baseGenetics: { sweetness: 70, yield: 60, resistance: 65 },
+    discoveryText: '霜雪蒜的冰霜渗入萝卜，根茎晶莹如冰玉。'
+  },
+  {
+    id: 'golden_jujube',
+    name: '金蜜枣',
+    parentCropA: 'golden_melon',
+    parentCropB: 'jujube',
+    minSweetness: 70,
+    minYield: 55,
+    resultCropId: 'golden_jujube',
+    baseGenetics: { sweetness: 80, yield: 65, resistance: 60 },
+    discoveryText: '金蜜瓜的甘甜注入红枣，颗颗蜜汁饱满。'
+  },
+  {
+    id: 'phoenix_eggplant',
+    name: '火焰茄',
+    parentCropA: 'phoenix_pepper',
+    parentCropB: 'eggplant',
+    minSweetness: 55,
+    minYield: 55,
+    resultCropId: 'phoenix_eggplant',
+    baseGenetics: { sweetness: 60, yield: 65, resistance: 60 },
+    discoveryText: '凤凰椒的烈焰与茄子的紫韵碰撞，紫皮之下火辣鲜美。'
+  },
+  {
+    id: 'moonlight_spinach',
+    name: '银叶菜',
+    parentCropA: 'moonlight_rice',
+    parentCropB: 'spinach',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'moonlight_spinach',
+    baseGenetics: { sweetness: 65, yield: 65, resistance: 55 },
+    discoveryText: '月光稻的银辉浸润菠菜叶脉，叶片泛着银光。'
+  },
+  {
+    id: 'jade_loofah',
+    name: '翠丝瓜',
+    parentCropA: 'jade_tea',
+    parentCropB: 'loofah',
+    minSweetness: 55,
+    minYield: 55,
+    resultCropId: 'jade_loofah',
+    baseGenetics: { sweetness: 65, yield: 65, resistance: 50 },
+    discoveryText: '翡翠茶的碧色融入丝瓜，瓜身翠绿如玉。'
+  },
+  {
+    id: 'frost_winter_wheat',
+    name: '霜麦',
+    parentCropA: 'frost_garlic',
+    parentCropB: 'winter_wheat',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'frost_winter_wheat',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 70 },
+    discoveryText: '霜雪蒜的寒冰渗入冬小麦，麦穗挂满霜花。'
+  },
+  {
+    id: 'golden_sesame',
+    name: '金芝',
+    parentCropA: 'golden_melon',
+    parentCropB: 'sesame',
+    minSweetness: 65,
+    minYield: 55,
+    resultCropId: 'golden_sesame',
+    baseGenetics: { sweetness: 75, yield: 65, resistance: 55 },
+    discoveryText: '金蜜瓜的金色光辉注入芝麻，粒粒金灿如砂金。'
+  },
+  {
+    id: 'phoenix_garlic',
+    name: '火蒜',
+    parentCropA: 'phoenix_pepper',
+    parentCropB: 'garlic',
+    minSweetness: 60,
+    minYield: 50,
+    resultCropId: 'phoenix_garlic',
+    baseGenetics: { sweetness: 65, yield: 60, resistance: 65 },
+    discoveryText: '凤凰椒的烈焰灼烧大蒜，辛辣之上更添火意。'
+  },
+  {
+    id: 'moonlight_cabbage',
+    name: '月白菜',
+    parentCropA: 'moonlight_rice',
+    parentCropB: 'napa_cabbage',
+    minSweetness: 60,
+    minYield: 60,
+    resultCropId: 'moonlight_cabbage',
+    baseGenetics: { sweetness: 70, yield: 70, resistance: 55 },
+    discoveryText: '月光稻的银辉洒落白菜叶，月白如绢清甜无比。'
+  },
+  {
+    id: 'jade_persimmon',
+    name: '翠柿',
+    parentCropA: 'jade_tea',
+    parentCropB: 'persimmon',
+    minSweetness: 60,
+    minYield: 50,
+    resultCropId: 'jade_persimmon',
+    baseGenetics: { sweetness: 70, yield: 60, resistance: 55 },
+    discoveryText: '翡翠茶的碧绿渗入柿子，果肉翡翠色泽甘甜馥郁。'
+  },
+  {
+    id: 'frost_bamboo',
+    name: '冰笋',
+    parentCropA: 'frost_garlic',
+    parentCropB: 'bamboo_shoot',
+    minSweetness: 60,
+    minYield: 50,
+    resultCropId: 'frost_bamboo',
+    baseGenetics: { sweetness: 70, yield: 60, resistance: 65 },
+    discoveryText: '霜雪蒜的冰霜封住春笋鲜味，冰镇之鲜。'
+  },
+  {
+    id: 'golden_watermelon',
+    name: '帝瓜',
+    parentCropA: 'golden_melon',
+    parentCropB: 'watermelon',
+    minSweetness: 70,
+    minYield: 60,
+    resultCropId: 'golden_watermelon',
+    baseGenetics: { sweetness: 80, yield: 70, resistance: 60 },
+    discoveryText: '金蜜瓜回归西瓜之源，甜度登峰造极，瓜中帝王。'
+  },
+  {
+    id: 'phoenix_peach',
+    name: '火桃',
+    parentCropA: 'phoenix_pepper',
+    parentCropB: 'peach',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'phoenix_peach',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 60 },
+    discoveryText: '凤凰椒的火焰亲吻蜜桃，红如烈焰甜中带辛。'
+  },
+  {
+    id: 'moonlight_corn',
+    name: '月穗',
+    parentCropA: 'moonlight_rice',
+    parentCropB: 'corn',
+    minSweetness: 60,
+    minYield: 65,
+    resultCropId: 'moonlight_corn',
+    baseGenetics: { sweetness: 70, yield: 75, resistance: 55 },
+    discoveryText: '月光稻的银辉照耀玉米穗，月下银穗丰收满仓。'
+  },
+  {
+    id: 'jade_chive',
+    name: '翠韭',
+    parentCropA: 'jade_tea',
+    parentCropB: 'chives',
+    minSweetness: 55,
+    minYield: 55,
+    resultCropId: 'jade_chive',
+    baseGenetics: { sweetness: 65, yield: 65, resistance: 55 },
+    discoveryText: '翡翠茶的碧色浸入韭菜，翠色欲滴辛香四溢。'
+  },
+  {
+    id: 'frost_pumpkin',
+    name: '霜南瓜',
+    parentCropA: 'frost_garlic',
+    parentCropB: 'pumpkin',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'frost_pumpkin',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 65 },
+    discoveryText: '霜雪蒜的寒气凝于南瓜之上，冰镇南瓜甜如蜜。'
+  },
+  {
+    id: 'emerald_rice',
+    name: '翠粒稻',
+    parentCropA: 'emerald_radish',
+    parentCropB: 'rice',
+    minSweetness: 50,
+    minYield: 55,
+    resultCropId: 'emerald_rice',
+    baseGenetics: { sweetness: 60, yield: 65, resistance: 50 },
+    discoveryText: '翡翠萝卜的碧绿渗入稻谷，翠色米粒清香扑鼻。'
+  },
+  {
+    id: 'pearl_peach',
+    name: '珠桃',
+    parentCropA: 'pearl_grain',
+    parentCropB: 'peach',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'pearl_peach',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 55 },
+    discoveryText: '珍珠谷的晶莹与蜜桃的红润交融，果实圆润如明珠。'
+  },
+  {
+    id: 'golden_lotus',
+    name: '金莲',
+    parentCropA: 'golden_melon',
+    parentCropB: 'lotus_seed',
+    minSweetness: 65,
+    minYield: 55,
+    resultCropId: 'golden_lotus',
+    baseGenetics: { sweetness: 75, yield: 65, resistance: 60 },
+    discoveryText: '金蜜瓜的金辉照耀莲子，金莲绽放熠熠生辉。'
+  },
+  {
+    id: 'phoenix_broad_bean',
+    name: '凤豆',
+    parentCropA: 'phoenix_pepper',
+    parentCropB: 'broad_bean',
+    minSweetness: 55,
+    minYield: 55,
+    resultCropId: 'phoenix_broad_bean',
+    baseGenetics: { sweetness: 60, yield: 65, resistance: 60 },
+    discoveryText: '凤凰椒的烈焰烤炙蚕豆，火中淬炼的豆中珍品。'
+  },
+  {
+    id: 'moonlight_tea',
+    name: '月芽茶',
+    parentCropA: 'moonlight_rice',
+    parentCropB: 'tea',
+    minSweetness: 65,
+    minYield: 55,
+    resultCropId: 'moonlight_tea',
+    baseGenetics: { sweetness: 75, yield: 65, resistance: 60 },
+    discoveryText: '月光稻的银辉与茶叶的清雅交融，月芽形茶叶清香悠长。'
+  },
+  {
+    id: 'jade_rapeseed',
+    name: '翠金菜',
+    parentCropA: 'jade_tea',
+    parentCropB: 'rapeseed',
+    minSweetness: 55,
+    minYield: 55,
+    resultCropId: 'jade_rapeseed',
+    baseGenetics: { sweetness: 65, yield: 65, resistance: 55 },
+    discoveryText: '翡翠茶的碧绿与油菜的金黄交融，翠金相映。'
+  },
+  {
+    id: 'frost_yam',
+    name: '霜山药',
+    parentCropA: 'frost_garlic',
+    parentCropB: 'yam',
+    minSweetness: 60,
+    minYield: 55,
+    resultCropId: 'frost_yam',
+    baseGenetics: { sweetness: 70, yield: 65, resistance: 65 },
+    discoveryText: '霜雪蒜的寒意渗入山药，冰润滑腻入口即化。'
+  },
   // === 三代杂交作物 ===,
   {
     id: 'wind_melon',
     name: '风瓜',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'jade_tea',
     minSweetness: 40,
     minYield: 40,
@@ -1255,7 +1806,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'cloud_bean',
     name: '云豆',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'phoenix_pepper',
     minSweetness: 40,
     minYield: 40,
@@ -1266,7 +1817,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rain_rice',
     name: '雨稻',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'moonlight_rice',
     minSweetness: 41,
     minYield: 41,
@@ -1277,7 +1828,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'hoar_tuber',
     name: '霜薯',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'frost_garlic',
     minSweetness: 41,
     minYield: 41,
@@ -1288,7 +1839,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'thunder_green',
     name: '雷菜',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'emerald_radish',
     minSweetness: 41,
     minYield: 41,
@@ -1299,7 +1850,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rainbow_fruit',
     name: '虹果',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'jade_shoot',
     minSweetness: 42,
     minYield: 42,
@@ -1310,7 +1861,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dew_bloom',
     name: '露花',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'golden_tuber',
     minSweetness: 42,
     minYield: 42,
@@ -1321,7 +1872,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dawn_tea',
     name: '晨茶',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'peach_blossom_tea',
     minSweetness: 42,
     minYield: 42,
@@ -1332,7 +1883,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dusk_shoot',
     name: '暮笋',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'ruby_bean',
     minSweetness: 42,
     minYield: 42,
@@ -1343,7 +1894,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'star_lotus',
     name: '星莲',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'twin_bean',
     minSweetness: 43,
     minYield: 43,
@@ -1354,7 +1905,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'wind_splendor_wheat',
     name: '风华麦',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'jade_melon',
     minSweetness: 43,
     minYield: 43,
@@ -1365,7 +1916,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'cloud_splendor_sesame',
     name: '云华芝',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'pearl_grain',
     minSweetness: 43,
     minYield: 43,
@@ -1376,7 +1927,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rain_splendor_pepper',
     name: '雨华椒',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'golden_corn',
     minSweetness: 44,
     minYield: 44,
@@ -1387,7 +1938,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'hoar_splendor_root',
     name: '霜华参',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'lotus_tea',
     minSweetness: 44,
     minYield: 44,
@@ -1398,7 +1949,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'thunder_splendor_sprout',
     name: '雷华芽',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'purple_bamboo',
     minSweetness: 44,
     minYield: 44,
@@ -1409,7 +1960,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rainbow_splendor_vine',
     name: '虹华藤',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'honey_peach_melon',
     minSweetness: 45,
     minYield: 45,
@@ -1420,7 +1971,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dew_splendor_bud',
     name: '露华蕾',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'fire_bean',
     minSweetness: 45,
     minYield: 45,
@@ -1431,7 +1982,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dawn_splendor_orchid',
     name: '晨华兰',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'silk_bean',
     minSweetness: 45,
     minYield: 45,
@@ -1442,7 +1993,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dusk_splendor_gourd',
     name: '暮华葫',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'double_oil_seed',
     minSweetness: 46,
     minYield: 46,
@@ -1453,7 +2004,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'star_splendor_herb',
     name: '星华草',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'lotus_potato',
     minSweetness: 46,
     minYield: 46,
@@ -1464,7 +2015,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'wind_jade3_chestnut',
     name: '风翠栗',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'jade_pumpkin',
     minSweetness: 46,
     minYield: 46,
@@ -1475,7 +2026,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'cloud_jade3_apricot',
     name: '云翠杏',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'crystal_yam',
     minSweetness: 46,
     minYield: 46,
@@ -1486,7 +2037,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rain_jade3_pear',
     name: '雨翠梨',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'osmanthus_tea',
     minSweetness: 47,
     minYield: 47,
@@ -1497,7 +2048,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'hoar_jade3_berry',
     name: '霜翠莓',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'mountain_bamboo',
     minSweetness: 47,
     minYield: 47,
@@ -1508,7 +2059,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'thunder_jade3_peach_t',
     name: '雷翠桃',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'golden_fruit',
     minSweetness: 47,
     minYield: 47,
@@ -1519,7 +2070,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rainbow_jade3_melon',
     name: '虹翠瓜',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'nut_potato',
     minSweetness: 48,
     minYield: 48,
@@ -1530,7 +2081,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dew_jade3_bean',
     name: '露翠豆',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'autumn_bean',
     minSweetness: 48,
     minYield: 48,
@@ -1541,7 +2092,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dawn_jade3_rice',
     name: '晨翠稻',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'jujube_blossom',
     minSweetness: 48,
     minYield: 48,
@@ -1552,7 +2103,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dusk_jade3_tuber',
     name: '暮翠薯',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'ginger_blossom',
     minSweetness: 49,
     minYield: 49,
@@ -1563,7 +2114,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'star_jade3_green',
     name: '星翠菜',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'fairy_chrysanthemum',
     minSweetness: 49,
     minYield: 49,
@@ -1574,7 +2125,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'wind_aura_fruit',
     name: '风灵果',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'imperial_cabbage',
     minSweetness: 49,
     minYield: 49,
@@ -1585,7 +2136,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'cloud_aura_bloom',
     name: '云灵花',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'spicy_radish',
     minSweetness: 49,
     minYield: 49,
@@ -1596,7 +2147,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rain_aura_tea',
     name: '雨灵茶',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'snow_tea',
     minSweetness: 50,
     minYield: 50,
@@ -1607,7 +2158,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'hoar_aura_shoot',
     name: '霜灵笋',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'spring_chive',
     minSweetness: 50,
     minYield: 50,
@@ -1618,7 +2169,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'thunder_aura_lotus',
     name: '雷灵莲',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'wheat_potato',
     minSweetness: 50,
     minYield: 50,
@@ -1629,7 +2180,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rainbow_aura_wheat',
     name: '虹灵麦',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'spring_green_peach',
     minSweetness: 51,
     minYield: 51,
@@ -1640,7 +2191,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dew_aura_sesame',
     name: '露灵芝',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'mustard_bean',
     minSweetness: 51,
     minYield: 51,
@@ -1651,7 +2202,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dawn_aura_pepper',
     name: '晨灵椒',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'frost_rapeseed',
     minSweetness: 51,
     minYield: 51,
@@ -1662,7 +2213,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dusk_aura_root',
     name: '暮灵参',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'purple_melon',
     minSweetness: 52,
     minYield: 52,
@@ -1673,7 +2224,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'star_aura_sprout',
     name: '星灵芽',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'golden_rice',
     minSweetness: 52,
     minYield: 52,
@@ -1684,7 +2235,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'wind_glow_vine',
     name: '风光藤',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'double_lotus',
     minSweetness: 52,
     minYield: 52,
@@ -1695,7 +2246,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'cloud_glow_bud',
     name: '云光蕾',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'fire_sesame',
     minSweetness: 53,
     minYield: 53,
@@ -1706,7 +2257,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rain_glow_orchid',
     name: '雨光兰',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'silk_corn',
     minSweetness: 53,
     minYield: 53,
@@ -1717,7 +2268,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'hoar_glow_gourd',
     name: '霜光葫',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'purple_lotus',
     minSweetness: 53,
     minYield: 53,
@@ -1728,7 +2279,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'thunder_glow_herb',
     name: '雷光草',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'chrysanthemum_melon',
     minSweetness: 53,
     minYield: 53,
@@ -1739,7 +2290,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rainbow_glow_chestnut',
     name: '虹光栗',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'pumpkin_rice',
     minSweetness: 54,
     minYield: 54,
@@ -1750,7 +2301,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dew_glow_apricot',
     name: '露光杏',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'mountain_lotus',
     minSweetness: 54,
     minYield: 54,
@@ -1761,7 +2312,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dawn_glow_pear',
     name: '晨光梨',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'double_nut',
     minSweetness: 54,
     minYield: 54,
@@ -1772,7 +2323,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'dusk_glow_berry',
     name: '暮光莓',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'sweet_gourd',
     minSweetness: 55,
     minYield: 55,
@@ -1783,7 +2334,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'star_glow_peach_t',
     name: '星光桃',
-    parentCropA: 'golden_melon',
+    parentCropA: 'melon_tea_fruit',
     parentCropB: 'purple_persimmon',
     minSweetness: 55,
     minYield: 55,
@@ -1795,7 +2346,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'moon_hua_melon',
     name: '月华瓜',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'golden_melon',
     minSweetness: 50,
     minYield: 50,
@@ -1806,7 +2357,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sun_hua_bean',
     name: '日华豆',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'jade_tea',
     minSweetness: 50,
     minYield: 50,
@@ -1817,7 +2368,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sky_hua_rice',
     name: '天华稻',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'phoenix_pepper',
     minSweetness: 51,
     minYield: 51,
@@ -1828,7 +2379,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'gem_hua_tuber',
     name: '玉华薯',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'moonlight_rice',
     minSweetness: 51,
     minYield: 51,
@@ -1839,7 +2390,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'prism_hua_green',
     name: '琉华菜',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'frost_garlic',
     minSweetness: 51,
     minYield: 51,
@@ -1850,7 +2401,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'silver_hua_fruit',
     name: '银华果',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'emerald_radish',
     minSweetness: 52,
     minYield: 52,
@@ -1861,7 +2412,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'verdant_hua_bloom',
     name: '翠华花',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'jade_shoot',
     minSweetness: 52,
     minYield: 52,
@@ -1872,7 +2423,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'violet_hua_tea',
     name: '紫华茶',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'golden_tuber',
     minSweetness: 52,
     minYield: 52,
@@ -1883,7 +2434,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'scarlet_hua_shoot',
     name: '丹华笋',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'peach_blossom_tea',
     minSweetness: 52,
     minYield: 52,
@@ -1894,7 +2445,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'azure_hua_lotus',
     name: '青华莲',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'ruby_bean',
     minSweetness: 53,
     minYield: 53,
@@ -1905,7 +2456,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'moon_shine_wheat',
     name: '月辉麦',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'twin_bean',
     minSweetness: 53,
     minYield: 53,
@@ -1916,7 +2467,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sun_shine_sesame',
     name: '日辉芝',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'jade_melon',
     minSweetness: 53,
     minYield: 53,
@@ -1927,7 +2478,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sky_shine_pepper',
     name: '天辉椒',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'pearl_grain',
     minSweetness: 54,
     minYield: 54,
@@ -1938,7 +2489,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'gem_shine_root',
     name: '玉辉参',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'golden_corn',
     minSweetness: 54,
     minYield: 54,
@@ -1949,7 +2500,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'prism_shine_sprout',
     name: '琉辉芽',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'lotus_tea',
     minSweetness: 54,
     minYield: 54,
@@ -1960,7 +2511,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'silver_shine_vine',
     name: '银辉藤',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'purple_bamboo',
     minSweetness: 55,
     minYield: 55,
@@ -1971,7 +2522,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'verdant_shine_bud',
     name: '翠辉蕾',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'honey_peach_melon',
     minSweetness: 55,
     minYield: 55,
@@ -1982,7 +2533,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'violet_shine_orchid',
     name: '紫辉兰',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'fire_bean',
     minSweetness: 55,
     minYield: 55,
@@ -1993,7 +2544,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'scarlet_shine_gourd',
     name: '丹辉葫',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'silk_bean',
     minSweetness: 56,
     minYield: 56,
@@ -2004,7 +2555,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'azure_shine_herb',
     name: '青辉草',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'double_oil_seed',
     minSweetness: 56,
     minYield: 56,
@@ -2015,7 +2566,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'moon_fortune_chestnut',
     name: '月瑞栗',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'lotus_potato',
     minSweetness: 56,
     minYield: 56,
@@ -2026,7 +2577,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sun_fortune_apricot',
     name: '日瑞杏',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'jade_pumpkin',
     minSweetness: 56,
     minYield: 56,
@@ -2037,7 +2588,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sky_fortune_pear',
     name: '天瑞梨',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'crystal_yam',
     minSweetness: 57,
     minYield: 57,
@@ -2048,7 +2599,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'gem_fortune_berry',
     name: '玉瑞莓',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'osmanthus_tea',
     minSweetness: 57,
     minYield: 57,
@@ -2059,7 +2610,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'prism_fortune_peach_t',
     name: '琉瑞桃',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'mountain_bamboo',
     minSweetness: 57,
     minYield: 57,
@@ -2070,7 +2621,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'silver_fortune_melon',
     name: '银瑞瓜',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'golden_fruit',
     minSweetness: 58,
     minYield: 58,
@@ -2081,7 +2632,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'verdant_fortune_bean',
     name: '翠瑞豆',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'nut_potato',
     minSweetness: 58,
     minYield: 58,
@@ -2092,7 +2643,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'violet_fortune_rice',
     name: '紫瑞稻',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'autumn_bean',
     minSweetness: 58,
     minYield: 58,
@@ -2103,7 +2654,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'scarlet_fortune_tuber',
     name: '丹瑞薯',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'jujube_blossom',
     minSweetness: 59,
     minYield: 59,
@@ -2114,7 +2665,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'azure_fortune_green',
     name: '青瑞菜',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'ginger_blossom',
     minSweetness: 59,
     minYield: 59,
@@ -2125,7 +2676,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'moon_glory_fruit',
     name: '月祥果',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'fairy_chrysanthemum',
     minSweetness: 59,
     minYield: 59,
@@ -2136,7 +2687,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sun_glory_bloom',
     name: '日祥花',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'imperial_cabbage',
     minSweetness: 59,
     minYield: 59,
@@ -2147,7 +2698,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sky_glory_tea',
     name: '天祥茶',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'spicy_radish',
     minSweetness: 60,
     minYield: 60,
@@ -2158,7 +2709,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'gem_glory_shoot',
     name: '玉祥笋',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'snow_tea',
     minSweetness: 60,
     minYield: 60,
@@ -2169,7 +2720,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'prism_glory_lotus',
     name: '琉祥莲',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'spring_chive',
     minSweetness: 60,
     minYield: 60,
@@ -2180,7 +2731,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'silver_glory_wheat',
     name: '银祥麦',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'wheat_potato',
     minSweetness: 61,
     minYield: 61,
@@ -2191,7 +2742,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'verdant_glory_sesame',
     name: '翠祥芝',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'spring_green_peach',
     minSweetness: 61,
     minYield: 61,
@@ -2202,7 +2753,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'violet_glory_pepper',
     name: '紫祥椒',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'mustard_bean',
     minSweetness: 61,
     minYield: 61,
@@ -2213,7 +2764,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'scarlet_glory_root',
     name: '丹祥参',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'frost_rapeseed',
     minSweetness: 62,
     minYield: 62,
@@ -2224,7 +2775,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'azure_glory_sprout',
     name: '青祥芽',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'purple_melon',
     minSweetness: 62,
     minYield: 62,
@@ -2235,7 +2786,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'moon_prism4_vine',
     name: '月彩藤',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'golden_rice',
     minSweetness: 62,
     minYield: 62,
@@ -2246,7 +2797,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sun_prism4_bud',
     name: '日彩蕾',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'double_lotus',
     minSweetness: 63,
     minYield: 63,
@@ -2257,7 +2808,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'sky_prism4_orchid',
     name: '天彩兰',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'fire_sesame',
     minSweetness: 63,
     minYield: 63,
@@ -2268,7 +2819,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'gem_prism4_gourd',
     name: '玉彩葫',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'silk_corn',
     minSweetness: 63,
     minYield: 63,
@@ -2279,7 +2830,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'prism_prism4_herb',
     name: '琉彩草',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'purple_lotus',
     minSweetness: 63,
     minYield: 63,
@@ -2290,7 +2841,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'silver_prism4_chestnut',
     name: '银彩栗',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'chrysanthemum_melon',
     minSweetness: 64,
     minYield: 64,
@@ -2301,7 +2852,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'verdant_prism4_apricot',
     name: '翠彩杏',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'pumpkin_rice',
     minSweetness: 64,
     minYield: 64,
@@ -2312,7 +2863,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'violet_prism4_pear',
     name: '紫彩梨',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'mountain_lotus',
     minSweetness: 64,
     minYield: 64,
@@ -2323,7 +2874,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'scarlet_prism4_berry',
     name: '丹彩莓',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'double_nut',
     minSweetness: 65,
     minYield: 65,
@@ -2334,7 +2885,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'azure_prism4_peach_t',
     name: '青彩桃',
-    parentCropA: 'melon_tea_fruit',
+    parentCropA: 'wind_melon',
     parentCropB: 'sweet_gourd',
     minSweetness: 65,
     minYield: 65,
@@ -2346,7 +2897,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'precious_light5_melon',
     name: '瑶光瓜',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'melon_tea_fruit',
     minSweetness: 60,
     minYield: 60,
@@ -2357,7 +2908,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rare_light5_bean',
     name: '琼光豆',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'dragon_fire',
     minSweetness: 61,
     minYield: 61,
@@ -2368,7 +2919,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'magnif_light5_rice',
     name: '瑰光稻',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'celestial_rice',
     minSweetness: 61,
     minYield: 61,
@@ -2379,7 +2930,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'radiant_light5_tuber',
     name: '曦光薯',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'ice_lotus',
     minSweetness: 62,
     minYield: 62,
@@ -2390,7 +2941,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'lustrous_light5_green',
     name: '璃光菜',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'jade_peach_tea',
     minSweetness: 63,
     minYield: 63,
@@ -2401,7 +2952,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'precious_hua5_fruit',
     name: '瑶华果',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'golden_dragon',
     minSweetness: 63,
     minYield: 63,
@@ -2412,7 +2963,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rare_hua5_bloom',
     name: '琼华花',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'moonlight_frost',
     minSweetness: 64,
     minYield: 64,
@@ -2423,7 +2974,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'magnif_hua5_tea',
     name: '瑰华茶',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'jade_golden_melon',
     minSweetness: 64,
     minYield: 64,
@@ -2434,7 +2985,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'radiant_hua5_shoot',
     name: '曦华笋',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'immortal_flower',
     minSweetness: 65,
     minYield: 65,
@@ -2445,7 +2996,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'lustrous_hua5_lotus',
     name: '璃华莲',
-    parentCropA: 'wind_melon',
+    parentCropA: 'moon_hua_melon',
     parentCropB: 'dragon_pearl',
     minSweetness: 66,
     minYield: 66,
@@ -2456,7 +3007,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'precious_dewdrop_wheat',
     name: '瑶露麦',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'ice_lotus',
     minSweetness: 66,
     minYield: 66,
@@ -2467,7 +3018,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rare_dewdrop_sesame',
     name: '琼露芝',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'jade_peach_tea',
     minSweetness: 67,
     minYield: 67,
@@ -2478,7 +3029,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'magnif_dewdrop_pepper',
     name: '瑰露椒',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'golden_dragon',
     minSweetness: 68,
     minYield: 68,
@@ -2489,7 +3040,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'radiant_dewdrop_root',
     name: '曦露参',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'moonlight_frost',
     minSweetness: 68,
     minYield: 68,
@@ -2500,7 +3051,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'lustrous_dewdrop_sprout',
     name: '璃露芽',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'jade_golden_melon',
     minSweetness: 69,
     minYield: 69,
@@ -2511,7 +3062,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'precious_soul_vine',
     name: '瑶灵藤',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'immortal_flower',
     minSweetness: 69,
     minYield: 69,
@@ -2522,7 +3073,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rare_soul_bud',
     name: '琼灵蕾',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'dragon_pearl',
     minSweetness: 70,
     minYield: 70,
@@ -2533,7 +3084,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'magnif_soul_orchid',
     name: '瑰灵兰',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'melon_tea_fruit',
     minSweetness: 71,
     minYield: 71,
@@ -2544,7 +3095,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'radiant_soul_gourd',
     name: '曦灵葫',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'dragon_fire',
     minSweetness: 71,
     minYield: 71,
@@ -2555,7 +3106,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'lustrous_soul_herb',
     name: '璃灵草',
-    parentCropA: 'cloud_bean',
+    parentCropA: 'sun_hua_bean',
     parentCropB: 'celestial_rice',
     minSweetness: 72,
     minYield: 72,
@@ -2566,7 +3117,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'precious_silk5_chestnut',
     name: '瑶锦栗',
-    parentCropA: 'rain_rice',
+    parentCropA: 'sky_hua_rice',
     parentCropB: 'moonlight_frost',
     minSweetness: 73,
     minYield: 73,
@@ -2577,7 +3128,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'rare_silk5_apricot',
     name: '琼锦杏',
-    parentCropA: 'rain_rice',
+    parentCropA: 'sky_hua_rice',
     parentCropB: 'jade_golden_melon',
     minSweetness: 73,
     minYield: 73,
@@ -2588,7 +3139,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'magnif_silk5_pear',
     name: '瑰锦梨',
-    parentCropA: 'rain_rice',
+    parentCropA: 'sky_hua_rice',
     parentCropB: 'immortal_flower',
     minSweetness: 74,
     minYield: 74,
@@ -2599,7 +3150,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'radiant_silk5_berry',
     name: '曦锦莓',
-    parentCropA: 'rain_rice',
+    parentCropA: 'sky_hua_rice',
     parentCropB: 'dragon_pearl',
     minSweetness: 74,
     minYield: 74,
@@ -2610,7 +3161,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'lustrous_silk5_peach_t',
     name: '璃锦桃',
-    parentCropA: 'rain_rice',
+    parentCropA: 'sky_hua_rice',
     parentCropB: 'melon_tea_fruit',
     minSweetness: 75,
     minYield: 75,
@@ -2622,7 +3173,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'spirit_wonder_melon',
     name: '灵妙瓜',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'wind_melon',
     minSweetness: 65,
     minYield: 65,
@@ -2633,7 +3184,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fairy_wonder_bean',
     name: '仙妙豆',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'cloud_bean',
     minSweetness: 66,
     minYield: 66,
@@ -2644,7 +3195,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'holy_wonder_rice',
     name: '圣妙稻',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'rain_rice',
     minSweetness: 66,
     minYield: 66,
@@ -2655,7 +3206,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'divine_wonder_tuber',
     name: '神妙薯',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'hoar_tuber',
     minSweetness: 67,
     minYield: 67,
@@ -2666,7 +3217,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'trueth_wonder_green',
     name: '真妙菜',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'thunder_green',
     minSweetness: 68,
     minYield: 68,
@@ -2677,7 +3228,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'spirit_grace6_fruit',
     name: '灵华果',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'rainbow_fruit',
     minSweetness: 68,
     minYield: 68,
@@ -2688,7 +3239,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fairy_grace6_bloom',
     name: '仙华花',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'dew_bloom',
     minSweetness: 69,
     minYield: 69,
@@ -2699,7 +3250,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'holy_grace6_tea',
     name: '圣华茶',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'dawn_tea',
     minSweetness: 69,
     minYield: 69,
@@ -2710,7 +3261,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'divine_grace6_shoot',
     name: '神华笋',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'dusk_shoot',
     minSweetness: 70,
     minYield: 70,
@@ -2721,7 +3272,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'trueth_grace6_lotus',
     name: '真华莲',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'star_lotus',
     minSweetness: 71,
     minYield: 71,
@@ -2732,7 +3283,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'spirit_phantom_wheat',
     name: '灵幻麦',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'wind_splendor_wheat',
     minSweetness: 71,
     minYield: 71,
@@ -2743,7 +3294,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fairy_phantom_sesame',
     name: '仙幻芝',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'cloud_splendor_sesame',
     minSweetness: 72,
     minYield: 72,
@@ -2754,7 +3305,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'holy_phantom_pepper',
     name: '圣幻椒',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'rain_splendor_pepper',
     minSweetness: 73,
     minYield: 73,
@@ -2765,7 +3316,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'divine_phantom_root',
     name: '神幻参',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'hoar_splendor_root',
     minSweetness: 73,
     minYield: 73,
@@ -2776,7 +3327,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'trueth_phantom_sprout',
     name: '真幻芽',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'thunder_splendor_sprout',
     minSweetness: 74,
     minYield: 74,
@@ -2787,7 +3338,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'spirit_dream_vine',
     name: '灵梦藤',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'rainbow_splendor_vine',
     minSweetness: 74,
     minYield: 74,
@@ -2798,7 +3349,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fairy_dream_bud',
     name: '仙梦蕾',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'dew_splendor_bud',
     minSweetness: 75,
     minYield: 75,
@@ -2809,7 +3360,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'holy_dream_orchid',
     name: '圣梦兰',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'dawn_splendor_orchid',
     minSweetness: 76,
     minYield: 76,
@@ -2820,7 +3371,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'divine_dream_gourd',
     name: '神梦葫',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'dusk_splendor_gourd',
     minSweetness: 76,
     minYield: 76,
@@ -2831,7 +3382,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'trueth_dream_herb',
     name: '真梦草',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'star_splendor_herb',
     minSweetness: 77,
     minYield: 77,
@@ -2842,7 +3393,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'spirit_zen_chestnut',
     name: '灵禅栗',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'wind_jade3_chestnut',
     minSweetness: 78,
     minYield: 78,
@@ -2853,7 +3404,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fairy_zen_apricot',
     name: '仙禅杏',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'cloud_jade3_apricot',
     minSweetness: 78,
     minYield: 78,
@@ -2864,7 +3415,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'holy_zen_pear',
     name: '圣禅梨',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'rain_jade3_pear',
     minSweetness: 79,
     minYield: 79,
@@ -2875,7 +3426,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'divine_zen_berry',
     name: '神禅莓',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'hoar_jade3_berry',
     minSweetness: 79,
     minYield: 79,
@@ -2886,7 +3437,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'trueth_zen_peach_t',
     name: '真禅桃',
-    parentCropA: 'moon_hua_melon',
+    parentCropA: 'precious_light5_melon',
     parentCropB: 'thunder_jade3_peach_t',
     minSweetness: 80,
     minYield: 80,
@@ -2898,7 +3449,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'draco_song_melon',
     name: '龙吟瓜',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'moon_hua_melon',
     minSweetness: 72,
     minYield: 72,
@@ -2909,7 +3460,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fenghuang_song_bean',
     name: '凤吟豆',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'sun_hua_bean',
     minSweetness: 73,
     minYield: 73,
@@ -2920,7 +3471,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'qilin_song_rice',
     name: '麟吟稻',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'sky_hua_rice',
     minSweetness: 73,
     minYield: 73,
@@ -2931,7 +3482,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'crane_song_tuber',
     name: '鹤吟薯',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'gem_hua_tuber',
     minSweetness: 74,
     minYield: 74,
@@ -2942,7 +3493,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'tiger_song_green',
     name: '虎吟菜',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'prism_hua_green',
     minSweetness: 74,
     minYield: 74,
@@ -2953,7 +3504,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'draco_dance_fruit',
     name: '龙舞果',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'silver_hua_fruit',
     minSweetness: 75,
     minYield: 75,
@@ -2964,7 +3515,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fenghuang_dance_bloom',
     name: '凤舞花',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'verdant_hua_bloom',
     minSweetness: 75,
     minYield: 75,
@@ -2975,7 +3526,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'qilin_dance_tea',
     name: '麟舞茶',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'violet_hua_tea',
     minSweetness: 76,
     minYield: 76,
@@ -2986,7 +3537,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'crane_dance_shoot',
     name: '鹤舞笋',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'scarlet_hua_shoot',
     minSweetness: 76,
     minYield: 76,
@@ -2997,7 +3548,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'tiger_dance_lotus',
     name: '虎舞莲',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'azure_hua_lotus',
     minSweetness: 77,
     minYield: 77,
@@ -3008,7 +3559,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'draco_gleam7_wheat',
     name: '龙辉麦',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'moon_shine_wheat',
     minSweetness: 77,
     minYield: 77,
@@ -3019,7 +3570,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fenghuang_gleam7_sesame',
     name: '凤辉芝',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'sun_shine_sesame',
     minSweetness: 78,
     minYield: 78,
@@ -3030,7 +3581,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'qilin_gleam7_pepper',
     name: '麟辉椒',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'sky_shine_pepper',
     minSweetness: 79,
     minYield: 79,
@@ -3041,7 +3592,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'crane_gleam7_root',
     name: '鹤辉参',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'gem_shine_root',
     minSweetness: 79,
     minYield: 79,
@@ -3052,7 +3603,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'tiger_gleam7_sprout',
     name: '虎辉芽',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'prism_shine_sprout',
     minSweetness: 80,
     minYield: 80,
@@ -3063,7 +3614,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'draco_shadow_vine',
     name: '龙影藤',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'silver_shine_vine',
     minSweetness: 80,
     minYield: 80,
@@ -3074,7 +3625,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fenghuang_shadow_bud',
     name: '凤影蕾',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'verdant_shine_bud',
     minSweetness: 81,
     minYield: 81,
@@ -3085,7 +3636,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'qilin_shadow_orchid',
     name: '麟影兰',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'violet_shine_orchid',
     minSweetness: 81,
     minYield: 81,
@@ -3096,7 +3647,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'crane_shadow_gourd',
     name: '鹤影葫',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'scarlet_shine_gourd',
     minSweetness: 82,
     minYield: 82,
@@ -3107,7 +3658,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'tiger_shadow_herb',
     name: '虎影草',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'azure_shine_herb',
     minSweetness: 82,
     minYield: 82,
@@ -3118,7 +3669,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'draco_roar_chestnut',
     name: '龙啸栗',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'moon_fortune_chestnut',
     minSweetness: 83,
     minYield: 83,
@@ -3129,7 +3680,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'fenghuang_roar_apricot',
     name: '凤啸杏',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'sun_fortune_apricot',
     minSweetness: 83,
     minYield: 83,
@@ -3140,7 +3691,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'qilin_roar_pear',
     name: '麟啸梨',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'sky_fortune_pear',
     minSweetness: 84,
     minYield: 84,
@@ -3151,7 +3702,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'crane_roar_berry',
     name: '鹤啸莓',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'gem_fortune_berry',
     minSweetness: 84,
     minYield: 84,
@@ -3162,7 +3713,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'tiger_roar_peach_t',
     name: '虎啸桃',
-    parentCropA: 'precious_light5_melon',
+    parentCropA: 'spirit_wonder_melon',
     parentCropB: 'prism_fortune_peach_t',
     minSweetness: 85,
     minYield: 85,
@@ -3174,7 +3725,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'supreme_origin_melon',
     name: '太初瓜',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'precious_light5_melon',
     minSweetness: 78,
     minYield: 78,
@@ -3185,7 +3736,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'firmament_origin_bean',
     name: '乾初豆',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'rare_light5_bean',
     minSweetness: 79,
     minYield: 79,
@@ -3196,7 +3747,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'terra_origin_rice',
     name: '坤初稻',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'magnif_light5_rice',
     minSweetness: 79,
     minYield: 79,
@@ -3207,7 +3758,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primal_origin_tuber',
     name: '元初薯',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'radiant_light5_tuber',
     minSweetness: 80,
     minYield: 80,
@@ -3218,7 +3769,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'chaos_origin_green',
     name: '混初菜',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'lustrous_light5_green',
     minSweetness: 80,
     minYield: 80,
@@ -3229,7 +3780,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'supreme_vital8_fruit',
     name: '太灵果',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'precious_hua5_fruit',
     minSweetness: 81,
     minYield: 81,
@@ -3240,7 +3791,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'firmament_vital8_bloom',
     name: '乾灵花',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'rare_hua5_bloom',
     minSweetness: 81,
     minYield: 81,
@@ -3251,7 +3802,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'terra_vital8_tea',
     name: '坤灵茶',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'magnif_hua5_tea',
     minSweetness: 82,
     minYield: 82,
@@ -3262,7 +3813,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primal_vital8_shoot',
     name: '元灵笋',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'radiant_hua5_shoot',
     minSweetness: 82,
     minYield: 82,
@@ -3273,7 +3824,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'chaos_vital8_lotus',
     name: '混灵莲',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'lustrous_hua5_lotus',
     minSweetness: 83,
     minYield: 83,
@@ -3284,7 +3835,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'supreme_glory8_wheat',
     name: '太华麦',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'precious_dewdrop_wheat',
     minSweetness: 83,
     minYield: 83,
@@ -3295,7 +3846,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'firmament_glory8_sesame',
     name: '乾华芝',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'rare_dewdrop_sesame',
     minSweetness: 84,
     minYield: 84,
@@ -3306,7 +3857,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'terra_glory8_pepper',
     name: '坤华椒',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'magnif_dewdrop_pepper',
     minSweetness: 84,
     minYield: 84,
@@ -3317,7 +3868,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primal_glory8_root',
     name: '元华参',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'radiant_dewdrop_root',
     minSweetness: 85,
     minYield: 85,
@@ -3328,7 +3879,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'chaos_glory8_sprout',
     name: '混华芽',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'lustrous_dewdrop_sprout',
     minSweetness: 85,
     minYield: 85,
@@ -3339,7 +3890,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'supreme_zenith_vine',
     name: '太极藤',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'precious_soul_vine',
     minSweetness: 86,
     minYield: 86,
@@ -3350,7 +3901,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'firmament_zenith_bud',
     name: '乾极蕾',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'rare_soul_bud',
     minSweetness: 86,
     minYield: 86,
@@ -3361,7 +3912,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'terra_zenith_orchid',
     name: '坤极兰',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'magnif_soul_orchid',
     minSweetness: 87,
     minYield: 87,
@@ -3372,7 +3923,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primal_zenith_gourd',
     name: '元极葫',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'radiant_soul_gourd',
     minSweetness: 87,
     minYield: 87,
@@ -3383,7 +3934,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'chaos_zenith_herb',
     name: '混极草',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'lustrous_soul_herb',
     minSweetness: 88,
     minYield: 88,
@@ -3394,7 +3945,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'supreme_core_chestnut',
     name: '太元栗',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'precious_silk5_chestnut',
     minSweetness: 88,
     minYield: 88,
@@ -3405,7 +3956,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'firmament_core_apricot',
     name: '乾元杏',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'rare_silk5_apricot',
     minSweetness: 89,
     minYield: 89,
@@ -3416,7 +3967,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'terra_core_pear',
     name: '坤元梨',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'magnif_silk5_pear',
     minSweetness: 89,
     minYield: 89,
@@ -3427,7 +3978,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primal_core_berry',
     name: '元元莓',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'radiant_silk5_berry',
     minSweetness: 90,
     minYield: 90,
@@ -3438,7 +3989,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'chaos_core_peach_t',
     name: '混元桃',
-    parentCropA: 'spirit_wonder_melon',
+    parentCropA: 'draco_song_melon',
     parentCropB: 'lustrous_silk5_peach_t',
     minSweetness: 90,
     minYield: 90,
@@ -3450,7 +4001,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'vast_meng_melon',
     name: '鸿蒙瓜',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'spirit_wonder_melon',
     minSweetness: 82,
     minYield: 82,
@@ -3461,7 +4012,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'ancient_meng_bean',
     name: '古蒙豆',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'fairy_wonder_bean',
     minSweetness: 82,
     minYield: 82,
@@ -3472,7 +4023,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'infinite_meng_rice',
     name: '无蒙稻',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'holy_wonder_rice',
     minSweetness: 83,
     minYield: 83,
@@ -3483,7 +4034,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primeval_meng_tuber',
     name: '洪蒙薯',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'divine_wonder_tuber',
     minSweetness: 83,
     minYield: 83,
@@ -3494,7 +4045,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'genesis_meng_green',
     name: '开蒙菜',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'trueth_wonder_green',
     minSweetness: 84,
     minYield: 84,
@@ -3505,7 +4056,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'vast_apex9_fruit',
     name: '鸿极果',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'spirit_grace6_fruit',
     minSweetness: 84,
     minYield: 84,
@@ -3516,7 +4067,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'ancient_apex9_bloom',
     name: '古极花',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'fairy_grace6_bloom',
     minSweetness: 85,
     minYield: 85,
@@ -3527,7 +4078,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'infinite_apex9_tea',
     name: '无极茶',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'holy_grace6_tea',
     minSweetness: 85,
     minYield: 85,
@@ -3538,7 +4089,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primeval_apex9_shoot',
     name: '洪极笋',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'divine_grace6_shoot',
     minSweetness: 86,
     minYield: 86,
@@ -3549,7 +4100,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'genesis_apex9_lotus',
     name: '开极莲',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'trueth_grace6_lotus',
     minSweetness: 86,
     minYield: 86,
@@ -3560,7 +4111,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'vast_wilder_wheat',
     name: '鸿荒麦',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'spirit_phantom_wheat',
     minSweetness: 87,
     minYield: 87,
@@ -3571,7 +4122,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'ancient_wilder_sesame',
     name: '古荒芝',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'fairy_phantom_sesame',
     minSweetness: 87,
     minYield: 87,
@@ -3582,7 +4133,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'infinite_wilder_pepper',
     name: '无荒椒',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'holy_phantom_pepper',
     minSweetness: 88,
     minYield: 88,
@@ -3593,7 +4144,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primeval_wilder_root',
     name: '洪荒参',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'divine_phantom_root',
     minSweetness: 88,
     minYield: 88,
@@ -3604,7 +4155,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'genesis_wilder_sprout',
     name: '开荒芽',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'trueth_phantom_sprout',
     minSweetness: 88,
     minYield: 88,
@@ -3615,7 +4166,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'vast_empyrean_vine',
     name: '鸿天藤',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'spirit_dream_vine',
     minSweetness: 89,
     minYield: 89,
@@ -3626,7 +4177,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'ancient_empyrean_bud',
     name: '古天蕾',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'fairy_dream_bud',
     minSweetness: 89,
     minYield: 89,
@@ -3637,7 +4188,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'infinite_empyrean_orchid',
     name: '无天兰',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'holy_dream_orchid',
     minSweetness: 90,
     minYield: 90,
@@ -3648,7 +4199,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primeval_empyrean_gourd',
     name: '洪天葫',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'divine_dream_gourd',
     minSweetness: 90,
     minYield: 90,
@@ -3659,7 +4210,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'genesis_empyrean_herb',
     name: '开天草',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'trueth_dream_herb',
     minSweetness: 91,
     minYield: 91,
@@ -3670,7 +4221,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'vast_spirit9_chestnut',
     name: '鸿灵栗',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'spirit_zen_chestnut',
     minSweetness: 91,
     minYield: 91,
@@ -3681,7 +4232,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'ancient_spirit9_apricot',
     name: '古灵杏',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'fairy_zen_apricot',
     minSweetness: 92,
     minYield: 92,
@@ -3692,7 +4243,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'infinite_spirit9_pear',
     name: '无灵梨',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'holy_zen_pear',
     minSweetness: 92,
     minYield: 92,
@@ -3703,7 +4254,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'primeval_spirit9_berry',
     name: '洪灵莓',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'divine_zen_berry',
     minSweetness: 93,
     minYield: 93,
@@ -3714,7 +4265,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'genesis_spirit9_peach_t',
     name: '开灵桃',
-    parentCropA: 'draco_song_melon',
+    parentCropA: 'supreme_origin_melon',
     parentCropB: 'trueth_zen_peach_t',
     minSweetness: 93,
     minYield: 93,
@@ -3726,7 +4277,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'creation_change_melon',
     name: '造化瓜',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'draco_song_melon',
     minSweetness: 88,
     minYield: 88,
@@ -3737,7 +4288,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'eternal_change_bean',
     name: '永化豆',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'fenghuang_song_bean',
     minSweetness: 88,
     minYield: 88,
@@ -3748,7 +4299,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'undying_change_rice',
     name: '不化稻',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'qilin_song_rice',
     minSweetness: 89,
     minYield: 89,
@@ -3759,7 +4310,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'heavenly_change_tuber',
     name: '天化薯',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'crane_song_tuber',
     minSweetness: 89,
     minYield: 89,
@@ -3770,7 +4321,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'myriad_change_green',
     name: '万化菜',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'tiger_song_green',
     minSweetness: 90,
     minYield: 90,
@@ -3781,7 +4332,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'creation_lasting_fruit',
     name: '造恒果',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'draco_dance_fruit',
     minSweetness: 90,
     minYield: 90,
@@ -3792,7 +4343,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'eternal_lasting_bloom',
     name: '永恒花',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'fenghuang_dance_bloom',
     minSweetness: 91,
     minYield: 91,
@@ -3803,7 +4354,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'undying_lasting_tea',
     name: '不恒茶',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'qilin_dance_tea',
     minSweetness: 91,
     minYield: 91,
@@ -3814,7 +4365,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'heavenly_lasting_shoot',
     name: '天恒笋',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'crane_dance_shoot',
     minSweetness: 91,
     minYield: 91,
@@ -3825,7 +4376,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'myriad_lasting_lotus',
     name: '万恒莲',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'tiger_dance_lotus',
     minSweetness: 92,
     minYield: 92,
@@ -3836,7 +4387,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'creation_timeless_wheat',
     name: '造朽麦',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'draco_gleam7_wheat',
     minSweetness: 92,
     minYield: 92,
@@ -3847,7 +4398,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'eternal_timeless_sesame',
     name: '永朽芝',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'fenghuang_gleam7_sesame',
     minSweetness: 93,
     minYield: 93,
@@ -3858,7 +4409,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'undying_timeless_pepper',
     name: '不朽椒',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'qilin_gleam7_pepper',
     minSweetness: 93,
     minYield: 93,
@@ -3869,7 +4420,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'heavenly_timeless_root',
     name: '天朽参',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'crane_gleam7_root',
     minSweetness: 93,
     minYield: 93,
@@ -3880,7 +4431,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'myriad_timeless_sprout',
     name: '万朽芽',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'tiger_gleam7_sprout',
     minSweetness: 94,
     minYield: 94,
@@ -3891,7 +4442,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'creation_destiny_vine',
     name: '造命藤',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'draco_shadow_vine',
     minSweetness: 94,
     minYield: 94,
@@ -3902,7 +4453,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'eternal_destiny_bud',
     name: '永命蕾',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'fenghuang_shadow_bud',
     minSweetness: 95,
     minYield: 95,
@@ -3913,7 +4464,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'undying_destiny_orchid',
     name: '不命兰',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'qilin_shadow_orchid',
     minSweetness: 95,
     minYield: 95,
@@ -3924,7 +4475,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'heavenly_destiny_gourd',
     name: '天命葫',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'crane_shadow_gourd',
     minSweetness: 96,
     minYield: 96,
@@ -3935,7 +4486,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'myriad_destiny_herb',
     name: '万命草',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'tiger_shadow_herb',
     minSweetness: 96,
     minYield: 96,
@@ -3946,7 +4497,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'creation_form_chestnut',
     name: '造象栗',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'draco_roar_chestnut',
     minSweetness: 96,
     minYield: 96,
@@ -3957,7 +4508,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'eternal_form_apricot',
     name: '永象杏',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'fenghuang_roar_apricot',
     minSweetness: 97,
     minYield: 97,
@@ -3968,7 +4519,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'undying_form_pear',
     name: '不象梨',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'qilin_roar_pear',
     minSweetness: 97,
     minYield: 97,
@@ -3979,7 +4530,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'heavenly_form_berry',
     name: '天象莓',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'crane_roar_berry',
     minSweetness: 98,
     minYield: 98,
@@ -3990,7 +4541,7 @@ export const HYBRID_DEFS: HybridDef[] = [
   {
     id: 'myriad_form_peach_t',
     name: '万象桃',
-    parentCropA: 'supreme_origin_melon',
+    parentCropA: 'vast_meng_melon',
     parentCropB: 'tiger_roar_peach_t',
     minSweetness: 98,
     minYield: 98,
@@ -4001,7 +4552,7 @@ export const HYBRID_DEFS: HybridDef[] = [
 ]
 
 /** 杂交品种阶层 (tier) 划分：基于 HYBRID_DEFS 数组顺序 */
-const TIER_COUNTS = [90, 10, 50, 50, 25, 25, 25, 25, 25, 25] // T1..T10
+const TIER_COUNTS = [100, 50, 50, 50, 25, 25, 25, 25, 25, 25] // T1..T10
 const _tierMap = new Map<string, number>()
 let _offset = 0
 for (let t = 0; t < TIER_COUNTS.length; t++) {

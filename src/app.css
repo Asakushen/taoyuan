@@ -38,6 +38,13 @@
   --spacing-8: 32px;
 }
 
+/* 生产环境禁止选中和复制 */
+body.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 /* 全局基础样式 */
 body {
   margin: 0;
@@ -54,11 +61,14 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: var(--spacing-2);
+  padding-bottom: constant(safe-area-inset-bottom, var(--spacing-2));
+  padding-bottom: env(safe-area-inset-bottom, var(--spacing-2));
 }
 
 @media (min-width: 768px) {
   #app {
     padding: var(--spacing-4);
+    padding-bottom: var(--spacing-4);
   }
 }
 
@@ -153,7 +163,25 @@ body {
   background: var(--color-accent) !important;
 }
 
-.qmsg .qmsg-content-wrapper .qmsg-content-text {
+.qmsg .qmsg-content-text[data-limitwidthwrap='wrap'] {
   white-space: normal !important;
   word-break: break-word !important;
+}
+
+.qmsg .qmsg-content-text[data-limitwidthwrap='ellipsis'] {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.qmsg .qmsg-content-text[data-limitwidthwrap='no-wrap'] {
+  white-space: nowrap !important;
+}
+
+/* 移动端安全区域：底部通知避开三键导航栏 */
+.qmsg-bottom,
+.qmsg-bottomleft,
+.qmsg-bottomright {
+  padding-bottom: constant(safe-area-inset-bottom, 0px) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
 }

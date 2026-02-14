@@ -393,7 +393,6 @@ export const useBreedingStore = defineStore('breeding', () => {
     unlocked: unlocked.value
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const deserialize = (data: any) => {
     breedingBox.value = (data.breedingBox ?? []).map((s: any) => ({
       genetics: s.genetics,

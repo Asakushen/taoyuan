@@ -50,7 +50,8 @@
           "
           @click="achievementStore.isDiscovered(item.id) && (activeCollectionId = item.id)"
         >
-          {{ achievementStore.isDiscovered(item.id) ? item.name : '???' }}
+          <template v-if="achievementStore.isDiscovered(item.id)">{{ item.name }}</template>
+          <Lock v-else :size="12" class="mx-auto text-muted/30" />
         </div>
       </div>
     </template>
@@ -89,6 +90,32 @@
                 <template v-if="activeCollectionItem.healthRestore">/ +{{ activeCollectionItem.healthRestore }}HP</template>
               </span>
             </div>
+            <!-- 武器属性 -->
+            <template v-if="activeWeaponDef">
+              <div class="flex items-center justify-between mt-0.5">
+                <span class="text-xs text-muted">类型</span>
+                <span class="text-xs">{{ WEAPON_TYPE_NAMES[activeWeaponDef.type] }}</span>
+              </div>
+              <div class="flex items-center justify-between mt-0.5">
+                <span class="text-xs text-muted">攻击力</span>
+                <span class="text-xs text-danger">{{ activeWeaponDef.attack }}</span>
+              </div>
+              <div class="flex items-center justify-between mt-0.5">
+                <span class="text-xs text-muted">暴击率</span>
+                <span class="text-xs">{{ Math.round(activeWeaponDef.critRate * 100) }}%</span>
+              </div>
+              <div v-if="activeWeaponDef.fixedEnchantment" class="flex items-center justify-between mt-0.5">
+                <span class="text-xs text-muted">固定附魔</span>
+                <span class="text-xs text-quality-supreme">{{ ENCHANTMENTS[activeWeaponDef.fixedEnchantment]?.name }}</span>
+              </div>
+            </template>
+            <!-- 戒指/帽子/鞋子效果 -->
+            <template v-if="activeEquipEffects.length > 0">
+              <div v-for="(eff, i) in activeEquipEffects" :key="i" class="flex items-center justify-between mt-0.5">
+                <span class="text-xs text-muted">{{ EFFECT_NAMES[eff.type] ?? eff.type }}</span>
+                <span class="text-xs text-success">{{ formatEffectValue(eff) }}</span>
+              </div>
+            </template>
             <div v-if="achievementStore.getDiscoveryTime(activeCollectionItem.id)" class="flex items-center justify-between mt-0.5">
               <span class="text-xs text-muted">发现于</span>
               <span class="text-xs text-muted">{{ achievementStore.getDiscoveryTime(activeCollectionItem.id) }}</span>
@@ -109,7 +136,8 @@
           :class="isCompleted(a.id) ? 'border-accent/20 cursor-pointer hover:bg-accent/5 text-success' : 'border-accent/10 text-muted/30'"
           @click="isCompleted(a.id) && (activeAchievement = a)"
         >
-          {{ isCompleted(a.id) ? a.name : '???' }}
+          <template v-if="isCompleted(a.id)">{{ a.name }}</template>
+          <Lock v-else :size="12" class="mx-auto text-muted/30" />
         </div>
       </div>
     </template>
@@ -126,25 +154,46 @@
             <X :size="14" />
           </button>
 
-          <p class="text-sm text-success mb-2">{{ activeAchievement.name }}</p>
+          <!-- 标题 + 完成状态 -->
+          <div class="flex items-center gap-1.5 mb-2">
+            <CircleCheck v-if="isCompleted(activeAchievement.id)" :size="14" class="text-success shrink-0" />
+            <Circle v-else :size="14" class="text-muted/40 shrink-0" />
+            <span class="text-sm" :class="isCompleted(activeAchievement.id) ? 'text-success' : 'text-text'">
+              {{ activeAchievement.name }}
+            </span>
+          </div>
 
+          <!-- 描述 -->
           <div class="border border-accent/10 rounded-xs p-2 mb-2">
             <p class="text-xs text-muted">{{ activeAchievement.description }}</p>
           </div>
 
+          <!-- 进度条 -->
           <div class="border border-accent/10 rounded-xs p-2 mb-2">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-1">
               <span class="text-xs text-muted">进度</span>
-              <span class="text-xs">{{ getProgressText(activeAchievement) }}</span>
+              <span class="text-xs" :class="isCompleted(activeAchievement.id) ? 'text-success' : 'text-text'">
+                {{ getProgressText(activeAchievement) }}
+              </span>
+            </div>
+            <div class="h-1.5 bg-bg rounded-xs border border-accent/10">
+              <div
+                class="h-full rounded-xs transition-all"
+                :class="isCompleted(activeAchievement.id) ? 'bg-success' : 'bg-accent'"
+                :style="{ width: getProgressPercent(activeAchievement) + '%' }"
+              />
             </div>
           </div>
 
+          <!-- 奖励 -->
           <div class="border border-accent/10 rounded-xs p-2">
             <p class="text-xs text-muted mb-1">奖励</p>
-            <p class="text-xs text-accent">
-              {{ activeAchievement.reward.money ? `${activeAchievement.reward.money}文` : '' }}
-              {{ activeAchievement.reward.items?.map(i => `${getItemName(i.itemId)}×${i.quantity}`).join(', ') ?? '' }}
-            </p>
+            <div class="flex flex-wrap gap-x-3 gap-y-0.5">
+              <span v-if="activeAchievement.reward.money" class="text-xs text-accent">{{ activeAchievement.reward.money }}文</span>
+              <span v-for="ri in activeAchievement.reward.items ?? []" :key="ri.itemId" class="text-xs text-text">
+                {{ getItemName(ri.itemId) }}×{{ ri.quantity }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -252,16 +301,57 @@
               class="border rounded-xs p-1 text-xs text-center truncate"
               :class="
                 shopStore.shippedItems.includes(item.id)
-                  ? 'border-accent/20 ' + getCategoryColor(item.category)
+                  ? 'border-accent/20 cursor-pointer hover:bg-accent/5 ' + getCategoryColor(item.category)
                   : 'border-accent/10 text-muted/30'
               "
+              @click="shopStore.shippedItems.includes(item.id) && (activeShippingId = item.id)"
             >
-              {{ shopStore.shippedItems.includes(item.id) ? item.name : '???' }}
+              <template v-if="shopStore.shippedItems.includes(item.id)">{{ item.name }}</template>
+              <Lock v-else :size="12" class="mx-auto text-muted/30" />
             </div>
           </div>
         </div>
       </div>
     </template>
+
+    <!-- 出货详情弹窗 -->
+    <Transition name="panel-fade">
+      <div
+        v-if="activeShippingItem"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="activeShippingId = null"
+      >
+        <div class="game-panel max-w-xs w-full relative">
+          <button class="absolute top-2 right-2 text-muted hover:text-text" @click="activeShippingId = null">
+            <X :size="14" />
+          </button>
+
+          <p class="text-sm mb-2" :class="getCategoryColor(activeShippingItem.category)">{{ activeShippingItem.name }}</p>
+
+          <div class="border border-accent/10 rounded-xs p-2 mb-2">
+            <p class="text-xs text-muted">{{ activeShippingItem.description }}</p>
+          </div>
+
+          <div class="border border-accent/10 rounded-xs p-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-muted">分类</span>
+              <span class="text-xs">{{ CATEGORY_NAMES[activeShippingItem.category] ?? activeShippingItem.category }}</span>
+            </div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-xs text-muted">售价</span>
+              <span class="text-xs text-accent">{{ activeShippingItem.sellPrice }}文</span>
+            </div>
+            <div v-if="activeShippingItem.edible && activeShippingItem.staminaRestore" class="flex items-center justify-between mt-0.5">
+              <span class="text-xs text-muted">恢复</span>
+              <span class="text-xs text-success">
+                +{{ activeShippingItem.staminaRestore }}体力
+                <template v-if="activeShippingItem.healthRestore">/ +{{ activeShippingItem.healthRestore }}HP</template>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- 秘密笔记 -->
     <template v-if="tab === 'notes'">
@@ -287,7 +377,11 @@
             "
             @click="secretNoteStore.isCollected(note.id) ? (activeNote = note) : null"
           >
-            {{ secretNoteStore.isCollected(note.id) ? `#${note.id} ${note.title}` : `#${note.id} ???` }}
+            <template v-if="secretNoteStore.isCollected(note.id)">#{{ note.id }} {{ note.title }}</template>
+            <template v-else>
+              #{{ note.id }}
+              <Lock :size="10" class="inline text-muted/30" />
+            </template>
           </div>
         </div>
       </template>
@@ -378,13 +472,28 @@
 </template>
 
 <script setup lang="ts">
-  import { BookOpen, CircleCheck, Circle, Send, X, ScrollText } from 'lucide-vue-next'
+  import { BookOpen, CircleCheck, Circle, Send, X, ScrollText, Lock } from 'lucide-vue-next'
   import { ref, computed } from 'vue'
-  import { useAchievementStore, useInventoryStore, useShopStore, useAnimalStore, useSecretNoteStore } from '@/stores'
+  import {
+    useAchievementStore,
+    useInventoryStore,
+    useShopStore,
+    useAnimalStore,
+    useSecretNoteStore,
+    useSkillStore,
+    useNpcStore,
+    useQuestStore,
+    useMuseumStore,
+    useGuildStore
+  } from '@/stores'
   import { ACHIEVEMENTS, COMMUNITY_BUNDLES } from '@/data/achievements'
   import { ITEMS, getItemById } from '@/data/items'
   import { HYBRID_DEFS } from '@/data/breeding'
   import { SECRET_NOTES } from '@/data/secretNotes'
+  import { WEAPONS, ENCHANTMENTS, WEAPON_TYPE_NAMES } from '@/data/weapons'
+  import { getRingById } from '@/data/rings'
+  import { getHatById } from '@/data/hats'
+  import { getShoeById } from '@/data/shoes'
   import { sfxClick } from '@/composables/useAudio'
   import { addLog } from '@/composables/useGameLog'
   import type { ItemCategory, AchievementDef, CommunityBundleDef, SecretNoteDef } from '@/types'
@@ -394,6 +503,11 @@
   const shopStore = useShopStore()
   const animalStore = useAnimalStore()
   const secretNoteStore = useSecretNoteStore()
+  const skillStore = useSkillStore()
+  const npcStore = useNpcStore()
+  const questStore = useQuestStore()
+  const museumStore = useMuseumStore()
+  const guildStore = useGuildStore()
 
   type Tab = 'collection' | 'achievements' | 'bundles' | 'shipping' | 'notes'
   const tab = ref<Tab>('collection')
@@ -414,6 +528,13 @@
 
   /** 秘密笔记弹窗 */
   const activeNote = ref<SecretNoteDef | null>(null)
+
+  /** 出货详情弹窗 */
+  const activeShippingId = ref<string | null>(null)
+  const activeShippingItem = computed(() => {
+    if (!activeShippingId.value) return null
+    return getItemById(activeShippingId.value) ?? null
+  })
 
   const NOTE_TYPE_COLORS: Record<string, string> = {
     tip: 'text-accent',
@@ -445,6 +566,56 @@
     return getItemById(activeCollectionId.value) ?? null
   })
 
+  /** 当前详情的武器定义（若为武器类） */
+  const activeWeaponDef = computed(() => {
+    if (!activeCollectionItem.value || activeCollectionItem.value.category !== 'weapon') return null
+    return WEAPONS[activeCollectionItem.value.id] ?? null
+  })
+
+  /** 当前详情的装备效果列表（戒指/帽子/鞋子） */
+  const activeEquipEffects = computed(() => {
+    if (!activeCollectionItem.value) return []
+    const id = activeCollectionItem.value.id
+    const cat = activeCollectionItem.value.category
+    if (cat === 'ring') return getRingById(id)?.effects ?? []
+    if (cat === 'hat') return getHatById(id)?.effects ?? []
+    if (cat === 'shoe') return getShoeById(id)?.effects ?? []
+    return []
+  })
+
+  /** 装备效果名称映射 */
+  const EFFECT_NAMES: Record<string, string> = {
+    attack_bonus: '攻击力',
+    crit_rate_bonus: '暴击率',
+    defense_bonus: '减伤',
+    vampiric: '吸血',
+    max_hp_bonus: '最大HP',
+    stamina_reduction: '体力消耗降低',
+    mining_stamina: '采矿体力降低',
+    farming_stamina: '农耕体力降低',
+    fishing_stamina: '钓鱼体力降低',
+    crop_quality_bonus: '作物品质',
+    crop_growth_bonus: '作物生长加速',
+    fish_quality_bonus: '鱼类品质',
+    fishing_calm: '鱼温顺度',
+    sell_price_bonus: '售价加成',
+    shop_discount: '商店折扣',
+    gift_friendship: '送礼好感',
+    monster_drop_bonus: '怪物掉落',
+    exp_bonus: '经验加成',
+    treasure_find: '宝箱发现率',
+    ore_bonus: '额外矿石',
+    luck: '幸运',
+    travel_speed: '旅行加速'
+  }
+
+  /** 格式化效果值 */
+  const FLAT_VALUE_EFFECTS = new Set(['attack_bonus', 'max_hp_bonus', 'ore_bonus'])
+  const formatEffectValue = (eff: { type: string; value: number }): string => {
+    if (FLAT_VALUE_EFFECTS.has(eff.type)) return `+${eff.value}`
+    return `+${Math.round(eff.value * 100)}%`
+  }
+
   /** 按分类给物品名称上色 */
   const CATEGORY_COLOR_MAP: Partial<Record<ItemCategory, string>> = {
     crop: 'text-success',
@@ -465,7 +636,13 @@
     sapling: 'text-success/60',
     bait: 'text-water',
     tackle: 'text-water',
-    bomb: 'text-danger'
+    bomb: 'text-danger',
+    fossil: 'text-earth',
+    artifact: 'text-quality-fine',
+    weapon: 'text-danger',
+    ring: 'text-quality-supreme',
+    hat: 'text-accent',
+    shoe: 'text-quality-excellent'
   }
 
   const getCategoryColor = (category: ItemCategory): string => {
@@ -475,6 +652,7 @@
   // === 出货收集 ===
 
   const CATEGORY_NAMES: Record<string, string> = {
+    seed: '种子',
     crop: '农作物',
     hybrid: '杂交作物',
     fish: '鱼类',
@@ -486,7 +664,20 @@
     material: '材料',
     misc: '杂货',
     food: '料理',
-    gift: '礼品'
+    gift: '礼品',
+    machine: '机器',
+    sprinkler: '洒水器',
+    fertilizer: '肥料',
+    sapling: '树苗',
+    bait: '鱼饵',
+    tackle: '浮漂',
+    bomb: '炸弹',
+    fossil: '化石',
+    artifact: '古物',
+    weapon: '武器',
+    ring: '戒指',
+    hat: '帽子',
+    shoe: '鞋子'
   }
 
   /** 可出货的类别（排除种子、机器、工具类） */
@@ -518,6 +709,130 @@
     return achievementStore.getBundleProgress(bundleId)[itemId] ?? 0
   }
 
+  /** 计算成就进度百分比（用于进度条） */
+  const getProgressPercent = (a: (typeof ACHIEVEMENTS)[number]): number => {
+    if (isCompleted(a.id)) return 100
+    const c = a.condition
+    const s = achievementStore.stats
+    let current = 0
+    let target = 1
+    switch (c.type) {
+      case 'itemCount':
+        current = achievementStore.discoveredCount
+        target = c.count
+        break
+      case 'cropHarvest':
+        current = s.totalCropsHarvested
+        target = c.count
+        break
+      case 'fishCaught':
+        current = s.totalFishCaught
+        target = c.count
+        break
+      case 'moneyEarned':
+        current = s.totalMoneyEarned
+        target = c.amount
+        break
+      case 'mineFloor':
+        current = s.highestMineFloor
+        target = c.floor
+        break
+      case 'skullCavernFloor':
+        current = s.skullCavernBestFloor
+        target = c.floor
+        break
+      case 'recipesCooked':
+        current = s.totalRecipesCooked
+        target = c.count
+        break
+      case 'monstersKilled':
+        current = s.totalMonstersKilled
+        target = c.count
+        break
+      case 'shippedCount':
+        current = shopStore.shippedItems.length
+        target = c.count
+        break
+      case 'fullShipment':
+        current = shopStore.shippedItems.length
+        target = shippableItems.value.length
+        break
+      case 'animalCount':
+        current = animalStore.animals.length
+        target = c.count
+        break
+      case 'questsCompleted':
+        current = questStore.completedQuestCount
+        target = c.count
+        break
+      case 'hybridsDiscovered':
+        current = s.totalHybridsDiscovered
+        target = c.count
+        break
+      case 'breedingsDone':
+        current = s.totalBreedingsDone
+        target = c.count
+        break
+      case 'hybridTier':
+        current = s.highestHybridTier
+        target = c.tier
+        break
+      case 'hybridsShipped': {
+        const hIds = new Set(HYBRID_DEFS.map(h => h.resultCropId))
+        current = shopStore.shippedItems.filter(id => hIds.has(id)).length
+        target = c.count
+        break
+      }
+      case 'skillLevel': {
+        const skill = skillStore.skills.find(sk => sk.type === c.skillType)
+        current = skill?.level ?? 0
+        target = c.level
+        break
+      }
+      case 'allSkillsMax':
+        current = skillStore.skills.filter(sk => sk.level === 10).length
+        target = skillStore.skills.length
+        break
+      case 'npcFriendship': {
+        const LEVEL_RANK: Record<string, number> = { stranger: 0, acquaintance: 1, friendly: 2, bestFriend: 3 }
+        const requiredRank = LEVEL_RANK[c.level] ?? 0
+        current = npcStore.npcStates.filter(n => (LEVEL_RANK[npcStore.getFriendshipLevel(n.npcId)] ?? 0) >= requiredRank).length
+        target = npcStore.npcStates.length
+        break
+      }
+      case 'npcBestFriend':
+        current = npcStore.npcStates.filter(n => npcStore.getFriendshipLevel(n.npcId) === 'bestFriend').length
+        target = c.count
+        break
+      case 'npcAllFriendly':
+        current = npcStore.npcStates.filter(n => {
+          const l = npcStore.getFriendshipLevel(n.npcId)
+          return l === 'friendly' || l === 'bestFriend'
+        }).length
+        target = npcStore.npcStates.length
+        break
+      case 'married':
+        return npcStore.getSpouse() ? 100 : 0
+      case 'hasChild':
+        return npcStore.children.length > 0 ? 100 : 0
+      case 'allBundlesComplete':
+        current = achievementStore.completedBundles.length
+        target = COMMUNITY_BUNDLES.length
+        break
+      case 'museumDonations':
+        current = museumStore.donatedCount
+        target = c.count
+        break
+      case 'guildGoalsCompleted':
+        current = guildStore.completedGoalCount
+        target = c.count
+        break
+      default:
+        return 0
+    }
+    return target > 0 ? Math.min(Math.round((current / target) * 100), 100) : 0
+  }
+
   const getProgressText = (a: (typeof ACHIEVEMENTS)[number]): string => {
     const c = a.condition
     const s = achievementStore.stats
@@ -545,7 +860,7 @@
       case 'animalCount':
         return `${animalStore.animals.length}/${c.count}`
       case 'questsCompleted':
-        return `${c.count}`
+        return `${questStore.completedQuestCount}/${c.count}`
       case 'hybridsDiscovered':
         return `${s.totalHybridsDiscovered}/${c.count}`
       case 'breedingsDone':
@@ -556,6 +871,41 @@
         const hIds = new Set(HYBRID_DEFS.map(h => h.resultCropId))
         return `${shopStore.shippedItems.filter(id => hIds.has(id)).length}/${c.count}`
       }
+      case 'skillLevel': {
+        const skill = skillStore.skills.find(sk => sk.type === c.skillType)
+        return `${skill?.level ?? 0}/${c.level}`
+      }
+      case 'allSkillsMax': {
+        const maxCount = skillStore.skills.filter(sk => sk.level === 10).length
+        return `${maxCount}/${skillStore.skills.length}`
+      }
+      case 'npcFriendship': {
+        const LEVEL_RANK: Record<string, number> = { stranger: 0, acquaintance: 1, friendly: 2, bestFriend: 3 }
+        const requiredRank = LEVEL_RANK[c.level] ?? 0
+        const metCount = npcStore.npcStates.filter(n => (LEVEL_RANK[npcStore.getFriendshipLevel(n.npcId)] ?? 0) >= requiredRank).length
+        return `${metCount}/${npcStore.npcStates.length}`
+      }
+      case 'npcBestFriend': {
+        const bestCount = npcStore.npcStates.filter(n => npcStore.getFriendshipLevel(n.npcId) === 'bestFriend').length
+        return `${bestCount}/${c.count}`
+      }
+      case 'npcAllFriendly': {
+        const friendlyCount = npcStore.npcStates.filter(n => {
+          const level = npcStore.getFriendshipLevel(n.npcId)
+          return level === 'friendly' || level === 'bestFriend'
+        }).length
+        return `${friendlyCount}/${npcStore.npcStates.length}`
+      }
+      case 'married':
+        return npcStore.getSpouse() ? '已完成' : '未完成'
+      case 'hasChild':
+        return npcStore.children.length > 0 ? '已完成' : '未完成'
+      case 'allBundlesComplete':
+        return `${achievementStore.completedBundles.length}/${COMMUNITY_BUNDLES.length}`
+      case 'museumDonations':
+        return `${museumStore.donatedCount}/${c.count}`
+      case 'guildGoalsCompleted':
+        return `${guildStore.completedGoalCount}/${c.count}`
       default:
         return ''
     }

@@ -52,16 +52,16 @@
     <!-- 装备槽位 -->
     <div class="border border-accent/20 rounded-xs p-2 mb-3">
       <p class="text-xs text-muted mb-1.5">装备</p>
-      <div class="flex gap-1">
+      <div class="grid grid-cols-3 gap-1 mb-1">
         <div
-          class="flex-1 border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5"
+          class="border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5"
           @click="activeSlot = 'weapon'"
         >
           <p class="text-[10px] text-muted">武器</p>
           <p class="text-xs text-accent truncate">{{ equippedWeaponName }}</p>
         </div>
         <div
-          class="flex-1 border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5"
+          class="border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5"
           @click="activeSlot = 'ring1'"
         >
           <p class="text-[10px] text-muted">戒指1</p>
@@ -70,12 +70,26 @@
           </p>
         </div>
         <div
-          class="flex-1 border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5"
+          class="border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5"
           @click="activeSlot = 'ring2'"
         >
           <p class="text-[10px] text-muted">戒指2</p>
           <p class="text-xs truncate" :class="equippedRing2 ? 'text-accent' : 'text-muted/40'">
             {{ equippedRing2?.name ?? '空' }}
+          </p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-1">
+        <div class="border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5" @click="activeSlot = 'hat'">
+          <p class="text-[10px] text-muted">帽子</p>
+          <p class="text-xs truncate" :class="equippedHatName ? 'text-accent' : 'text-muted/40'">
+            {{ equippedHatName ?? '空' }}
+          </p>
+        </div>
+        <div class="border border-accent/10 rounded-xs px-2 py-1 text-center cursor-pointer hover:bg-accent/5" @click="activeSlot = 'shoe'">
+          <p class="text-[10px] text-muted">鞋子</p>
+          <p class="text-xs truncate" :class="equippedShoeName ? 'text-accent' : 'text-muted/40'">
+            {{ equippedShoeName ?? '空' }}
           </p>
         </div>
       </div>
@@ -115,7 +129,7 @@
           </template>
 
           <!-- 戒指弹窗 -->
-          <template v-else>
+          <template v-else-if="activeSlot === 'ring1' || activeSlot === 'ring2'">
             <p class="text-sm text-accent mb-2">选择{{ activeSlot === 'ring1' ? '戒指1' : '戒指2' }}</p>
             <div class="flex flex-col gap-1 max-h-60 overflow-y-auto">
               <!-- 卸下按钮 -->
@@ -146,6 +160,68 @@
                 </div>
               </template>
               <p v-else class="text-xs text-muted/40 text-center py-2">暂无戒指</p>
+            </div>
+          </template>
+
+          <!-- 帽子弹窗 -->
+          <template v-else-if="activeSlot === 'hat'">
+            <p class="text-sm text-accent mb-2">选择帽子</p>
+            <div class="flex flex-col gap-1 max-h-60 overflow-y-auto">
+              <div
+                v-if="inventoryStore.equippedHatIndex >= 0"
+                class="flex items-center border border-danger/20 rounded-xs px-2 py-1.5 cursor-pointer hover:bg-danger/5"
+                @click="handleUnequipHatFromPopup"
+              >
+                <span class="text-xs text-danger">卸下当前帽子</span>
+              </div>
+              <template v-if="inventoryStore.ownedHats.length > 0">
+                <div
+                  v-for="hat in ownedHatList"
+                  :key="hat.index"
+                  class="flex items-center justify-between border rounded-xs px-2 py-1.5 cursor-pointer hover:bg-accent/5"
+                  :class="hat.index === inventoryStore.equippedHatIndex ? 'border-accent/30' : 'border-accent/10'"
+                  @click="handleEquipHatFromPopup(hat.index)"
+                >
+                  <div class="min-w-0">
+                    <span class="text-xs" :class="hat.index === inventoryStore.equippedHatIndex ? 'text-accent' : ''">{{ hat.name }}</span>
+                    <p class="text-[10px] text-muted truncate">{{ hat.effectText }}</p>
+                  </div>
+                  <span v-if="hat.index === inventoryStore.equippedHatIndex" class="text-[10px] text-accent shrink-0 ml-1">当前</span>
+                </div>
+              </template>
+              <p v-else class="text-xs text-muted/40 text-center py-2">暂无帽子</p>
+            </div>
+          </template>
+
+          <!-- 鞋子弹窗 -->
+          <template v-else-if="activeSlot === 'shoe'">
+            <p class="text-sm text-accent mb-2">选择鞋子</p>
+            <div class="flex flex-col gap-1 max-h-60 overflow-y-auto">
+              <div
+                v-if="inventoryStore.equippedShoeIndex >= 0"
+                class="flex items-center border border-danger/20 rounded-xs px-2 py-1.5 cursor-pointer hover:bg-danger/5"
+                @click="handleUnequipShoeFromPopup"
+              >
+                <span class="text-xs text-danger">卸下当前鞋子</span>
+              </div>
+              <template v-if="inventoryStore.ownedShoes.length > 0">
+                <div
+                  v-for="shoe in ownedShoeList"
+                  :key="shoe.index"
+                  class="flex items-center justify-between border rounded-xs px-2 py-1.5 cursor-pointer hover:bg-accent/5"
+                  :class="shoe.index === inventoryStore.equippedShoeIndex ? 'border-accent/30' : 'border-accent/10'"
+                  @click="handleEquipShoeFromPopup(shoe.index)"
+                >
+                  <div class="min-w-0">
+                    <span class="text-xs" :class="shoe.index === inventoryStore.equippedShoeIndex ? 'text-accent' : ''">
+                      {{ shoe.name }}
+                    </span>
+                    <p class="text-[10px] text-muted truncate">{{ shoe.effectText }}</p>
+                  </div>
+                  <span v-if="shoe.index === inventoryStore.equippedShoeIndex" class="text-[10px] text-accent shrink-0 ml-1">当前</span>
+                </div>
+              </template>
+              <p v-else class="text-xs text-muted/40 text-center py-2">暂无鞋子</p>
             </div>
           </template>
         </div>
@@ -226,7 +302,9 @@
   import { TOOL_NAMES, TIER_NAMES, getNpcById } from '@/data'
   import { getWeaponById, getEnchantmentById, getWeaponDisplayName } from '@/data/weapons'
   import { getRingById } from '@/data/rings'
-  import type { RingEffectType } from '@/types'
+  import { getHatById } from '@/data/hats'
+  import { getShoeById } from '@/data/shoes'
+  import type { EquipmentEffectType } from '@/types'
   import { WALLET_ITEMS } from '@/data/wallet'
   import { navigateToPanel } from '@/composables/useNavigation'
   import type { SkillType, SkillPerk5, SkillPerk10, ChildStage, OwnedWeapon } from '@/types'
@@ -244,7 +322,7 @@
 
   // === 装备槽位 ===
 
-  const activeSlot = ref<'weapon' | 'ring1' | 'ring2' | null>(null)
+  const activeSlot = ref<'weapon' | 'ring1' | 'ring2' | 'hat' | 'shoe' | null>(null)
 
   // === 武器 ===
 
@@ -283,7 +361,7 @@
 
   // === 戒指 ===
 
-  const RING_EFFECT_SHORT: Record<RingEffectType, string> = {
+  const RING_EFFECT_SHORT: Record<EquipmentEffectType, string> = {
     attack_bonus: '攻击',
     crit_rate_bonus: '暴击',
     defense_bonus: '减伤',
@@ -304,7 +382,8 @@
     exp_bonus: '经验',
     treasure_find: '宝箱',
     ore_bonus: '矿石',
-    luck: '幸运'
+    luck: '幸运',
+    travel_speed: '旅行加速'
   }
 
   const formatRingEffects = (defId: string): string => {
@@ -364,6 +443,87 @@
   const isRingInOtherSlot = (idx: number): boolean => {
     if (activeSlot.value === 'ring1') return inventoryStore.equippedRingSlot2 === idx
     return inventoryStore.equippedRingSlot1 === idx
+  }
+
+  // === 帽子 ===
+
+  const equippedHatName = computed(() => {
+    const hat = inventoryStore.ownedHats[inventoryStore.equippedHatIndex]
+    if (!hat) return null
+    return getHatById(hat.defId)?.name ?? null
+  })
+
+  const formatEquipEffects = (effects: { type: EquipmentEffectType; value: number }[]): string => {
+    return effects
+      .map(e => {
+        const label = RING_EFFECT_SHORT[e.type]
+        return e.value > 0 && e.value < 1 ? `${label}${Math.round(e.value * 100)}%` : `${label}+${e.value}`
+      })
+      .join(' ')
+  }
+
+  const ownedHatList = computed(() =>
+    inventoryStore.ownedHats.map((hat, index) => {
+      const def = getHatById(hat.defId)
+      return {
+        index,
+        name: def?.name ?? hat.defId,
+        effectText: def ? formatEquipEffects(def.effects) : ''
+      }
+    })
+  )
+
+  const handleEquipHatFromPopup = (index: number) => {
+    if (inventoryStore.equipHat(index)) {
+      const def = getHatById(inventoryStore.ownedHats[index]!.defId)
+      addLog(`装备了${def?.name ?? '帽子'}。`)
+      activeSlot.value = null
+    }
+  }
+
+  const handleUnequipHatFromPopup = () => {
+    const idx = inventoryStore.equippedHatIndex
+    const def = idx >= 0 ? getHatById(inventoryStore.ownedHats[idx]!.defId) : null
+    if (inventoryStore.unequipHat()) {
+      addLog(`卸下了${def?.name ?? '帽子'}。`)
+      activeSlot.value = null
+    }
+  }
+
+  // === 鞋子 ===
+
+  const equippedShoeName = computed(() => {
+    const shoe = inventoryStore.ownedShoes[inventoryStore.equippedShoeIndex]
+    if (!shoe) return null
+    return getShoeById(shoe.defId)?.name ?? null
+  })
+
+  const ownedShoeList = computed(() =>
+    inventoryStore.ownedShoes.map((shoe, index) => {
+      const def = getShoeById(shoe.defId)
+      return {
+        index,
+        name: def?.name ?? shoe.defId,
+        effectText: def ? formatEquipEffects(def.effects) : ''
+      }
+    })
+  )
+
+  const handleEquipShoeFromPopup = (index: number) => {
+    if (inventoryStore.equipShoe(index)) {
+      const def = getShoeById(inventoryStore.ownedShoes[index]!.defId)
+      addLog(`装备了${def?.name ?? '鞋子'}。`)
+      activeSlot.value = null
+    }
+  }
+
+  const handleUnequipShoeFromPopup = () => {
+    const idx = inventoryStore.equippedShoeIndex
+    const def = idx >= 0 ? getShoeById(inventoryStore.ownedShoes[idx]!.defId) : null
+    if (inventoryStore.unequipShoe()) {
+      addLog(`卸下了${def?.name ?? '鞋子'}。`)
+      activeSlot.value = null
+    }
   }
 
   // === 技能 ===

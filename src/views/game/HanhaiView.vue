@@ -43,7 +43,7 @@
           :class="{ 'bg-accent! text-bg!': activeTab === 'casino' }"
           @click="activeTab = 'casino'"
         >
-          赌坊
+          瀚海赌坊
         </button>
       </div>
 
@@ -63,6 +63,11 @@
             <span class="text-xs text-accent ml-2 shrink-0">{{ item.price }}文</span>
           </div>
         </div>
+        <!-- 藏宝图寻宝 -->
+        <button v-if="treasureMapCount > 0" class="btn text-xs w-full justify-center mt-2" @click="handleUseTreasureMap">
+          <Map :size="12" />
+          使用藏宝图寻宝（{{ treasureMapCount }}张）
+        </button>
       </template>
 
       <!-- 赌坊 -->
@@ -180,6 +185,42 @@
               </button>
             </div>
           </div>
+
+          <!-- 瀚海扑克 -->
+          <div class="border border-accent/20 rounded-xs p-2">
+            <p class="text-xs text-accent mb-2 flex items-center gap-1">
+              <Spade :size="12" />
+              瀚海扑克
+            </p>
+            <p class="text-xs text-muted mb-2">选择场次入场，入场费即筹码，每局抽水给荷官</p>
+            <div class="flex flex-col gap-1">
+              <div
+                v-for="t in TEXAS_TIERS"
+                :key="t.id"
+                class="flex items-center justify-between border border-accent/10 rounded-xs px-2 py-1.5"
+              >
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs">{{ t.name }}</p>
+                  <p class="text-xs text-muted">入场{{ t.entryFee }}文 + 抽水{{ t.rake }}文 · 盲注{{ t.blind }} · {{ t.rounds }}手</p>
+                </div>
+                <button class="btn text-xs ml-2 shrink-0" :disabled="playerStore.money < t.minMoney" @click="handleTexas(t.id)">
+                  {{ playerStore.money < t.minMoney ? `需${t.minMoney}文` : '入场' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 恶魔轮盘 -->
+          <div class="border border-accent/20 rounded-xs p-2">
+            <p class="text-xs text-accent mb-2 flex items-center gap-1">
+              <Crosshair :size="12" />
+              恶魔轮盘
+            </p>
+            <p class="text-xs text-muted mb-2">投注{{ BUCKSHOT_BET_AMOUNT }}文，与庄家轮流开枪，胜者得{{ BUCKSHOT_WIN_MULTIPLIER }}倍</p>
+            <button class="btn text-xs w-full justify-center" :disabled="playerStore.money < BUCKSHOT_BET_AMOUNT" @click="handleBuckshot">
+              挑战
+            </button>
+          </div>
         </div>
       </template>
 
@@ -261,17 +302,11 @@
           <!-- 结果 -->
           <template v-if="roulettePhase === 'done' && rouletteAnimResult">
             <div class="border border-accent/10 rounded-xs p-3 text-center mb-3">
-              <p
-                class="text-sm mb-0.5"
-                :class="
-                  rouletteAnimResult.multiplier > 1 ? 'text-success' : rouletteAnimResult.multiplier === 0 ? 'text-danger' : 'text-muted'
-                "
-              >
-                {{ rouletteAnimResult.multiplier >= 2 ? '大赢！' : rouletteAnimResult.multiplier > 0 ? '收回' : '落空…' }}
+              <p class="text-sm mb-0.5" :class="rouletteAnimResult.multiplier > 0 ? 'text-success' : 'text-danger'">
+                {{ rouletteAnimResult.multiplier > 0 ? '大赢！' : '落空…' }}
               </p>
-              <p v-if="rouletteAnimResult.multiplier > 1" class="text-xs text-success">+{{ rouletteAnimResult.winnings }}文</p>
-              <p v-else-if="rouletteAnimResult.multiplier === 0" class="text-xs text-danger">-{{ rouletteBetAmount }}文</p>
-              <p v-else class="text-xs text-muted">{{ rouletteAnimResult.winnings }}文</p>
+              <p v-if="rouletteAnimResult.multiplier > 0" class="text-xs text-success">+{{ rouletteAnimResult.winnings }}文</p>
+              <p v-else class="text-xs text-danger">-{{ rouletteBetAmount }}文</p>
             </div>
             <button class="btn text-xs w-full justify-center" @click="showRouletteModal = false">确定</button>
           </template>
@@ -539,13 +574,27 @@
         </div>
       </div>
     </Transition>
+
+    <!-- 瀚海扑克弹窗 -->
+    <Transition name="panel-fade">
+      <div v-if="showTexasModal && texasSetup" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <TexasHoldemGame :setup="texasSetup" @complete="handleTexasComplete" />
+      </div>
+    </Transition>
+
+    <!-- 恶魔轮盘弹窗 -->
+    <Transition name="panel-fade">
+      <div v-if="showBuckshotModal && buckshotSetup" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <BuckshotRouletteGame :setup="buckshotSetup" @complete="handleBuckshotComplete" />
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import { Tent, X, Dices, Trophy, Bug, Gem, Check, CircleDot } from 'lucide-vue-next'
-  import { useHanhaiStore, usePlayerStore, useMiningStore } from '@/stores'
+  import { ref, computed, onMounted, onUnmounted } from 'vue'
+  import { Tent, X, Dices, Trophy, Bug, Gem, Check, CircleDot, Spade, Crosshair, Map } from 'lucide-vue-next'
+  import { useHanhaiStore, usePlayerStore, useMiningStore, useInventoryStore } from '@/stores'
   import {
     HANHAI_SHOP_ITEMS,
     ROULETTE_BET_TIERS,
@@ -560,19 +609,53 @@
     CRICKETS,
     CARD_BET_AMOUNT,
     CARD_TOTAL,
-    CARD_TREASURE_COUNT
+    CARD_TREASURE_COUNT,
+    TEXAS_TIERS,
+    BUCKSHOT_BET_AMOUNT,
+    BUCKSHOT_WIN_MULTIPLIER
   } from '@/data/hanhai'
-  import type { HanhaiShopItemDef, CricketDef } from '@/types'
+  import type { HanhaiShopItemDef, CricketDef, TexasSetup, TexasTierId, BuckshotSetup } from '@/types'
   import { addLog } from '@/composables/useGameLog'
+  import { useAudio } from '@/composables/useAudio'
+  import {
+    sfxRouletteSpin,
+    sfxRouletteStop,
+    sfxRouletteTick,
+    sfxDiceRoll,
+    sfxDiceLand,
+    sfxDiceTick,
+    sfxCupShuffle,
+    sfxCupReveal,
+    sfxCupTick,
+    sfxCricketChirp,
+    sfxCricketClash,
+    sfxCricketTick,
+    sfxCardFlip,
+    sfxCasinoWin,
+    sfxCasinoLose,
+    sfxBuy
+  } from '@/composables/useAudio'
+  import TexasHoldemGame from '@/components/game/TexasHoldemGame.vue'
+  import BuckshotRouletteGame from '@/components/game/BuckshotRouletteGame.vue'
 
   // suppress unused warnings for template-only refs
   void CRICKET_WIN_MULTIPLIER
   void CARD_TREASURE_COUNT
+  void BUCKSHOT_WIN_MULTIPLIER
 
   const hanhaiStore = useHanhaiStore()
   const playerStore = usePlayerStore()
+  const { startHanhaiBgm, endHanhaiBgm } = useAudio()
   const activeTab = ref<'shop' | 'casino'>('shop')
   const shopModalItem = ref<HanhaiShopItemDef | null>(null)
+
+  onMounted(() => {
+    startHanhaiBgm()
+  })
+
+  onUnmounted(() => {
+    endHanhaiBgm()
+  })
 
   // === 解锁逻辑 ===
   const miningStore = useMiningStore()
@@ -633,26 +716,45 @@
   const handleBuyItem = (itemId: string) => {
     const result = hanhaiStore.buyShopItem(itemId)
     if (result.success) {
+      sfxBuy()
       addLog(result.message)
       shopModalItem.value = null
     }
   }
 
+  // === 藏宝图 ===
+  const inventoryStore = useInventoryStore()
+  const treasureMapCount = computed(() => inventoryStore.getItemCount('hanhai_map'))
+  const handleUseTreasureMap = () => {
+    const result = hanhaiStore.useTreasureMap()
+    if (result.success) {
+      sfxCasinoWin()
+    }
+  }
+
   // === 轮盘逻辑 ===
   const startRouletteSpin = (targetIndex: number) => {
-    const fullCycles = 3
-    const totalSteps = fullCycles * ROULETTE_OUTCOMES.length + targetIndex + Math.floor(Math.random() * 6)
+    const len = ROULETTE_OUTCOMES.length
+    const fullCycles = 3 + Math.floor(Math.random() * 2) // 3~4 圈增加随机感
+    const totalSteps = fullCycles * len + targetIndex
     let step = 0
 
     const tick = () => {
-      rouletteHighlight.value = step % ROULETTE_OUTCOMES.length
-      step++
+      rouletteHighlight.value = step % len
+      sfxRouletteTick()
 
-      if (step > totalSteps) {
-        roulettePhase.value = 'done'
+      if (step >= totalSteps) {
+        // 动画结束，停在 targetIndex 上，延迟显示结果
+        sfxRouletteStop()
+        setTimeout(() => {
+          roulettePhase.value = 'done'
+          if (rouletteAnimResult.value && rouletteAnimResult.value.multiplier > 0) sfxCasinoWin()
+          else sfxCasinoLose()
+        }, 400)
         return
       }
 
+      step++
       const remaining = totalSteps - step
       let delay: number
       if (remaining > 10) delay = 60
@@ -676,6 +778,7 @@
     roulettePhase.value = 'spinning'
     rouletteHighlight.value = 0
     showRouletteModal.value = true
+    sfxRouletteSpin()
 
     const targetIndex = ROULETTE_OUTCOMES.findIndex(o => o.multiplier === result.multiplier)
     startRouletteSpin(targetIndex >= 0 ? targetIndex : 0)
@@ -689,13 +792,17 @@
     const tick = () => {
       if (step < totalSteps) {
         diceDisplay.value = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1]
+        sfxDiceTick()
         step++
         const delay = step < 8 ? 80 : step < 11 ? 150 : 250
         setTimeout(tick, delay)
       } else {
         diceDisplay.value = [finalDice1, finalDice2]
+        sfxDiceLand()
         setTimeout(() => {
           dicePhase.value = 'done'
+          if (diceAnimResult.value?.won) sfxCasinoWin()
+          else sfxCasinoLose()
         }, 500)
       }
     }
@@ -712,6 +819,7 @@
     dicePhase.value = 'rolling'
     diceDisplay.value = [1, 1]
     showDiceModal.value = true
+    sfxDiceRoll()
 
     startDiceRoll(result.dice1, result.dice2)
   }
@@ -724,13 +832,17 @@
     const tick = () => {
       if (step < totalSteps) {
         cupShuffleIndex.value = Math.floor(Math.random() * 3)
+        sfxCupTick()
         step++
         const delay = step < 6 ? 100 : step < 10 ? 180 : 300
         setTimeout(tick, delay)
       } else {
         cupShuffleIndex.value = -1
+        sfxCupReveal()
         setTimeout(() => {
           cupPhase.value = 'done'
+          if (cupAnimResult.value?.won) sfxCasinoWin()
+          else sfxCasinoLose()
         }, 400)
       }
     }
@@ -747,6 +859,7 @@
     cupPhase.value = 'shuffling'
     cupShuffleIndex.value = 0
     showCupModal.value = true
+    sfxCupShuffle()
 
     startCupShuffle()
   }
@@ -759,12 +872,16 @@
     const tick = () => {
       if (step < totalSteps) {
         cricketDisplayPower.value = [Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1]
+        sfxCricketTick()
         step++
         const delay = step < 6 ? 120 : step < 10 ? 200 : 350
         setTimeout(tick, delay)
       } else {
+        sfxCricketClash()
         setTimeout(() => {
           cricketPhase.value = 'done'
+          if (cricketAnimResult.value?.won) sfxCasinoWin()
+          else if (!cricketAnimResult.value?.draw) sfxCasinoLose()
         }, 400)
       }
     }
@@ -787,6 +904,7 @@
     cricketPhase.value = 'fighting'
     cricketDisplayPower.value = [5, 5]
     showCricketModal.value = true
+    sfxCricketChirp()
 
     startCricketFight()
   }
@@ -804,6 +922,7 @@
     const tick = () => {
       if (step < order.length) {
         cardFlipIndex.value = order[step]!
+        sfxCardFlip()
         step++
         const delay = step === 1 ? 600 : 300
         setTimeout(tick, delay)
@@ -811,6 +930,8 @@
         cardFlipIndex.value = -1
         setTimeout(() => {
           cardPhase.value = 'done'
+          if (cardAnimResult.value?.won) sfxCasinoWin()
+          else sfxCasinoLose()
         }, 200)
       }
     }
@@ -829,6 +950,38 @@
     showCardModal.value = true
 
     startCardFlip(pick)
+  }
+
+  // === 瀚海扑克 ===
+  const showTexasModal = ref(false)
+  const texasSetup = ref<TexasSetup | null>(null)
+
+  const handleTexas = (tierId: TexasTierId) => {
+    const result = hanhaiStore.startTexas(tierId)
+    if (!result.success) return
+    texasSetup.value = result as TexasSetup
+    showTexasModal.value = true
+  }
+
+  const handleTexasComplete = (finalChips: number, tierName: string) => {
+    hanhaiStore.endTexas(finalChips, tierName)
+    showTexasModal.value = false
+  }
+
+  // === 恶魔轮盘 ===
+  const showBuckshotModal = ref(false)
+  const buckshotSetup = ref<BuckshotSetup | null>(null)
+
+  const handleBuckshot = () => {
+    const result = hanhaiStore.startBuckshot()
+    if (!result.success) return
+    buckshotSetup.value = result as BuckshotSetup
+    showBuckshotModal.value = true
+  }
+
+  const handleBuckshotComplete = (won: boolean, draw: boolean) => {
+    hanhaiStore.endBuckshot(won, draw)
+    showBuckshotModal.value = false
   }
 </script>
 

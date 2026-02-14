@@ -4,9 +4,15 @@ import { FISH } from './fish'
 import { RECIPES } from './recipes'
 import { PROCESSING_MACHINES, SPRINKLERS, FERTILIZERS, BAITS, TACKLES, BOMBS } from './processing'
 import { FRUIT_TREE_DEFS } from './fruitTrees'
+import { WEAPONS, getWeaponSellPrice } from './weapons'
+import { RINGS } from './rings'
+import { HATS } from './hats'
+import { SHOES } from './shoes'
 
-/** 从作物定义自动生成种子物品 */
-const SEED_ITEMS: ItemDef[] = CROPS.map(crop => ({
+/** 从作物定义自动生成种子物品（排除已手动定义的种子） */
+const SEED_ITEMS: ItemDef[] = CROPS
+  .filter(crop => crop.seedId !== 'ancient_seed' && crop.seedId !== 'hanhai_cactus_seed' && crop.seedId !== 'hanhai_date_seed')
+  .map(crop => ({
   id: crop.seedId,
   name: `${crop.name}种子`,
   category: 'seed',
@@ -97,6 +103,14 @@ const MISC_ITEMS: ItemDef[] = [
     category: 'gift',
     description: '精心绣制的丝帕，用来向心仪之人表达心意。',
     sellPrice: 200,
+    edible: false
+  },
+  {
+    id: 'zhiji_jade',
+    name: '知己玉佩',
+    category: 'gift',
+    description: '一对精心雕琢的玉佩，赠予同性挚友可结为知己。',
+    sellPrice: 300,
     edible: false
   },
   { id: 'scarecrow', name: '稻草人', category: 'machine', description: '放置在农场，驱赶偷吃作物的乌鸦。', sellPrice: 75, edible: false },
@@ -1091,6 +1105,46 @@ const INCENSE_ITEMS: ItemDef[] = [
   { id: 'osmanthus_incense', name: '桂花香', category: 'gift', description: '馥郁的桂花香。', sellPrice: 350, edible: false }
 ]
 
+/** 武器图鉴物品 */
+const WEAPON_ITEMS: ItemDef[] = Object.values(WEAPONS).map(w => ({
+  id: w.id,
+  name: w.name,
+  category: 'weapon' as const,
+  description: w.description,
+  sellPrice: getWeaponSellPrice(w.id, null),
+  edible: false
+}))
+
+/** 戒指图鉴物品 */
+const RING_ITEMS: ItemDef[] = RINGS.map(r => ({
+  id: r.id,
+  name: r.name,
+  category: 'ring' as const,
+  description: r.description,
+  sellPrice: r.sellPrice,
+  edible: false
+}))
+
+/** 帽子图鉴物品 */
+const HAT_ITEMS: ItemDef[] = HATS.map(h => ({
+  id: h.id,
+  name: h.name,
+  category: 'hat' as const,
+  description: h.description,
+  sellPrice: h.sellPrice,
+  edible: false
+}))
+
+/** 鞋子图鉴物品 */
+const SHOE_ITEMS: ItemDef[] = SHOES.map(s => ({
+  id: s.id,
+  name: s.name,
+  category: 'shoe' as const,
+  description: s.description,
+  sellPrice: s.sellPrice,
+  edible: false
+}))
+
 /** 所有物品定义 */
 export const ITEMS: ItemDef[] = [
   ...SEED_ITEMS,
@@ -1126,6 +1180,12 @@ export const ITEMS: ItemDef[] = [
   ...FEED_ITEMS,
   ...INCENSE_ITEMS,
 
+  // 装备图鉴
+  ...WEAPON_ITEMS,
+  ...RING_ITEMS,
+  ...HAT_ITEMS,
+  ...SHOE_ITEMS,
+
   // 淘金产出
   { id: 'gold_nugget', name: '金砂', category: 'misc', description: '河中淘得的金砂，闪闪发光。', sellPrice: 80, edible: false },
 
@@ -1146,7 +1206,7 @@ export const ITEMS: ItemDef[] = [
   { id: 'ancient_coin', name: '远古铜钱', category: 'artifact', description: '不知名朝代的古铜钱。', sellPrice: 150, edible: false },
   { id: 'oracle_bone', name: '甲骨片', category: 'artifact', description: '刻有卜辞的远古甲骨。', sellPrice: 300, edible: false },
   { id: 'jade_pendant', name: '玉佩', category: 'artifact', description: '温润如玉的远古佩饰。', sellPrice: 220, edible: false },
-  { id: 'ancient_seed', name: '远古种子', category: 'artifact', description: '蕴含远古生命力的神秘种子。', sellPrice: 400, edible: false },
+  { id: 'ancient_seed', name: '远古种子', category: 'artifact', description: '蕴含远古生命力的神秘种子，据说能种出远古水果。', sellPrice: 400, edible: false },
   { id: 'bamboo_scroll', name: '竹简', category: 'artifact', description: '刻有古文的竹简残片。', sellPrice: 180, edible: false },
   { id: 'stone_axe_head', name: '石斧头', category: 'artifact', description: '远古先民使用的石斧头。', sellPrice: 120, edible: false },
   { id: 'painted_pottery', name: '彩陶碎片', category: 'artifact', description: '绘有精美纹饰的彩陶碎片。', sellPrice: 200, edible: false },
@@ -1201,11 +1261,11 @@ export const ITEMS: ItemDef[] = [
     id: 'hanhai_cactus_seed',
     name: '仙人掌种子',
     category: 'seed',
-    description: '来自西域的奇特植物种子。',
+    description: '来自西域的奇特植物种子，夏季可种植。',
     sellPrice: 250,
     edible: false
   },
-  { id: 'hanhai_date_seed', name: '红枣种子', category: 'seed', description: '丝绸之路带来的果树种子。', sellPrice: 200, edible: false },
+  { id: 'hanhai_date_seed', name: '红枣种子', category: 'seed', description: '丝绸之路带来的果树种子，夏/秋季可种植。', sellPrice: 200, edible: false },
   { id: 'hanhai_spice', name: '西域香料', category: 'material', description: '异域风情的香料，烹饪佳品。', sellPrice: 150, edible: false },
   { id: 'hanhai_silk', name: '丝绸', category: 'material', description: '细腻光滑的上等丝绸。', sellPrice: 400, edible: false },
   { id: 'hanhai_turquoise', name: '绿松石', category: 'gem', description: '西域特产的珍贵宝石。', sellPrice: 300, edible: false },

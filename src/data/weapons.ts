@@ -295,6 +295,122 @@ export const WEAPONS: Record<string, WeaponDef> = {
     shopPrice: null,
     shopMaterials: [],
     fixedEnchantment: 'fierce'
+  },
+
+  // === 新增商店武器 ===
+  bamboo_staff: {
+    id: 'bamboo_staff',
+    name: '竹杖',
+    type: 'club',
+    attack: 10,
+    critRate: 0.03,
+    description: '坚韧的毛竹削成的长杖，轻便趁手。',
+    shopPrice: 400,
+    shopMaterials: [{ itemId: 'bamboo', quantity: 5 }],
+    fixedEnchantment: null
+  },
+  iron_dagger: {
+    id: 'iron_dagger',
+    name: '铁匕',
+    type: 'dagger',
+    attack: 14,
+    critRate: 0.15,
+    description: '精铁打磨的短匕，出手极快。',
+    shopPrice: 600,
+    shopMaterials: [{ itemId: 'iron_ore', quantity: 3 }],
+    fixedEnchantment: null
+  },
+  golden_fan: {
+    id: 'golden_fan',
+    name: '金扇',
+    type: 'sword',
+    attack: 26,
+    critRate: 0.1,
+    description: '镶金铁骨扇，展开如刃，合拢如棍。',
+    shopPrice: 2000,
+    shopMaterials: [{ itemId: 'gold_ore', quantity: 5 }],
+    fixedEnchantment: null
+  },
+  obsidian_blade: {
+    id: 'obsidian_blade',
+    name: '黑曜刀',
+    type: 'sword',
+    attack: 38,
+    critRate: 0.08,
+    description: '黑曜石锻造的弯刀，刀锋削铁如泥。',
+    shopPrice: 4000,
+    shopMaterials: [{ itemId: 'shadow_ore', quantity: 5 }],
+    fixedEnchantment: null
+  },
+
+  // === 新增怪物掉落武器 ===
+  slime_mace: {
+    id: 'slime_mace',
+    name: '粘液锤',
+    type: 'club',
+    attack: 7,
+    critRate: 0.02,
+    description: '凝固的粘液核心，意外地沉重。',
+    shopPrice: null,
+    shopMaterials: [],
+    fixedEnchantment: null
+  },
+  magma_blade: {
+    id: 'magma_blade',
+    name: '熔岩刃',
+    type: 'sword',
+    attack: 21,
+    critRate: 0.08,
+    description: '岩浆凝结的短刃，仍散发余热。',
+    shopPrice: null,
+    shopMaterials: [],
+    fixedEnchantment: null
+  },
+  prism_dagger: {
+    id: 'prism_dagger',
+    name: '棱晶匕',
+    type: 'dagger',
+    attack: 28,
+    critRate: 0.22,
+    description: '水晶碎片天然形成的锐利匕首。',
+    shopPrice: null,
+    shopMaterials: [],
+    fixedEnchantment: null
+  },
+  void_fang_dagger: {
+    id: 'void_fang_dagger',
+    name: '虚空之牙',
+    type: 'dagger',
+    attack: 42,
+    critRate: 0.25,
+    description: '深渊巨蟒的毒牙，蕴含腐蚀之力。',
+    shopPrice: null,
+    shopMaterials: [],
+    fixedEnchantment: null
+  },
+
+  // === 新增宝箱掉落武器 ===
+  jade_sword: {
+    id: 'jade_sword',
+    name: '翡翠长剑',
+    type: 'sword',
+    attack: 22,
+    critRate: 0.1,
+    description: '宝箱中沉睡的古剑，翠光流转。',
+    shopPrice: null,
+    shopMaterials: [],
+    fixedEnchantment: null
+  },
+  ancient_blade: {
+    id: 'ancient_blade',
+    name: '古神剑',
+    type: 'sword',
+    attack: 50,
+    critRate: 0.15,
+    description: '远古遗迹中发现的神秘长剑，威能不减。',
+    shopPrice: null,
+    shopMaterials: [],
+    fixedEnchantment: null
   }
 }
 
@@ -303,12 +419,24 @@ export const SHOP_WEAPONS: WeaponDef[] = Object.values(WEAPONS).filter(w => w.sh
 
 /** 各区域怪物可掉落的武器 ID */
 export const MONSTER_DROP_WEAPONS: Record<string, { weaponId: string; chance: number }[]> = {
-  shallow: [{ weaponId: 'bone_dagger', chance: 0.05 }],
+  shallow: [
+    { weaponId: 'bone_dagger', chance: 0.05 },
+    { weaponId: 'slime_mace', chance: 0.03 }
+  ],
   frost: [{ weaponId: 'frost_dagger', chance: 0.05 }],
-  lava: [{ weaponId: 'shadow_blade', chance: 0.05 }],
-  crystal: [{ weaponId: 'crystal_shard_dagger', chance: 0.05 }],
+  lava: [
+    { weaponId: 'shadow_blade', chance: 0.05 },
+    { weaponId: 'magma_blade', chance: 0.04 }
+  ],
+  crystal: [
+    { weaponId: 'crystal_shard_dagger', chance: 0.05 },
+    { weaponId: 'prism_dagger', chance: 0.04 }
+  ],
   shadow: [{ weaponId: 'shadow_katana', chance: 0.05 }],
-  abyss: [{ weaponId: 'void_hammer', chance: 0.05 }]
+  abyss: [
+    { weaponId: 'void_hammer', chance: 0.05 },
+    { weaponId: 'void_fang_dagger', chance: 0.03 }
+  ]
 }
 
 /** BOSS 掉落武器映射 */
@@ -352,4 +480,14 @@ export const getWeaponDisplayName = (defId: string, enchantmentId: string | null
   const enchant = ENCHANTMENTS[enchantmentId]
   if (!enchant) return weapon.name
   return `${enchant.name}的${weapon.name}`
+}
+
+/** 宝箱掉落武器（按矿洞区域） */
+export const TREASURE_DROP_WEAPONS: Record<string, { weaponId: string; chance: number }[]> = {
+  shallow: [],
+  frost: [{ weaponId: 'jade_sword', chance: 0.05 }],
+  lava: [{ weaponId: 'jade_sword', chance: 0.04 }],
+  crystal: [],
+  shadow: [{ weaponId: 'ancient_blade', chance: 0.03 }],
+  abyss: [{ weaponId: 'ancient_blade', chance: 0.025 }]
 }

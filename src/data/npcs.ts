@@ -12,8 +12,8 @@ export const NPCS: NpcDef[] = [
     role: '万物铺老板',
     personality: '热心豪爽',
     birthday: { season: 'spring', day: 8 },
-    lovedItems: ['tea', 'osmanthus'],
-    likedItems: ['cabbage', 'rice', 'potato', 'goat_milk', 'truffle', 'rabbit_foot'],
+    lovedItems: ['tea', 'osmanthus', 'ginseng'],
+    likedItems: ['cabbage', 'rice', 'potato', 'goat_milk', 'truffle', 'rabbit_foot', 'hanhai_spice'],
     hatedItems: ['copper_ore', 'quartz'],
     dialogues: {
       stranger: ['客官，初来乍到吧？老朽陈伯，万物铺就是我开的。', '{title}，有什么需要的尽管来，童叟无欺。'],
@@ -30,7 +30,7 @@ export const NPCS: NpcDef[] = [
     personality: '温柔聪慧',
     birthday: { season: 'summer', day: 14 },
     lovedItems: ['chrysanthemum', 'osmanthus', 'peacock_feather'],
-    likedItems: ['tea', 'wintersweet', 'rabbit_fur', 'rabbit_foot'],
+    likedItems: ['tea', 'wintersweet', 'rabbit_fur', 'rabbit_foot', 'hanhai_silk'],
     hatedItems: ['iron_ore', 'firewood'],
     dialogues: {
       stranger: ['你好，你是新来的田庄主人吧？我是柳娘。', '桃源乡很美的，{title}你会喜欢这里。'],
@@ -44,7 +44,13 @@ export const NPCS: NpcDef[] = [
       '今天想和{player}一起去溪边散步呢。',
       '{title}，我给你绣了个香囊，随身带着吧。',
       '能和{player}在一起的每一天，都像诗里写的那样美好。'
-    ]
+    ],
+    zhijiDialogues: [
+      '和{player}一起读诗的午后，是我最珍贵的时光。',
+      '有些话只想说给知己听……{title}，谢谢你一直在。',
+      '红颜知己，一世难求。遇见{player}是我的福气。'
+    ],
+    zhijiHeartEventIds: ['liu_niang_zhiji_7', 'liu_niang_zhiji_9']
   },
   {
     id: 'a_shi',
@@ -53,7 +59,7 @@ export const NPCS: NpcDef[] = [
     role: '矿工',
     personality: '沉默寡言',
     birthday: { season: 'autumn', day: 5 },
-    lovedItems: ['ruby', 'jade'],
+    lovedItems: ['ruby', 'jade', 'hanhai_turquoise'],
     likedItems: ['gold_ore', 'iron_ore', 'potato', 'rabbit_foot'],
     hatedItems: ['chrysanthemum', 'wintersweet'],
     dialogues: {
@@ -68,7 +74,9 @@ export const NPCS: NpcDef[] = [
       '……{player}，这块矿石很漂亮。像你的眼睛。',
       '以前觉得矿洞最好，现在……有{title}在的地方更好。',
       '我不太会说话……但{player}在身边就够了。'
-    ]
+    ],
+    zhijiDialogues: ['……有你在旁边挖矿，效率好像变高了。', '{player}，这块矿石……只有知己才配拥有。', '不用说话也很自在……这就是知己吧。'],
+    zhijiHeartEventIds: ['a_shi_zhiji_7', 'a_shi_zhiji_9']
   },
   {
     id: 'qiu_yue',
@@ -92,7 +100,13 @@ export const NPCS: NpcDef[] = [
       '{player}！今天的夕阳好美，我们一起看嘛！',
       '嘿嘿，{title}是我的了，别人不许抢。',
       '以后每天都一起钓鱼好不好？就我们两个！'
-    ]
+    ],
+    zhijiDialogues: [
+      '{player}！今天一起去钓鱼吧！只有知己才能去我的秘密钓点！',
+      '嘿嘿，有什么心事都可以跟我说！我们可是知己！',
+      '以后不管去哪儿，都带上{title}！'
+    ],
+    zhijiHeartEventIds: ['qiu_yue_zhiji_7', 'qiu_yue_zhiji_9']
   },
   {
     id: 'lin_lao',
@@ -102,7 +116,7 @@ export const NPCS: NpcDef[] = [
     personality: '慈祥博学',
     birthday: { season: 'autumn', day: 22 },
     lovedItems: ['herb', 'tea', 'antler_velvet'],
-    likedItems: ['winter_bamboo_shoot', 'bamboo', 'yak_milk', 'camel_milk', 'rabbit_foot'],
+    likedItems: ['winter_bamboo_shoot', 'bamboo', 'yak_milk', 'camel_milk', 'rabbit_foot', 'hanhai_spice'],
     hatedItems: ['ruby', 'gold_ore'],
     dialogues: {
       stranger: ['年轻人，初来此地，水土可还习惯？', '老夫行医数十载，{title}有什么不舒服的尽管说。'],
@@ -140,7 +154,7 @@ export const NPCS: NpcDef[] = [
     personality: '温婉端庄',
     birthday: { season: 'spring', day: 3 },
     lovedItems: ['tea', 'osmanthus', 'chrysanthemum'],
-    likedItems: ['honey', 'lotus_seed', 'peach', 'rabbit_foot'],
+    likedItems: ['honey', 'lotus_seed', 'peach', 'rabbit_foot', 'hanhai_silk'],
     hatedItems: ['iron_ore', 'copper_ore'],
     dialogues: {
       stranger: ['请进，喝杯茶吧。我是春兰，这茶庄是祖上传下来的。', '{title}若喜欢喝茶，以后常来坐坐。'],
@@ -154,7 +168,13 @@ export const NPCS: NpcDef[] = [
       '这盏茶，是我为{player}特别调配的，尝尝看。',
       '和{title}品茶的午后，是我最珍贵的时光。',
       '{player}，以后的每一天，都愿与你共饮一壶清茶。'
-    ]
+    ],
+    zhijiDialogues: [
+      '这盏茶，只为知己而沏。{player}请慢用。',
+      '茶庄的事，以前只有我一个人扛。有{title}在，轻松了许多。',
+      '红颜知己共品茗，人生至乐莫过于此。'
+    ],
+    zhijiHeartEventIds: ['chun_lan_zhiji_7', 'chun_lan_zhiji_9']
   },
   {
     id: 'xue_qin',
@@ -164,7 +184,7 @@ export const NPCS: NpcDef[] = [
     personality: '孤傲清高',
     birthday: { season: 'winter', day: 10 },
     lovedItems: ['snow_lotus', 'moonstone'],
-    likedItems: ['chrysanthemum', 'wintersweet', 'bamboo', 'rabbit_foot'],
+    likedItems: ['chrysanthemum', 'wintersweet', 'bamboo', 'rabbit_foot', 'hanhai_turquoise'],
     hatedItems: ['pickled_cabbage', 'dried_radish'],
     dialogues: {
       stranger: ['……你挡住我的光了。', '不买画的话，请不要碰那些颜料。'],
@@ -178,7 +198,13 @@ export const NPCS: NpcDef[] = [
       '……{player}，你别动，让我画下你现在的样子。',
       '以前只在画里找美，现在……{title}比画更美。',
       '这幅画的名字叫《归处》。因为有你，我有了归处。'
-    ]
+    ],
+    zhijiDialogues: [
+      '……你是唯一能看我画画不让我烦躁的人。知己就是如此吧。',
+      '这幅画的主题是「知音」……灵感来自{player}。',
+      '以前觉得世间无人懂我。现在不这么想了。'
+    ],
+    zhijiHeartEventIds: ['xue_qin_zhiji_7', 'xue_qin_zhiji_9']
   },
   {
     id: 'su_su',
@@ -202,7 +228,13 @@ export const NPCS: NpcDef[] = [
       '我在给{player}做一件衣裳，每一针都是心意。',
       '{title}穿上我做的衣服时，是我最幸福的时刻。',
       '以后只给{player}一个人做衣裳……好不好？'
-    ]
+    ],
+    zhijiDialogues: [
+      '给{player}做的衣裳，每一针都格外用心……因为你是我的知己。',
+      '有心事的时候，想到{title}就安心了。',
+      '知己之间不需要太多言语……但我还是想多和{player}说说话。'
+    ],
+    zhijiHeartEventIds: ['su_su_zhiji_7', 'su_su_zhiji_9']
   },
   {
     id: 'hong_dou',
@@ -226,7 +258,13 @@ export const NPCS: NpcDef[] = [
       '{player}！来，陪我喝一杯！今天的酒特别甜。',
       '嘿，{title}，你是唯一能让我脸红的人。',
       '以后酒庄的酒，全给{player}留着！谁也别想抢！'
-    ]
+    ],
+    zhijiDialogues: [
+      '{player}！来！知己之间喝酒不用客气！干了！',
+      '全天下能跟我拼酒的只有{title}！这就是知己！',
+      '有你这个知己，酒再烈也是甜的。'
+    ],
+    zhijiHeartEventIds: ['hong_dou_zhiji_7', 'hong_dou_zhiji_9']
   },
   {
     id: 'dan_qing',
@@ -250,7 +288,13 @@ export const NPCS: NpcDef[] = [
       '今日写了一首词，是关于{player}的……要听吗？',
       '遇见{title}之前，我以为此生只与书卷为伴。',
       '{player}，"执子之手，与子偕老"，愿与你共赴白头。'
-    ]
+    ],
+    zhijiDialogues: [
+      '高山流水，觅得知音。{player}，你便是我的子期。',
+      '今日又写了一篇新文，第一个想给{title}看。',
+      '有{player}这般知己，纵使布衣一生，又有何憾？'
+    ],
+    zhijiHeartEventIds: ['dan_qing_zhiji_7', 'dan_qing_zhiji_9']
   },
   {
     id: 'a_tie',
@@ -274,7 +318,13 @@ export const NPCS: NpcDef[] = [
       '我、我给{player}打了个铁花……不好看的话就扔掉吧……',
       '有{title}在旁边看着我打铁，感觉锤子都轻了。',
       '{player}……我会努力出师的，然后……照顾你一辈子。'
-    ]
+    ],
+    zhijiDialogues: [
+      '有、有{player}在，我打铁更有劲了！知己就是这样吧！',
+      '我给你打了个新工具，比、比给别人的都结实！',
+      '{title}是我最好的兄弟！……啊不，是知己！'
+    ],
+    zhijiHeartEventIds: ['a_tie_zhiji_7', 'a_tie_zhiji_9']
   },
   {
     id: 'yun_fei',
@@ -298,7 +348,9 @@ export const NPCS: NpcDef[] = [
       '……{player}，今天的月色不错。陪我坐一会儿。',
       '以前我只信自己。现在……也信{title}了。',
       '这座山，以后和{player}一起守。'
-    ]
+    ],
+    zhijiDialogues: ['……以前不信任何人。但你不同，{player}。', '进山的路，只带你一个人走过。这就够了。', '知己……比朋友重，不输兄弟。'],
+    zhijiHeartEventIds: ['yun_fei_zhiji_7', 'yun_fei_zhiji_9']
   },
   {
     id: 'da_niu',
@@ -322,7 +374,13 @@ export const NPCS: NpcDef[] = [
       '{player}！今天小牛犊出生了！我第一个想告诉你！',
       '嘿嘿，和{title}在一起比和牛在一起还开心！',
       '以后咱们的牧场一定是全村最大的！{player}你信不信？'
-    ]
+    ],
+    zhijiDialogues: [
+      '{player}！你是我最铁的兄弟！比福宝还铁！',
+      '有你陪我看牛、淋雨、赶羊……比什么都开心！',
+      '咱俩以后合开牧场吧！知己搭伙，天下无敌！'
+    ],
+    zhijiHeartEventIds: ['da_niu_zhiji_7', 'da_niu_zhiji_9']
   },
   {
     id: 'mo_bai',
@@ -346,7 +404,13 @@ export const NPCS: NpcDef[] = [
       '……{player}，这首曲子只弹给你听。',
       '以前总觉得音乐是孤独的……遇见{title}才明白，也可以是温暖的。',
       '为{player}谱一曲，名字就叫——《归人》。'
-    ]
+    ],
+    zhijiDialogues: [
+      '知音难觅……{player}是唯一能听懂我琴声的人。',
+      '为你谱的曲子越来越多了……知己的力量真奇妙。',
+      '有{title}在的日子，琴声都变得温暖了。'
+    ],
+    zhijiHeartEventIds: ['mo_bai_zhiji_7', 'mo_bai_zhiji_9']
   },
 
   // ============================================================
@@ -393,8 +457,8 @@ export const NPCS: NpcDef[] = [
     role: '铁匠',
     personality: '粗犷豪迈',
     birthday: { season: 'winter', day: 15 },
-    lovedItems: ['gold_ore', 'iridium_ore'],
-    likedItems: ['iron_ore', 'copper_ore', 'crystal_ore', 'rabbit_foot'],
+    lovedItems: ['gold_ore', 'iridium_ore', 'copper_ore'],
+    likedItems: ['iron_ore', 'crystal_ore', 'rabbit_foot'],
     hatedItems: ['chrysanthemum', 'silk'],
     dialogues: {
       stranger: ['打铁的活找我就对了！我是孙铁匠！', '阿铁是我徒弟，手艺还嫩着呢。{title}的工具我亲自来。'],

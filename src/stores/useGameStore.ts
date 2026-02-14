@@ -15,6 +15,7 @@ import {
 } from '@/data/timeConstants'
 import { useCookingStore } from './useCookingStore'
 import { useAnimalStore } from './useAnimalStore'
+import { useInventoryStore } from './useInventoryStore'
 
 /** 季节顺序 */
 const SEASON_ORDER: Season[] = ['spring', 'summer', 'autumn', 'winter']
@@ -145,7 +146,14 @@ export const useGameStore = defineStore('game', () => {
     const baseCost = TRAVEL_TIME[key] ?? 0.5
     // 拥有马减少30%旅行时间
     const animalStore = useAnimalStore()
-    return animalStore.hasHorse ? baseCost * 0.7 : baseCost
+    let multiplier = animalStore.hasHorse ? 0.7 : 1
+    // 装备旅行速度加成（与马叠乘）
+    const inventoryStore = useInventoryStore()
+    const travelSpeedBonus = inventoryStore.getRingEffectValue('travel_speed')
+    if (travelSpeedBonus > 0) {
+      multiplier *= 1 - travelSpeedBonus
+    }
+    return baseCost * multiplier
   }
 
   /** 移动到目标 tab 对应的地点组 */

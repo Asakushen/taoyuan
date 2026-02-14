@@ -8,7 +8,7 @@
     <!-- 准备 -->
     <div v-if="phase === 'ready'">
       <p class="text-xs text-muted mb-3">记住烟花绽放的顺序，然后按顺序点击复现！共5轮，每轮多一个位置，考验你的记忆力！</p>
-      <button class="btn text-xs" @click="startGame">开始烟花会！</button>
+      <button class="btn w-full text-xs" @click="startGame">开始烟花会！</button>
     </div>
 
     <!-- 游戏中 -->
@@ -24,7 +24,7 @@
 
       <!-- 轮数进度点 -->
       <div class="flex justify-center gap-1.5 mb-2">
-        <div v-for="i in 5" :key="i" class="w-2 h-2" :class="roundDotClass(i - 1)"></div>
+        <div v-for="i in 5" :key="i" class="w-2 h-2" :class="roundDotClass(i - 1)" />
       </div>
 
       <p
@@ -37,6 +37,21 @@
       >
         {{ phaseText }}
       </p>
+
+      <!-- 回忆倒计时 -->
+      <div v-if="phase === 'repeating'" class="mb-2">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-xs text-muted">{{ playerInput.length }} / {{ sequence.length }}</p>
+          <p class="text-xs" :class="recallTimeLeft <= 3 ? 'text-danger time-pulse' : 'text-accent'">{{ recallTimeLeft }}s</p>
+        </div>
+        <div class="h-1 bg-bg border border-accent/20">
+          <div
+            class="h-full transition-all duration-1000 ease-linear"
+            :class="recallTimeLeft <= 3 ? 'bg-danger/60' : 'bg-accent/60'"
+            :style="{ width: `${(recallTimeLeft / recallTimeLimit) * 100}%` }"
+          />
+        </div>
+      </div>
 
       <!-- 6个发射位置（2×3网格）夜空背景 -->
       <div class="grid grid-cols-3 gap-2 mb-4 p-2 night-sky border border-accent/10">
@@ -64,10 +79,10 @@
           </div>
 
           <!-- 正确点击反馈 -->
-          <div v-if="correctFlash === i - 1" class="correct-bloom absolute inset-0 bg-success/20"></div>
+          <div v-if="correctFlash === i - 1" class="correct-bloom absolute inset-0 bg-success/20" />
 
           <!-- 错误反馈 -->
-          <div v-if="wrongFlash === i - 1" class="wrong-flash-bg absolute inset-0 bg-danger/20"></div>
+          <div v-if="wrongFlash === i - 1" class="wrong-flash-bg absolute inset-0 bg-danger/20" />
 
           <!-- 位置编号 -->
           <span class="text-xs relative z-10" :class="phase === 'repeating' ? 'text-accent/50' : 'text-accent/20'">{{ i }}</span>
@@ -81,7 +96,7 @@
 
       <!-- 轮数进度点（最终状态） -->
       <div class="flex justify-center gap-1.5 mb-3">
-        <div v-for="i in 5" :key="i" class="w-2 h-2" :class="roundDotClass(i - 1)"></div>
+        <div v-for="i in 5" :key="i" class="w-2 h-2" :class="roundDotClass(i - 1)" />
       </div>
 
       <div class="border border-accent/20 p-3 mb-3 text-center">
@@ -97,7 +112,7 @@
           <span v-if="completedRounds === 5" class="text-accent finish-flash">（全通+200文！）</span>
         </p>
       </div>
-      <button class="btn text-xs" @click="handleClaim">领取奖励</button>
+      <button class="btn w-full text-xs" @click="handleClaim">领取奖励</button>
     </div>
   </div>
 </template>
@@ -105,6 +120,17 @@
 <script setup lang="ts">
   import { ref, computed, onUnmounted } from 'vue'
   import { Sparkles, Sparkle, Asterisk } from 'lucide-vue-next'
+  import {
+    sfxGameStart,
+    sfxRewardClaim,
+    sfxCountdownTick,
+    sfxCountdownFinal,
+    sfxFireworkLaunch,
+    sfxFireworkBoom,
+    sfxMiniPerfect,
+    sfxMiniFail,
+    sfxRankFirst
+  } from '@/composables/useAudio'
 
   const emit = defineEmits<{ complete: [prize: number] }>()
 
@@ -121,11 +147,15 @@
   const wrongFlash = ref(-1)
   /** 记录每轮通过/失败: true=通过, false=失败, null=未到 */
   const roundResults = ref<(boolean | null)[]>([null, null, null, null, null])
+  /** 回忆阶段倒计时 */
+  const recallTimeLeft = ref(0)
+  const recallTimeLimit = ref(0)
 
   const fireworkColors = ['#c8a45c', '#c34043', '#5a9e6f', '#c8a45c', '#c34043', '#5a9e6f']
 
   let showTimeout: ReturnType<typeof setTimeout> | null = null
   let phaseTimeout: ReturnType<typeof setTimeout> | null = null
+  let recallTimer: ReturnType<typeof setInterval> | null = null
 
   const phaseText = computed(() => {
     switch (phase.value) {
@@ -159,6 +189,7 @@
   }
 
   const startGame = () => {
+    sfxGameStart()
     round.value = 0
     score.value = 0
     completedRounds.value = 0
@@ -172,19 +203,45 @@
     playerInput.value = []
     phase.value = 'watching'
 
+    // 展示间隔随轮次加快: 第1轮500ms → 第5轮350ms
+    const showDelay = Math.max(350, 500 - round.value * 40)
+    const flashDuration = Math.max(350, 500 - round.value * 40)
+
     // 展示序列
     let idx = 0
     const showNext = () => {
       if (idx < sequence.value.length) {
         activeFirework.value = sequence.value[idx]!
+        sfxFireworkLaunch()
+        setTimeout(() => sfxFireworkBoom(), 200)
         showTimeout = setTimeout(() => {
           activeFirework.value = -1
           idx++
-          showTimeout = setTimeout(showNext, 300)
-        }, 600)
+          showTimeout = setTimeout(showNext, showDelay * 0.5)
+        }, flashDuration)
       } else {
-        // 展示完毕，进入玩家输入
+        // 展示完毕，进入玩家输入，开始倒计时
         phase.value = 'repeating'
+        // 回忆时间: 基础5秒 + 每个位置1.5秒，随轮次略减
+        const timePerSlot = Math.max(1.0, 1.5 - round.value * 0.1)
+        recallTimeLimit.value = Math.ceil(5 + seqLength * timePerSlot)
+        recallTimeLeft.value = recallTimeLimit.value
+        recallTimer = setInterval(() => {
+          recallTimeLeft.value--
+          if (recallTimeLeft.value <= 3 && recallTimeLeft.value > 0) sfxCountdownFinal()
+          else if (recallTimeLeft.value > 3) sfxCountdownTick()
+          if (recallTimeLeft.value <= 0) {
+            // 超时，本轮失败
+            sfxMiniFail()
+            if (recallTimer) clearInterval(recallTimer)
+            recallTimer = null
+            roundResults.value[round.value] = false
+            phase.value = 'round_fail'
+            phaseTimeout = setTimeout(() => {
+              phase.value = 'finished'
+            }, 1200)
+          }
+        }, 1000)
       }
     }
     showTimeout = setTimeout(showNext, 500)
@@ -198,6 +255,7 @@
 
     if (idx === expected) {
       // 正确
+      sfxFireworkBoom()
       playerInput.value.push(idx)
       correctFlash.value = idx
       activeFirework.value = idx
@@ -208,15 +266,19 @@
 
       if (playerInput.value.length === sequence.value.length) {
         // 本轮全部正确
+        if (recallTimer) clearInterval(recallTimer)
+        recallTimer = null
         completedRounds.value++
         score.value += 150
         roundResults.value[round.value] = true
+        sfxMiniPerfect()
         phase.value = 'round_success'
 
         phaseTimeout = setTimeout(() => {
           round.value++
           if (round.value >= 5) {
             score.value += 200 // 全通奖励
+            sfxRankFirst()
             phase.value = 'finished'
           } else {
             startRound()
@@ -225,10 +287,13 @@
       }
     } else {
       // 错误
+      sfxMiniFail()
       wrongFlash.value = idx
       setTimeout(() => {
         wrongFlash.value = -1
       }, 400)
+      if (recallTimer) clearInterval(recallTimer)
+      recallTimer = null
       roundResults.value[round.value] = false
       phase.value = 'round_fail'
 
@@ -239,12 +304,14 @@
   }
 
   const handleClaim = () => {
+    sfxRewardClaim()
     emit('complete', score.value)
   }
 
   onUnmounted(() => {
     if (showTimeout) clearTimeout(showTimeout)
     if (phaseTimeout) clearTimeout(phaseTimeout)
+    if (recallTimer) clearInterval(recallTimer)
   })
 </script>
 
@@ -408,6 +475,20 @@
     }
     50% {
       opacity: 0.4;
+    }
+  }
+
+  .time-pulse {
+    animation: time-pulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes time-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
     }
   }
 

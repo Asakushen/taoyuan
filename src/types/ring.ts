@@ -1,5 +1,5 @@
-/** 戒指效果类型 */
-export type RingEffectType =
+/** 装备效果类型（戒指、帽子、鞋子通用） */
+export type EquipmentEffectType =
   | 'attack_bonus'
   | 'crit_rate_bonus'
   | 'defense_bonus'
@@ -21,12 +21,19 @@ export type RingEffectType =
   | 'treasure_find'
   | 'ore_bonus'
   | 'luck'
+  | 'travel_speed'
 
-/** 单个戒指效果 */
-export interface RingEffect {
-  type: RingEffectType
+/** 兼容别名 */
+export type RingEffectType = EquipmentEffectType
+
+/** 单个装备效果 */
+export interface EquipmentEffect {
+  type: EquipmentEffectType
   value: number
 }
+
+/** 兼容别名 */
+export type RingEffect = EquipmentEffect
 
 /** 戒指定义（数据常量） */
 export interface RingDef {

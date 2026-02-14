@@ -482,7 +482,14 @@ export const handleBatchHarvest = () => {
 
   if (harvested > 0) {
     sfxHarvest()
-    addLog(`一键收获了${harvested}株作物：${harvestedCrops.join('、')}。`)
+    const cropCounts = new Map<string, number>()
+    for (const name of harvestedCrops) {
+      cropCounts.set(name, (cropCounts.get(name) ?? 0) + 1)
+    }
+    const cropSummary = Array.from(cropCounts.entries())
+      .map(([name, count]) => (count > 1 ? `${name}x${count}` : name))
+      .join('、')
+    addLog(`一键收获了${harvested}株作物：${cropSummary}。`)
     const tr = gameStore.advanceTime(ACTION_TIME_COSTS.batchHarvest * inventoryStore.getToolStaminaMultiplier('scythe'))
     if (tr.message) addLog(tr.message)
     if (tr.passedOut) handleEndDay()

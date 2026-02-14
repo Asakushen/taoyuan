@@ -45,6 +45,7 @@ export const useFarmStore = defineStore('farm', () => {
   const sprinklers = ref<PlacedSprinkler[]>([])
   const fruitTrees = ref<PlantedFruitTree[]>([])
   const greenhousePlots = ref<FarmPlot[]>([])
+  const greenhouseLevel = ref(0)
   const wildTrees = ref<PlantedWildTree[]>([])
   const lightningRods = ref(0)
   const scarecrows = ref(0)
@@ -372,15 +373,18 @@ export const useFarmStore = defineStore('farm', () => {
 
       // 处理浇水状态
       if (plot.watered) {
-        // 肥料加速：百分比增长
+        // 肥料加速：减少作物所需生长天数
         const fertDef = plot.fertilizer ? getFertilizerById(plot.fertilizer) : null
-        const growthIncrement = 1 + (fertDef?.growthSpeedup ?? 0) + walletGrowth
-        plot.growthDays += growthIncrement
+        const speedup = (fertDef?.growthSpeedup ?? 0) + walletGrowth
+        plot.growthDays += 1
         const crop = getCropById(plot.cropId!)
-        if (crop && plot.growthDays >= crop.growthDays) {
-          plot.state = 'harvestable'
-        } else if (plot.state === 'planted') {
-          plot.state = 'growing'
+        if (crop) {
+          const effectiveDays = Math.max(1, Math.floor(crop.growthDays * (1 - speedup)))
+          if (plot.growthDays >= effectiveDays) {
+            plot.state = 'harvestable'
+          } else if (plot.state === 'planted') {
+            plot.state = 'growing'
+          }
         }
       } else {
         // 抗性减缓枯萎：高抗性时 unwateredDays 增长更慢
@@ -847,16 +851,57 @@ export const useFarmStore = defineStore('farm', () => {
       if (plot.state !== 'planted' && plot.state !== 'growing') continue
       plot.watered = true
       const fertDef = plot.fertilizer ? getFertilizerById(plot.fertilizer) : null
-      const growthIncrement = 1 + (fertDef?.growthSpeedup ?? 0) + walletGrowth
-      plot.growthDays += growthIncrement
+      const speedup = (fertDef?.growthSpeedup ?? 0) + walletGrowth
+      plot.growthDays += 1
       const crop = getCropById(plot.cropId!)
-      if (crop && plot.growthDays >= crop.growthDays) {
-        plot.state = 'harvestable'
-      } else if (plot.state === 'planted') {
-        plot.state = 'growing'
+      if (crop) {
+        const effectiveDays = Math.max(1, Math.floor(crop.growthDays * (1 - speedup)))
+        if (plot.growthDays >= effectiveDays) {
+          plot.state = 'harvestable'
+        } else if (plot.state === 'planted') {
+          plot.state = 'growing'
+        }
       }
       plot.watered = false
     }
+  }
+
+  /** 温室升级：扩展地块数量 */
+  const upgradeGreenhouse = (newPlotCount: number): boolean => {
+    const current = greenhousePlots.value.length
+    if (newPlotCount <= current) return false
+    for (let i = current; i < newPlotCount; i++) {
+      greenhousePlots.value.push({
+        id: i,
+        state: 'tilled' as const,
+        cropId: null,
+        growthDays: 0,
+        watered: false,
+        unwateredDays: 0,
+        fertilizer: null,
+        harvestCount: 0,
+        giantCropGroup: null,
+        seedGenetics: null,
+        infested: false,
+        infestedDays: 0,
+        weedy: false,
+        weedyDays: 0
+      })
+    }
+    greenhouseLevel.value++
+    return true
+  }
+
+  /** 温室一键收获：返回收获结果列表 */
+  const greenhouseBatchHarvest = (): { cropId: string }[] => {
+    const results: { cropId: string }[] = []
+    for (let i = 0; i < greenhousePlots.value.length; i++) {
+      const plot = greenhousePlots.value[i]!
+      if (plot.state !== 'harvestable') continue
+      const cropId = greenhouseHarvestPlot(i)
+      if (cropId) results.push({ cropId })
+    }
+    return results
   }
 
   const serialize = () => {
@@ -866,6 +911,7 @@ export const useFarmStore = defineStore('farm', () => {
       sprinklers: sprinklers.value,
       fruitTrees: fruitTrees.value,
       greenhousePlots: greenhousePlots.value,
+      greenhouseLevel: greenhouseLevel.value,
       wildTrees: wildTrees.value,
       lightningRods: lightningRods.value,
       scarecrows: scarecrows.value,
@@ -912,6 +958,7 @@ export const useFarmStore = defineStore('farm', () => {
       infested: p.infested ?? false,
       infestedDays: p.infestedDays ?? 0
     }))
+    greenhouseLevel.value = (data as any).greenhouseLevel ?? 0
     lightningRods.value = (data as any).lightningRods ?? 0
     scarecrows.value = (data as any).scarecrows ?? 0
     giantCropCounter.value = (data as any).giantCropCounter ?? 0
@@ -959,9 +1006,12 @@ export const useFarmStore = defineStore('farm', () => {
     chopWildTree,
     dailyWildTreeUpdate,
     initGreenhouse,
+    greenhouseLevel,
     greenhousePlantCrop,
     greenhouseHarvestPlot,
     greenhouseDailyUpdate,
+    upgradeGreenhouse,
+    greenhouseBatchHarvest,
     serialize,
     deserialize
   }

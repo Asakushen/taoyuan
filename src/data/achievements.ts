@@ -131,7 +131,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: 'skill_master',
     name: '技艺精通',
-    description: '任意技能达到10级。',
+    description: '种植技能达到10级。',
     condition: { type: 'skillLevel', skillType: 'farming', level: 10 },
     reward: { money: 2000 }
   },

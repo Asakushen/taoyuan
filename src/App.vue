@@ -1,7 +1,14 @@
-<script setup lang="ts">
-  import { RouterView } from 'vue-router'
-</script>
-
 <template>
   <RouterView />
 </template>
+
+<script setup lang="ts">
+  import { RouterView } from 'vue-router'
+  import { onMounted } from 'vue'
+
+  onMounted(() => {
+    if (!import.meta.env.DEV) {
+      document.body.classList.add('no-select')
+    }
+  })
+</script>

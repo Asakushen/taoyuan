@@ -27,6 +27,7 @@ export const useNpcStore = defineStore('npc', () => {
       giftsThisWeek: 0,
       dating: false,
       married: false,
+      zhiji: false,
       triggeredHeartEvents: []
     }))
   )
@@ -39,6 +40,9 @@ export const useNpcStore = defineStore('npc', () => {
 
   /** 结婚天数计数 */
   const daysMarried = ref<number>(0)
+
+  /** 知己天数计数 */
+  const daysZhiji = ref<number>(0)
 
   /** 是否有待产子女 */
   const pendingChild = ref<boolean>(false)
@@ -96,6 +100,10 @@ export const useNpcStore = defineStore('npc', () => {
     if (!state) return null
     const events = getHeartEventsForNpc(npcId)
     for (const event of events) {
+      // 知己事件仅知己触发
+      if (event.requiresZhiji && !state.zhiji) continue
+      // 知己不触发恋爱告白（heart_8）
+      if (!event.requiresZhiji && state.zhiji && event.id.endsWith('_heart_8')) continue
       if (state.friendship >= event.requiredFriendship && !state.triggeredHeartEvents.includes(event.id)) {
         return event
       }
@@ -148,6 +156,13 @@ export const useNpcStore = defineStore('npc', () => {
         `有${name}在身边，每天都很开心。`
       ]
       const message = marriedDialogues[Math.floor(Math.random() * marriedDialogues.length)]!
+      return { message, friendshipGain: 20 }
+    }
+
+    // 知己NPC使用知己专属对话
+    if (state.zhiji && npcDef.zhijiDialogues?.length) {
+      const raw = npcDef.zhijiDialogues[Math.floor(Math.random() * npcDef.zhijiDialogues.length)]!
+      const message = replaceDialoguePlaceholders(raw)
       return { message, friendshipGain: 20 }
     }
 
@@ -283,6 +298,58 @@ export const useNpcStore = defineStore('npc', () => {
   /** 获取已婚配偶状态 */
   const getSpouse = (): NpcState | null => {
     return npcStates.value.find(s => s.married) ?? null
+  }
+
+  /** 获取知己状态 */
+  const getZhiji = (): NpcState | null => {
+    return npcStates.value.find(s => s.zhiji) ?? null
+  }
+
+  /** 赠玉结为知己 (需同性+2000好感) */
+  const becomeZhiji = (npcId: string): { success: boolean; message: string } => {
+    const state = getNpcState(npcId)
+    if (!state) return { success: false, message: 'NPC不存在。' }
+
+    const npcDef = getNpcById(npcId)
+    if (!npcDef?.marriageable) return { success: false, message: '无法与此人结为知己。' }
+
+    const playerStore = usePlayerStore()
+    if (npcDef.gender !== playerStore.gender) {
+      return { success: false, message: '只能与同性结为知己。' }
+    }
+
+    if (state.zhiji) return { success: false, message: '你们已经是知己了。' }
+    if (state.dating || state.married) return { success: false, message: '无法与恋人或伴侣结为知己。' }
+    if (npcStates.value.some(s => s.zhiji)) return { success: false, message: '你已经有知己了。' }
+    if (state.friendship < 2000) return { success: false, message: '好感度不足（需要8心/2000）。' }
+
+    const inventoryStore = useInventoryStore()
+    if (!inventoryStore.removeItem('zhiji_jade')) {
+      return { success: false, message: '需要一块知己玉佩。' }
+    }
+
+    state.zhiji = true
+    state.friendship += 160
+    const label = playerStore.gender === 'male' ? '蓝颜知己' : '红颜知己'
+    return { success: true, message: `${npcDef.name}郑重地接过了玉佩……你们结为了${label}！` }
+  }
+
+  /** 断绝知己之缘 */
+  const dissolveZhiji = (): { success: boolean; message: string } => {
+    const zhijiState = getZhiji()
+    if (!zhijiState) return { success: false, message: '你还没有知己。' }
+
+    const playerStore = usePlayerStore()
+    if (!playerStore.spendMoney(10000)) {
+      return { success: false, message: '金钱不足（需要10000文）。' }
+    }
+
+    const npcDef = getNpcById(zhijiState.npcId)
+    zhijiState.zhiji = false
+    zhijiState.friendship = 1000
+    daysZhiji.value = 0
+
+    return { success: true, message: `你和${npcDef?.name ?? '知己'}的知己之缘已断。` }
   }
 
   /** 每日婚礼倒计时更新 */
@@ -480,6 +547,10 @@ export const useNpcStore = defineStore('npc', () => {
       if (!state.talkedToday && state.married) {
         state.friendship = Math.max(0, state.friendship - 10)
       }
+      // 知己不聊天也会掉好感（衰减较少）
+      if (!state.talkedToday && state.zhiji) {
+        state.friendship = Math.max(0, state.friendship - 5)
+      }
       state.talkedToday = false
       state.giftedToday = false
       // 每周日重置周送礼计数 (day 7,14,21,28)
@@ -487,6 +558,9 @@ export const useNpcStore = defineStore('npc', () => {
         state.giftsThisWeek = 0
       }
     }
+
+    // 知己天数递增
+    if (getZhiji()) daysZhiji.value++
   }
 
   const serialize = () => {
@@ -494,6 +568,7 @@ export const useNpcStore = defineStore('npc', () => {
       npcStates: npcStates.value,
       children: children.value,
       daysMarried: daysMarried.value,
+      daysZhiji: daysZhiji.value,
       pendingChild: pendingChild.value,
       childCountdown: childCountdown.value,
       weddingCountdown: weddingCountdown.value,
@@ -510,6 +585,7 @@ export const useNpcStore = defineStore('npc', () => {
       friendship: isOldScale ? Math.round(s.friendship * 8) : s.friendship,
       married: s.married ?? false,
       dating: s.dating ?? false,
+      zhiji: (s as any).zhiji ?? false,
       giftsThisWeek: (s as any).giftsThisWeek ?? 0,
       triggeredHeartEvents: s.triggeredHeartEvents ?? []
     }))
@@ -523,11 +599,13 @@ export const useNpcStore = defineStore('npc', () => {
       giftsThisWeek: 0,
       dating: false,
       married: false,
+      zhiji: false,
       triggeredHeartEvents: []
     }))
     npcStates.value = [...savedStates, ...newNpcStates]
     children.value = (data as any).children ?? []
     daysMarried.value = (data as any).daysMarried ?? 0
+    daysZhiji.value = (data as any).daysZhiji ?? 0
     pendingChild.value = (data as any).pendingChild ?? false
     childCountdown.value = (data as any).childCountdown ?? 0
     weddingCountdown.value = (data as any).weddingCountdown ?? 0
@@ -538,6 +616,7 @@ export const useNpcStore = defineStore('npc', () => {
     npcStates,
     children,
     daysMarried,
+    daysZhiji,
     pendingChild,
     childCountdown,
     weddingCountdown,
@@ -554,6 +633,9 @@ export const useNpcStore = defineStore('npc', () => {
     startDating,
     propose,
     getSpouse,
+    getZhiji,
+    becomeZhiji,
+    dissolveZhiji,
     dailyWeddingUpdate,
     cancelWedding,
     divorce,

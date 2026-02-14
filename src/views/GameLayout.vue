@@ -50,6 +50,8 @@
         <PotThrowingView v-if="currentFestival === 'pot_throwing'" @complete="closeFestival" />
         <DumplingMakingView v-if="currentFestival === 'dumpling_making'" @complete="closeFestival" />
         <FireworkShowView v-if="currentFestival === 'firework_show'" @complete="closeFestival" />
+        <TeaContestView v-if="currentFestival === 'tea_contest'" @complete="closeFestival" />
+        <KiteFlyingView v-if="currentFestival === 'kite_flying'" @complete="closeFestival" />
       </div>
     </Transition>
 
@@ -126,6 +128,8 @@
   import PotThrowingView from '@/components/game/PotThrowingView.vue'
   import DumplingMakingView from '@/components/game/DumplingMakingView.vue'
   import FireworkShowView from '@/components/game/FireworkShowView.vue'
+  import TeaContestView from '@/components/game/TeaContestView.vue'
+  import KiteFlyingView from '@/components/game/KiteFlyingView.vue'
   import SettingsDialog from '@/components/game/SettingsDialog.vue'
 
   const router = useRouter()
@@ -136,7 +140,7 @@
 
   // 游戏未开始时重定向到主菜单
   if (!gameStore.isGameStarted) {
-    router.replace('/')
+    void router.replace('/')
   }
 
   const {

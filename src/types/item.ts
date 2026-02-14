@@ -21,6 +21,10 @@ export type ItemCategory =
   | 'bomb'
   | 'fossil'
   | 'artifact'
+  | 'weapon'
+  | 'ring'
+  | 'hat'
+  | 'shoe'
 
 /** 物品品质 */
 export type Quality = 'normal' | 'fine' | 'excellent' | 'supreme'

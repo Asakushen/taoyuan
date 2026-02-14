@@ -2,14 +2,23 @@ import { ref } from 'vue'
 import type { HeartEventDef, SkillType, SkillPerk5, SkillPerk10 } from '@/types'
 import type { SeasonEventDef } from '@/data/events'
 import { WEDDING_EVENT } from '@/data/heartEvents'
-import { useSkillStore, useNpcStore, usePlayerStore } from '@/stores'
+import { useSkillStore, useNpcStore, usePlayerStore, useGameStore } from '@/stores'
 import { addLog, showFloat, _registerPerkChecker } from './useGameLog'
 import { useAudio } from './useAudio'
 
 // 模块级单例状态
 const currentEvent = ref<SeasonEventDef | null>(null)
 const pendingHeartEvent = ref<HeartEventDef | null>(null)
-type FestivalType = 'fishing_contest' | 'harvest_fair' | 'dragon_boat' | 'lantern_riddle' | 'pot_throwing' | 'dumpling_making' | 'firework_show'
+type FestivalType =
+  | 'fishing_contest'
+  | 'harvest_fair'
+  | 'dragon_boat'
+  | 'lantern_riddle'
+  | 'pot_throwing'
+  | 'dumpling_making'
+  | 'firework_show'
+  | 'tea_contest'
+  | 'kite_flying'
 const currentFestival = ref<FestivalType | null>(null)
 const pendingPerk = ref<{ skillType: SkillType; level: 5 | 10 } | null>(null)
 
@@ -87,9 +96,11 @@ export const closeEvent = () => {
   endFestivalBgm()
 }
 
-/** 显示节日庆典界面 */
+/** 显示节日庆典界面并播放小游戏专属 BGM */
 export const showFestival = (type: FestivalType) => {
   currentFestival.value = type
+  const { startMinigameBgm } = useAudio()
+  startMinigameBgm(type)
 }
 
 /** 关闭节日庆典并发放奖品 */
@@ -101,8 +112,15 @@ export const closeFestival = (prize: number) => {
     addLog(`节日奖金：${prize}文！`)
   }
   currentFestival.value = null
-  const { endFestivalBgm } = useAudio()
-  endFestivalBgm()
+  // 如果还有事件叙述在显示，切换到季节节日 BGM；否则直接恢复季节 BGM
+  if (currentEvent.value) {
+    const { startFestivalBgm } = useAudio()
+    const gameStore = useGameStore()
+    startFestivalBgm(gameStore.season)
+  } else {
+    const { endFestivalBgm } = useAudio()
+    endFestivalBgm()
+  }
 }
 
 /** 触发宠物领养弹窗 */

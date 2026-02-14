@@ -8,7 +8,7 @@
     <!-- 准备阶段 -->
     <div v-if="phase === 'ready'">
       <p class="text-xs text-muted mb-3">三条龙舟蓄势待发！疯狂点击「划桨」按钮让龙舟前进，10秒内看谁划得最远！</p>
-      <button class="btn text-xs" @click="startCountdown">开始比赛！</button>
+      <button class="btn text-xs w-full" @click="startCountdown">开始比赛！</button>
     </div>
 
     <!-- 倒计时 -->
@@ -39,7 +39,7 @@
           <!-- 赛道条 -->
           <div class="h-5 bg-bg border relative overflow-hidden" :class="i === 0 ? 'border-accent/40' : 'border-accent/15'">
             <!-- 终点线 -->
-            <div class="absolute top-0 bottom-0 right-0 w-px border-r border-dashed border-accent/30"></div>
+            <div class="absolute top-0 bottom-0 right-0 w-px border-r border-dashed border-accent/30" />
             <!-- 进度 -->
             <div
               class="h-full transition-all duration-100 flex items-center justify-end pr-0.5"
@@ -49,7 +49,7 @@
               <Ship :size="12" class="relative z-10" :class="{ 'boat-rock': i === 0 && rowing }" />
             </div>
             <!-- 水波纹 -->
-            <div class="wave-bg absolute inset-0 pointer-events-none opacity-15"></div>
+            <div class="wave-bg absolute inset-0 pointer-events-none opacity-15" />
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@
         <span v-else class="text-muted text-xs">获得了季军。奖金 200文</span>
       </div>
 
-      <button class="btn text-xs" @click="handleClaim">领取奖励</button>
+      <button class="btn text-xs w-full" @click="handleClaim">领取奖励</button>
     </div>
   </div>
 </template>
@@ -104,6 +104,16 @@
 <script setup lang="ts">
   import { ref, computed, onUnmounted } from 'vue'
   import { Ship, Zap, Timer, Trophy, Medal, Award } from 'lucide-vue-next'
+  import {
+    sfxGameStart,
+    sfxRewardClaim,
+    sfxCountdownTick,
+    sfxCountdownFinal,
+    sfxPaddle,
+    sfxRankFirst,
+    sfxRankSecond,
+    sfxRankThird
+  } from '@/composables/useAudio'
 
   const emit = defineEmits<{ complete: [prize: number] }>()
 
@@ -159,6 +169,7 @@
   }
 
   const startCountdown = () => {
+    sfxGameStart()
     phase.value = 'countdown'
     countdownNum.value = 3
 
@@ -167,6 +178,7 @@
         startRace()
         return
       }
+      sfxCountdownTick()
       countdownNum.value--
       cdTimeout = setTimeout(tick, 800)
     }
@@ -180,13 +192,15 @@
 
     // NPC自动划船
     raceTimer = setInterval(() => {
-      boats.value[1]!.progress += Math.floor(Math.random() * 3) + 1
-      boats.value[2]!.progress += Math.floor(Math.random() * 3) + 1
+      boats.value[1]!.progress += Math.floor(Math.random() * 4) + 2
+      boats.value[2]!.progress += Math.floor(Math.random() * 4) + 2
     }, 500)
 
     // 倒计时
     countdownTimer = setInterval(() => {
       timeLeft.value--
+      if (timeLeft.value <= 3 && timeLeft.value > 0) sfxCountdownFinal()
+      else if (timeLeft.value > 3) sfxCountdownTick()
       if (timeLeft.value <= 0) {
         endRace()
       }
@@ -195,6 +209,7 @@
 
   const paddle = () => {
     if (phase.value !== 'racing') return
+    sfxPaddle()
     boats.value[0]!.progress += 3
     clickCount.value++
     rowing.value = true
@@ -213,9 +228,16 @@
     const sorted = [...boats.value].sort((a, b) => b.progress - a.progress)
     rankings.value = sorted
     phase.value = 'finished'
+
+    // 按排名播放音效
+    const rank = rankings.value.findIndex(b => b.name === '你') + 1
+    if (rank === 1) sfxRankFirst()
+    else if (rank === 2) sfxRankSecond()
+    else sfxRankThird()
   }
 
   const handleClaim = () => {
+    sfxRewardClaim()
     const prizes: Record<number, number> = { 1: 800, 2: 400, 3: 200 }
     emit('complete', prizes[playerRank.value] ?? 200)
   }

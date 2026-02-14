@@ -1338,6 +1338,37 @@ export const RECIPES: RecipeDef[] = [
     unlockSource: '年末烟花会奖励',
     description: '团团圆圆的花生汤圆。'
   },
+  {
+    id: 'dou_cha_yin',
+    name: '斗茶饮',
+    ingredients: [
+      { itemId: 'tea', quantity: 2 },
+      { itemId: 'honey', quantity: 1 }
+    ],
+    effect: {
+      staminaRestore: 35,
+      healthRestore: 15,
+      buff: { type: 'all_skills', value: 1, description: '全技能+1（当天）' }
+    },
+    unlockSource: '斗茶大会奖励',
+    description: '斗茶会上的经典茶饮，清香沁脾。'
+  },
+  {
+    id: 'zhi_yuan_gao',
+    name: '纸鸢糕',
+    ingredients: [
+      { itemId: 'rice', quantity: 2 },
+      { itemId: 'peach', quantity: 1 },
+      { itemId: 'sesame_oil', quantity: 1 }
+    ],
+    effect: {
+      staminaRestore: 35,
+      healthRestore: 15,
+      buff: { type: 'speed', value: 12, description: '行动速度+12%（当天）' }
+    },
+    unlockSource: '秋风筝会奖励',
+    description: '风筝节上的应景糕点，形如纸鸢。'
+  },
 
   // ==================== 成就里程碑食谱 (9) ====================
   {
@@ -1554,6 +1585,68 @@ export const RECIPES: RecipeDef[] = [
     },
     unlockSource: '结婚后解锁',
     description: '传说中的孔雀宴，尊贵无比。'
+  },
+  // === 瀚海食谱 ===
+  {
+    id: 'spiced_lamb',
+    name: '香料烤羊',
+    ingredients: [
+      { itemId: 'hanhai_spice', quantity: 1 },
+      { itemId: 'goat_milk', quantity: 1 }
+    ],
+    effect: {
+      staminaRestore: 60,
+      healthRestore: 30,
+      buff: { type: 'mining', value: 2, description: '采矿技能+2（当天）' }
+    },
+    unlockSource: '瀚海驿站购买香料后解锁',
+    description: '西域风味的烤羊肉，香气扑鼻，力量倍增。'
+  },
+  {
+    id: 'silk_dumpling_deluxe',
+    name: '丝路饺子',
+    ingredients: [
+      { itemId: 'hanhai_silk', quantity: 1 },
+      { itemId: 'rice', quantity: 2 },
+      { itemId: 'hanhai_spice', quantity: 1 }
+    ],
+    effect: {
+      staminaRestore: 70,
+      healthRestore: 35,
+      buff: { type: 'giftBonus', value: 3, description: '送礼好感×3（当天）' }
+    },
+    unlockSource: '瀚海驿站购买丝绸后解锁',
+    description: '用丝绸包裹的精致饺子，配以西域香料，送礼佳品。'
+  },
+  {
+    id: 'desert_cactus_soup',
+    name: '仙人掌汤',
+    ingredients: [
+      { itemId: 'hanhai_cactus', quantity: 2 },
+      { itemId: 'hanhai_spice', quantity: 1 }
+    ],
+    effect: {
+      staminaRestore: 50,
+      healthRestore: 40,
+      buff: { type: 'stamina', value: 30, description: '体力上限+30（当天）' }
+    },
+    unlockSource: '收获仙人掌后解锁',
+    description: '清凉解暑的仙人掌汤，沙漠旅人的续命良方。'
+  },
+  {
+    id: 'date_cake',
+    name: '枣糕',
+    ingredients: [
+      { itemId: 'hanhai_date', quantity: 3 },
+      { itemId: 'rice', quantity: 2 }
+    ],
+    effect: {
+      staminaRestore: 45,
+      healthRestore: 20,
+      buff: { type: 'farming', value: 2, description: '种植技能+2（当天）' }
+    },
+    unlockSource: '收获红枣后解锁',
+    description: '甜蜜软糯的枣糕，补气养血。'
   }
 ]
 

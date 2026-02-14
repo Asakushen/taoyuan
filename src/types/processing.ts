@@ -1,3 +1,6 @@
+import type { Quality } from './item'
+import type { FishingLocation } from './skill'
+
 /** 加工机器类型 */
 export type MachineType =
   | 'wine_workshop'
@@ -50,6 +53,7 @@ export interface ProcessingSlot {
   machineType: MachineType
   recipeId: string | null
   inputItemId: string | null
+  inputQuality?: Quality
   daysProcessed: number
   totalDays: number
   ready: boolean
@@ -184,7 +188,7 @@ export interface PlantedWildTree {
 
 /** 蟹笼状态 */
 export interface CrabPotState {
-  location: import('./skill').FishingLocation
+  location: FishingLocation
   hasBait: boolean
 }
 

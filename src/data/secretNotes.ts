@@ -50,7 +50,7 @@ export const SECRET_NOTES: SecretNoteDef[] = [
     id: 7,
     type: 'npc',
     title: '铁匠的秘密',
-    content: '赵铁匠虽然整天打铁，但他内心其实很喜欢铜矿石。他说铜是最温暖的金属。',
+    content: '孙铁匠虽然整天打铁，但他内心其实很喜欢铜矿石。他说铜是最温暖的金属。',
     usable: false
   },
   {
@@ -79,7 +79,7 @@ export const SECRET_NOTES: SecretNoteDef[] = [
     id: 11,
     type: 'npc',
     title: '柳娘的心事',
-    content: '柳娘最喜欢桃花。每年春天，她都会去桃花林坐上一整天。',
+    content: '柳娘最喜欢桂花。每年秋天，她都会在桂花树下坐上一整天。',
     usable: false
   },
   {

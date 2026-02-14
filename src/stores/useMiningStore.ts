@@ -23,10 +23,13 @@ import {
   getEnchantmentById,
   MONSTER_DROP_WEAPONS,
   BOSS_DROP_WEAPONS,
+  TREASURE_DROP_WEAPONS,
   rollRandomEnchantment,
   getWeaponDisplayName
 } from '@/data/weapons'
 import { getRingById, MONSTER_DROP_RINGS, BOSS_DROP_RINGS, TREASURE_DROP_RINGS } from '@/data/rings'
+import { getHatById, MONSTER_DROP_HATS, BOSS_DROP_HATS, TREASURE_DROP_HATS } from '@/data/hats'
+import { getShoeById, MONSTER_DROP_SHOES, BOSS_DROP_SHOES, TREASURE_DROP_SHOES } from '@/data/shoes'
 import { usePlayerStore } from './usePlayerStore'
 import { useInventoryStore } from './useInventoryStore'
 import { useSkillStore } from './useSkillStore'
@@ -428,6 +431,43 @@ export const useMiningStore = defineStore('mining', () => {
               // message will include ring name below
             }
           }
+        }
+      }
+    }
+
+    // 宝箱帽子掉落
+    const treasureHats = TREASURE_DROP_HATS[floor?.zone ?? 'shallow']
+    if (treasureHats) {
+      const treasureBonus = inventoryStore.getRingEffectValue('treasure_find')
+      for (const th of treasureHats) {
+        if (Math.random() < th.chance + treasureBonus * th.chance) {
+          inventoryStore.addHat(th.hatId)
+          items.push({ itemId: th.hatId, quantity: 1 })
+        }
+      }
+    }
+
+    // 宝箱鞋子掉落
+    const treasureShoes = TREASURE_DROP_SHOES[floor?.zone ?? 'shallow']
+    if (treasureShoes) {
+      const treasureBonus = inventoryStore.getRingEffectValue('treasure_find')
+      for (const ts of treasureShoes) {
+        if (Math.random() < ts.chance + treasureBonus * ts.chance) {
+          inventoryStore.addShoe(ts.shoeId)
+          items.push({ itemId: ts.shoeId, quantity: 1 })
+        }
+      }
+    }
+
+    // 宝箱武器掉落
+    const treasureWeapons = TREASURE_DROP_WEAPONS[floor?.zone ?? 'shallow']
+    if (treasureWeapons) {
+      const treasureBonus = inventoryStore.getRingEffectValue('treasure_find')
+      for (const tw of treasureWeapons) {
+        if (Math.random() < tw.chance + treasureBonus * tw.chance) {
+          const enchantId = rollRandomEnchantment()
+          inventoryStore.addWeapon(tw.weaponId, enchantId)
+          items.push({ itemId: tw.weaponId, quantity: 1 })
         }
       }
     }
@@ -847,6 +887,28 @@ export const useMiningStore = defineStore('mining', () => {
           }
         }
       }
+      // 帽子掉落（普通怪物）
+      const hatDrops = MONSTER_DROP_HATS[floor.zone]
+      if (hatDrops) {
+        for (const hd of hatDrops) {
+          if (Math.random() < hd.chance + luckyBonus * hd.chance) {
+            inventoryStore.addHat(hd.hatId)
+            const hatDef = getHatById(hd.hatId)
+            msg += ` 获得了帽子：${hatDef?.name ?? hd.hatId}！`
+          }
+        }
+      }
+      // 鞋子掉落（普通怪物）
+      const shoeDrops = MONSTER_DROP_SHOES[floor.zone]
+      if (shoeDrops) {
+        for (const sd of shoeDrops) {
+          if (Math.random() < sd.chance + luckyBonus * sd.chance) {
+            inventoryStore.addShoe(sd.shoeId)
+            const shoeDef = getShoeById(sd.shoeId)
+            msg += ` 获得了鞋子：${shoeDef?.name ?? sd.shoeId}！`
+          }
+        }
+      }
     }
 
     // BOSS 击败处理
@@ -887,6 +949,20 @@ export const useMiningStore = defineStore('mining', () => {
             inventoryStore.addRing(bossRingId)
             const bossRingDef = getRingById(bossRingId)
             msg += ` 获得了戒指：${bossRingDef?.name ?? bossRingId}！`
+          }
+          // 首杀掉落帽子
+          const bossHatId = BOSS_DROP_HATS[currentFloor.value]
+          if (bossHatId && !inventoryStore.hasHat(bossHatId)) {
+            inventoryStore.addHat(bossHatId)
+            const bossHatDef = getHatById(bossHatId)
+            msg += ` 获得了帽子：${bossHatDef?.name ?? bossHatId}！`
+          }
+          // 首杀掉落鞋子
+          const bossShoeId = BOSS_DROP_SHOES[currentFloor.value]
+          if (bossShoeId && !inventoryStore.hasShoe(bossShoeId)) {
+            inventoryStore.addShoe(bossShoeId)
+            const bossShoeDef = getShoeById(bossShoeId)
+            msg += ` 获得了鞋子：${bossShoeDef?.name ?? bossShoeId}！`
           }
         }
 

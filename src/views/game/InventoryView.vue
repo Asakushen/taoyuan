@@ -152,6 +152,84 @@
         </div>
       </div>
 
+      <!-- 帽子 -->
+      <div class="border border-accent/20 rounded-xs p-2 mb-3">
+        <p class="text-xs text-muted mb-1">帽子</p>
+        <div v-if="inventoryStore.ownedHats.length > 0" class="flex flex-col gap-1">
+          <!-- 槽位 -->
+          <div class="border border-accent/10 rounded-xs px-2 py-1 text-center mb-1">
+            <p class="text-[10px] text-muted">装备中</p>
+            <p class="text-xs" :class="equippedHatName ? 'text-accent' : 'text-muted/40'">
+              {{ equippedHatName ?? '空' }}
+            </p>
+          </div>
+          <!-- 拥有的帽子列表 -->
+          <div class="max-h-40 overflow-y-auto flex flex-col gap-1">
+            <div
+              v-for="(hat, idx) in inventoryStore.ownedHats"
+              :key="idx"
+              class="flex items-center justify-between border rounded-xs px-2 py-1 cursor-pointer hover:bg-accent/5"
+              :class="inventoryStore.equippedHatIndex === idx ? 'border-accent/30' : 'border-accent/10'"
+              @click="activeHatIdx = idx"
+            >
+              <div class="min-w-0">
+                <span class="text-xs" :class="inventoryStore.equippedHatIndex === idx ? 'text-accent' : ''">
+                  {{ getHatById(hat.defId)?.name ?? hat.defId }}
+                </span>
+                <p class="text-[10px] text-muted truncate">{{ getHatById(hat.defId)?.description }}</p>
+              </div>
+              <button
+                class="btn text-xs py-0 px-1.5 shrink-0 ml-2"
+                :class="inventoryStore.equippedHatIndex === idx ? 'bg-accent! text-bg!' : ''"
+                @click.stop="handleToggleHat(idx)"
+              >
+                {{ inventoryStore.equippedHatIndex === idx ? '卸下' : '装备' }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <p v-else class="text-xs text-muted/40 text-center py-2">暂无帽子</p>
+      </div>
+
+      <!-- 鞋子 -->
+      <div class="border border-accent/20 rounded-xs p-2 mb-3">
+        <p class="text-xs text-muted mb-1">鞋子</p>
+        <div v-if="inventoryStore.ownedShoes.length > 0" class="flex flex-col gap-1">
+          <!-- 槽位 -->
+          <div class="border border-accent/10 rounded-xs px-2 py-1 text-center mb-1">
+            <p class="text-[10px] text-muted">装备中</p>
+            <p class="text-xs" :class="equippedShoeName ? 'text-accent' : 'text-muted/40'">
+              {{ equippedShoeName ?? '空' }}
+            </p>
+          </div>
+          <!-- 拥有的鞋子列表 -->
+          <div class="max-h-40 overflow-y-auto flex flex-col gap-1">
+            <div
+              v-for="(shoe, idx) in inventoryStore.ownedShoes"
+              :key="idx"
+              class="flex items-center justify-between border rounded-xs px-2 py-1 cursor-pointer hover:bg-accent/5"
+              :class="inventoryStore.equippedShoeIndex === idx ? 'border-accent/30' : 'border-accent/10'"
+              @click="activeShoeIdx = idx"
+            >
+              <div class="min-w-0">
+                <span class="text-xs" :class="inventoryStore.equippedShoeIndex === idx ? 'text-accent' : ''">
+                  {{ getShoeById(shoe.defId)?.name ?? shoe.defId }}
+                </span>
+                <p class="text-[10px] text-muted truncate">{{ getShoeById(shoe.defId)?.description }}</p>
+              </div>
+              <button
+                class="btn text-xs py-0 px-1.5 shrink-0 ml-2"
+                :class="inventoryStore.equippedShoeIndex === idx ? 'bg-accent! text-bg!' : ''"
+                @click.stop="handleToggleShoe(idx)"
+              >
+                {{ inventoryStore.equippedShoeIndex === idx ? '卸下' : '装备' }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <p v-else class="text-xs text-muted/40 text-center py-2">暂无鞋子</p>
+      </div>
+
       <!-- 戒指 -->
       <div class="border border-accent/20 rounded-xs p-2">
         <p class="text-xs text-muted mb-1">戒指</p>
@@ -452,6 +530,80 @@
         </div>
       </div>
     </Transition>
+
+    <!-- 帽子详情弹窗 -->
+    <Transition name="panel-fade">
+      <div
+        v-if="activeHatIdx !== null && activeHatDef"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="activeHatIdx = null"
+      >
+        <div class="game-panel max-w-xs w-full relative">
+          <button class="absolute top-2 right-2 text-muted hover:text-text" @click="activeHatIdx = null">
+            <X :size="14" />
+          </button>
+          <p class="text-sm text-accent mb-2">{{ activeHatDef.name }}</p>
+          <div class="border border-accent/10 rounded-xs p-2 mb-2">
+            <p class="text-xs text-muted">{{ activeHatDef.description }}</p>
+          </div>
+          <div class="border border-accent/10 rounded-xs p-2 mb-2">
+            <div v-for="eff in activeHatDef.effects" :key="eff.type" class="flex items-center justify-between mt-0.5 first:mt-0">
+              <span class="text-xs text-muted">{{ RING_EFFECT_NAMES[eff.type] ?? eff.type }}</span>
+              <span class="text-xs text-success">+{{ formatEffectValue(eff) }}</span>
+            </div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-xs text-muted">售价</span>
+              <span class="text-xs text-accent">{{ activeHatDef.sellPrice }}文</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <button class="btn text-xs w-full justify-center" @click="handleToggleHatFromPopup">
+              {{ inventoryStore.equippedHatIndex === activeHatIdx ? '卸下' : '装备' }}
+            </button>
+            <button class="btn text-xs w-full justify-center text-danger border-danger/40" @click="handleSellHat">
+              卖出 · {{ activeHatDef.sellPrice }}文
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- 鞋子详情弹窗 -->
+    <Transition name="panel-fade">
+      <div
+        v-if="activeShoeIdx !== null && activeShoeDef"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="activeShoeIdx = null"
+      >
+        <div class="game-panel max-w-xs w-full relative">
+          <button class="absolute top-2 right-2 text-muted hover:text-text" @click="activeShoeIdx = null">
+            <X :size="14" />
+          </button>
+          <p class="text-sm text-accent mb-2">{{ activeShoeDef.name }}</p>
+          <div class="border border-accent/10 rounded-xs p-2 mb-2">
+            <p class="text-xs text-muted">{{ activeShoeDef.description }}</p>
+          </div>
+          <div class="border border-accent/10 rounded-xs p-2 mb-2">
+            <div v-for="eff in activeShoeDef.effects" :key="eff.type" class="flex items-center justify-between mt-0.5 first:mt-0">
+              <span class="text-xs text-muted">{{ RING_EFFECT_NAMES[eff.type] ?? eff.type }}</span>
+              <span class="text-xs text-success">+{{ formatEffectValue(eff) }}</span>
+            </div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-xs text-muted">售价</span>
+              <span class="text-xs text-accent">{{ activeShoeDef.sellPrice }}文</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <button class="btn text-xs w-full justify-center" @click="handleToggleShoeFromPopup">
+              {{ inventoryStore.equippedShoeIndex === activeShoeIdx ? '卸下' : '装备' }}
+            </button>
+            <button class="btn text-xs w-full justify-center text-danger border-danger/40" @click="handleSellShoe">
+              卖出 · {{ activeShoeDef.sellPrice }}文
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -463,6 +615,8 @@
   import { getRecipeById } from '@/data/recipes'
   import { getWeaponById, getWeaponDisplayName, getWeaponSellPrice, getEnchantmentById, WEAPON_TYPE_NAMES } from '@/data/weapons'
   import { getRingById } from '@/data/rings'
+  import { getHatById } from '@/data/hats'
+  import { getShoeById } from '@/data/shoes'
   import { QUALITY_NAMES } from '@/composables/useFarmActions'
   import { addLog } from '@/composables/useGameLog'
   import type { Quality, RingEffectType } from '@/types'
@@ -530,7 +684,8 @@
     exp_bonus: '经验加成',
     treasure_find: '宝箱概率',
     ore_bonus: '矿石加成',
-    luck: '幸运'
+    luck: '幸运',
+    travel_speed: '旅行加速'
   }
 
   const PERCENTAGE_EFFECTS: Set<RingEffectType> = new Set([
@@ -551,7 +706,8 @@
     'exp_bonus',
     'treasure_find',
     'ore_bonus',
-    'luck'
+    'luck',
+    'travel_speed'
   ])
 
   const formatEffectValue = (eff: { type: RingEffectType; value: number }): string => {
@@ -630,6 +786,86 @@
     const result = inventoryStore.sellRing(activeRingIdx.value)
     addLog(result.message)
     activeRingIdx.value = null
+  }
+
+  // === 帽子辅助 ===
+
+  const equippedHatName = computed(() => {
+    const idx = inventoryStore.equippedHatIndex
+    const hat = inventoryStore.ownedHats[idx]
+    if (!hat) return null
+    return getHatById(hat.defId)?.name ?? null
+  })
+
+  const handleToggleHat = (idx: number) => {
+    if (inventoryStore.equippedHatIndex === idx) {
+      inventoryStore.unequipHat()
+    } else {
+      inventoryStore.equipHat(idx)
+    }
+  }
+
+  // === 帽子弹窗 ===
+
+  const activeHatIdx = ref<number | null>(null)
+
+  const activeHatDef = computed(() => {
+    if (activeHatIdx.value === null) return null
+    const hat = inventoryStore.ownedHats[activeHatIdx.value]
+    if (!hat) return null
+    return getHatById(hat.defId) ?? null
+  })
+
+  const handleToggleHatFromPopup = () => {
+    if (activeHatIdx.value === null) return
+    handleToggleHat(activeHatIdx.value)
+  }
+
+  const handleSellHat = () => {
+    if (activeHatIdx.value === null) return
+    const result = inventoryStore.sellHat(activeHatIdx.value)
+    addLog(result.message)
+    activeHatIdx.value = null
+  }
+
+  // === 鞋子辅助 ===
+
+  const equippedShoeName = computed(() => {
+    const idx = inventoryStore.equippedShoeIndex
+    const shoe = inventoryStore.ownedShoes[idx]
+    if (!shoe) return null
+    return getShoeById(shoe.defId)?.name ?? null
+  })
+
+  const handleToggleShoe = (idx: number) => {
+    if (inventoryStore.equippedShoeIndex === idx) {
+      inventoryStore.unequipShoe()
+    } else {
+      inventoryStore.equipShoe(idx)
+    }
+  }
+
+  // === 鞋子弹窗 ===
+
+  const activeShoeIdx = ref<number | null>(null)
+
+  const activeShoeDef = computed(() => {
+    if (activeShoeIdx.value === null) return null
+    const shoe = inventoryStore.ownedShoes[activeShoeIdx.value]
+    if (!shoe) return null
+    return getShoeById(shoe.defId) ?? null
+  })
+
+  const handleToggleShoeFromPopup = () => {
+    if (activeShoeIdx.value === null) return
+    handleToggleShoe(activeShoeIdx.value)
+  }
+
+  const handleSellShoe = () => {
+    if (activeShoeIdx.value === null) return
+    const result = inventoryStore.sellShoe(activeShoeIdx.value)
+    addLog(result.message)
+    activeShoeIdx.value = null
   }
 
   // === 临时背包 ===

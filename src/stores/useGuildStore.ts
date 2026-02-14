@@ -76,7 +76,7 @@ export const useGuildStore = defineStore('guild', () => {
     const item = GUILD_SHOP_ITEMS.find(i => i.itemId === itemId)
     if (!item) return false
     if (!item.unlockGoalCount) return true
-    return claimedGoals.value.length >= item.unlockGoalCount
+    return completedGoalCount.value >= item.unlockGoalCount
   }
 
   /** 公会商店：购买物品 */

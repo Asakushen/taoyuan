@@ -228,7 +228,8 @@
             "
             @click="guildStore.isEncountered(monster.id) && (selectedMonster = monster)"
           >
-            {{ guildStore.isEncountered(monster.id) ? monster.name : '???' }}
+            <template v-if="guildStore.isEncountered(monster.id)">{{ monster.name }}</template>
+            <Lock v-else :size="12" class="mx-auto text-muted/30" />
           </div>
         </div>
       </template>

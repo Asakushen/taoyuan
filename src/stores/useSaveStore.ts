@@ -48,7 +48,6 @@ const decrypt = (cipher: string): string | null => {
 }
 
 /** 解密并解析存档数据 */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const parseSaveData = (raw: string): Record<string, any> | null => {
   const decrypted = decrypt(raw)
   if (!decrypted) return null

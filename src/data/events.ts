@@ -19,7 +19,16 @@ export interface SeasonEventDef {
   /** 是否为互动节日（有小游戏） */
   interactive?: boolean
   /** 互动节日类型 */
-  festivalType?: 'fishing_contest' | 'harvest_fair' | 'dragon_boat' | 'lantern_riddle' | 'pot_throwing' | 'dumpling_making' | 'firework_show'
+  festivalType?:
+    | 'fishing_contest'
+    | 'harvest_fair'
+    | 'dragon_boat'
+    | 'lantern_riddle'
+    | 'pot_throwing'
+    | 'dumpling_making'
+    | 'firework_show'
+    | 'tea_contest'
+    | 'kite_flying'
 }
 
 export const SEASON_EVENTS: SeasonEventDef[] = [
@@ -317,6 +326,48 @@ export const SEASON_EVENTS: SeasonEventDef[] = [
     ],
     interactive: true,
     festivalType: 'firework_show'
+  },
+  {
+    id: 'dou_cha',
+    name: '斗茶大会',
+    season: 'summer',
+    day: 18,
+    description: '以茶会友，品茗论道！',
+    effects: {
+      friendshipBonus: 5
+    },
+    narrative: [
+      '夏季第18天——斗茶大会。',
+      '炎炎夏日，最宜品茗。',
+      '林老在广场上架起茶台，清泉甘洌，茶器齐备。',
+      '「好茶须好水、好火、好手。今日比的就是这个好字。」',
+      '秋月已经磨好了茶具，阿石搬来了山泉水。',
+      '陈伯笑道：「都来试试身手，看谁泡出的茶最好！」',
+      '所有村民好感度+5。'
+    ],
+    interactive: true,
+    festivalType: 'tea_contest'
+  },
+  {
+    id: 'qiu_yuan',
+    name: '秋风筝会',
+    season: 'autumn',
+    day: 18,
+    description: '秋高气爽，放飞纸鸢！',
+    effects: {
+      friendshipBonus: 5
+    },
+    narrative: [
+      '秋季第18天——秋风筝会。',
+      '天高云淡，正是放风筝的好时节。',
+      '小满一大早就扎好了一个蝴蝶风筝：「快看快看！」',
+      '阿石默默拿出一个鹰形风筝，做工精细。',
+      '秋月红着脸递过一个花朵形状的：「我……我第一次做。」',
+      '柳娘笑道：「比比谁的风筝放得最高最稳！」',
+      '所有村民好感度+5。'
+    ],
+    interactive: true,
+    festivalType: 'kite_flying'
   }
 ]
 

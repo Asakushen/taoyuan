@@ -51,12 +51,14 @@
                 :class="item.quantity > 0 ? 'cursor-pointer hover:bg-accent/5' : 'opacity-50'"
                 @click="
                   item.quantity > 0 &&
-                  openBuyModal(
+                  openBatchBuyModal(
                     item.name,
                     `剩余${item.quantity}个`,
                     discounted(item.price),
                     () => handleBuyFromTraveler(item.itemId, item.name, item.price),
-                    () => item.quantity > 0 && playerStore.money >= discounted(item.price)
+                    () => item.quantity > 0 && playerStore.money >= discounted(item.price),
+                    count => handleBatchBuyFromTraveler(item.itemId, item.name, item.price, count),
+                    () => getMaxBuyable(discounted(item.price), item.quantity)
                   )
                 "
               >
@@ -103,12 +105,14 @@
               :key="seed.seedId"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   seed.cropName + '种子',
                   `${seed.growthDays}天成熟 → 售${seed.sellPrice}文`,
                   discounted(seed.price),
                   () => handleBuySeed(seed.seedId),
-                  () => playerStore.money >= discounted(seed.price)
+                  () => playerStore.money >= discounted(seed.price),
+                  count => handleBatchBuySeed(seed.seedId, count),
+                  () => getMaxBuyable(discounted(seed.price))
                 )
               "
             >
@@ -203,12 +207,14 @@
               :key="tree.saplingId"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   tree.name + '苗',
                   `28天成熟 · ${seasonName(tree.fruitSeason)}季产${tree.fruitName}`,
                   discounted(tree.saplingPrice),
                   () => handleBuySapling(tree.saplingId, tree.saplingPrice, tree.name),
-                  () => playerStore.money >= discounted(tree.saplingPrice)
+                  () => playerStore.money >= discounted(tree.saplingPrice),
+                  count => handleBatchBuySapling(tree.saplingId, tree.saplingPrice, tree.name, count),
+                  () => getMaxBuyable(discounted(tree.saplingPrice))
                 )
               "
             >
@@ -223,7 +229,15 @@
             <div
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal('干草', '喂养牲畜用', discounted(HAY_PRICE), handleBuyHay, () => playerStore.money >= discounted(HAY_PRICE))
+                openBatchBuyModal(
+                  '干草',
+                  '喂养牲畜用',
+                  discounted(HAY_PRICE),
+                  handleBuyHay,
+                  () => playerStore.money >= discounted(HAY_PRICE),
+                  count => handleBatchBuyItem('hay', HAY_PRICE, '干草', count),
+                  () => getMaxBuyable(discounted(HAY_PRICE))
+                )
               "
             >
               <div>
@@ -237,12 +251,14 @@
             <div
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   '木材',
                   '建筑和加工的基础材料',
                   discounted(WOOD_PRICE),
                   () => handleBuyItem('wood', WOOD_PRICE, '木材'),
-                  () => playerStore.money >= discounted(WOOD_PRICE)
+                  () => playerStore.money >= discounted(WOOD_PRICE),
+                  count => handleBatchBuyItem('wood', WOOD_PRICE, '木材', count),
+                  () => getMaxBuyable(discounted(WOOD_PRICE))
                 )
               "
             >
@@ -257,12 +273,14 @@
             <div
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   '雨图腾',
                   '使用后可以让明天下雨',
                   discounted(RAIN_TOTEM_PRICE),
                   () => handleBuyItem('rain_totem', RAIN_TOTEM_PRICE, '雨图腾'),
-                  () => playerStore.money >= discounted(RAIN_TOTEM_PRICE)
+                  () => playerStore.money >= discounted(RAIN_TOTEM_PRICE),
+                  count => handleBatchBuyItem('rain_totem', RAIN_TOTEM_PRICE, '雨图腾', count),
+                  () => getMaxBuyable(discounted(RAIN_TOTEM_PRICE))
                 )
               "
             >
@@ -285,12 +303,14 @@
               :key="item.itemId"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   item.name,
                   item.description,
                   discounted(item.price),
                   () => handleBuyItem(item.itemId, item.price, item.name),
-                  () => playerStore.money >= discounted(item.price)
+                  () => playerStore.money >= discounted(item.price),
+                  count => handleBatchBuyItem(item.itemId, item.price, item.name, count),
+                  () => getMaxBuyable(discounted(item.price))
                 )
               "
             >
@@ -326,6 +346,52 @@
             <div v-if="craftableRings.length === 0" class="flex flex-col items-center justify-center py-4 text-muted">
               <CircleDot :size="24" class="text-muted/30 mb-2" />
               <p class="text-xs">没有可合成的戒指</p>
+            </div>
+          </div>
+
+          <!-- 帽子合成 -->
+          <h4 class="text-accent text-sm mb-2 mt-4">
+            <Crown :size="14" class="inline" />
+            帽子合成
+          </h4>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="hat in CRAFTABLE_HATS"
+              :key="hat.id"
+              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
+              @click="openHatCraftModal(hat)"
+            >
+              <div>
+                <p class="text-sm">
+                  {{ hat.name }}
+                  <span v-if="inventoryStore.hasHat(hat.id)" class="text-success text-xs ml-1">已拥有</span>
+                </p>
+                <p class="text-muted text-xs">{{ hat.description }}</p>
+              </div>
+              <span class="text-xs text-accent whitespace-nowrap">{{ hat.recipeMoney }}文</span>
+            </div>
+          </div>
+
+          <!-- 鞋子合成 -->
+          <h4 class="text-accent text-sm mb-2 mt-4">
+            <Footprints :size="14" class="inline" />
+            鞋子合成
+          </h4>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="shoe in CRAFTABLE_SHOES"
+              :key="shoe.id"
+              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
+              @click="openShoeCraftModal(shoe)"
+            >
+              <div>
+                <p class="text-sm">
+                  {{ shoe.name }}
+                  <span v-if="inventoryStore.hasShoe(shoe.id)" class="text-success text-xs ml-1">已拥有</span>
+                </p>
+                <p class="text-muted text-xs">{{ shoe.description }}</p>
+              </div>
+              <span class="text-xs text-accent whitespace-nowrap">{{ shoe.recipeMoney }}文</span>
             </div>
           </div>
         </template>
@@ -368,12 +434,14 @@
               :key="b.id"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   b.name,
                   b.description,
                   discounted(b.shopPrice!),
                   () => handleBuyItem(b.id, b.shopPrice!, b.name),
-                  () => playerStore.money >= discounted(b.shopPrice!)
+                  () => playerStore.money >= discounted(b.shopPrice!),
+                  count => handleBatchBuyItem(b.id, b.shopPrice!, b.name, count),
+                  () => getMaxBuyable(discounted(b.shopPrice!))
                 )
               "
             >
@@ -401,12 +469,14 @@
               :key="b.id"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   b.name,
                   b.description,
                   discounted(b.price),
                   () => handleBuyItem(b.id, b.price, b.name),
-                  () => playerStore.money >= discounted(b.price)
+                  () => playerStore.money >= discounted(b.price),
+                  count => handleBatchBuyItem(b.id, b.price, b.name, count),
+                  () => getMaxBuyable(discounted(b.price))
                 )
               "
             >
@@ -429,12 +499,14 @@
               :key="t.id"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   t.name,
                   t.description,
                   discounted(t.price),
                   () => handleBuyItem(t.id, t.price, t.name),
-                  () => playerStore.money >= discounted(t.price)
+                  () => playerStore.money >= discounted(t.price),
+                  count => handleBatchBuyItem(t.id, t.price, t.name, count),
+                  () => getMaxBuyable(discounted(t.price))
                 )
               "
             >
@@ -462,12 +534,14 @@
               :key="f.id"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   f.name,
                   f.description,
                   discounted(f.price),
                   () => handleBuyItem(f.id, f.price, f.name),
-                  () => playerStore.money >= discounted(f.price)
+                  () => playerStore.money >= discounted(f.price),
+                  count => handleBatchBuyItem(f.id, f.price, f.name, count),
+                  () => getMaxBuyable(discounted(f.price))
                 )
               "
             >
@@ -490,12 +564,14 @@
               :key="item.itemId"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   item.name,
                   item.description,
                   discounted(item.price),
                   () => handleBuyItem(item.itemId, item.price, item.name),
-                  () => playerStore.money >= discounted(item.price)
+                  () => playerStore.money >= discounted(item.price),
+                  count => handleBatchBuyItem(item.itemId, item.price, item.name, count),
+                  () => getMaxBuyable(discounted(item.price))
                 )
               "
             >
@@ -518,12 +594,14 @@
               :key="item.itemId"
               class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
               @click="
-                openBuyModal(
+                openBatchBuyModal(
                   item.name,
                   item.description,
                   discounted(item.price),
                   () => handleBuyItem(item.itemId, item.price, item.name),
-                  () => playerStore.money >= discounted(item.price)
+                  () => playerStore.money >= discounted(item.price),
+                  count => handleBatchBuyItem(item.itemId, item.price, item.name, count),
+                  () => getMaxBuyable(discounted(item.price))
                 )
               "
             >
@@ -532,6 +610,52 @@
                 <p class="text-muted text-xs">{{ item.description }}</p>
               </div>
               <span class="text-xs text-accent whitespace-nowrap">{{ discounted(item.price) }}文</span>
+            </div>
+          </div>
+
+          <!-- 帽子 -->
+          <h4 class="text-accent text-sm mb-2 mt-4">
+            <Crown :size="14" class="inline" />
+            帽子
+          </h4>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="hat in SHOP_HATS"
+              :key="hat.id"
+              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
+              @click="openHatShopModal(hat)"
+            >
+              <div>
+                <p class="text-sm">
+                  {{ hat.name }}
+                  <span v-if="inventoryStore.hasHat(hat.id)" class="text-success text-xs ml-1">已拥有</span>
+                </p>
+                <p class="text-muted text-xs">{{ hat.description }}</p>
+              </div>
+              <span class="text-xs text-accent whitespace-nowrap">{{ discounted(hat.shopPrice!) }}文</span>
+            </div>
+          </div>
+
+          <!-- 鞋子 -->
+          <h4 class="text-accent text-sm mb-2 mt-4">
+            <Footprints :size="14" class="inline" />
+            鞋子
+          </h4>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="shoe in SHOP_SHOES"
+              :key="shoe.id"
+              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
+              @click="openShoeShopModal(shoe)"
+            >
+              <div>
+                <p class="text-sm">
+                  {{ shoe.name }}
+                  <span v-if="inventoryStore.hasShoe(shoe.id)" class="text-success text-xs ml-1">已拥有</span>
+                </p>
+                <p class="text-muted text-xs">{{ shoe.description }}</p>
+              </div>
+              <span class="text-xs text-accent whitespace-nowrap">{{ discounted(shoe.shopPrice!) }}文</span>
             </div>
           </div>
         </template>
@@ -619,13 +743,68 @@
 
           <div class="border border-accent/10 rounded-xs p-2 mb-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs text-muted">价格</span>
+              <span class="text-xs text-muted">{{ buyModalData.batchBuy ? '单价' : '价格' }}</span>
               <span class="text-xs text-accent">{{ buyModalData.price }}文</span>
+            </div>
+          </div>
+
+          <!-- 批量购买数量选择器 -->
+          <div v-if="buyModalData.batchBuy" class="border border-accent/10 rounded-xs p-2 mb-2">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs text-muted">数量</span>
+              <span class="text-xs text-accent">{{ buyQuantity }}</span>
+            </div>
+            <div class="flex gap-1">
+              <button class="btn flex-1 justify-center" :disabled="buyQuantity <= 1" @click="buyQuantity = Math.max(1, buyQuantity - 1)">
+                -1
+              </button>
+              <button
+                class="btn flex-1 justify-center"
+                :disabled="buyQuantity >= maxBuyQuantity"
+                @click="buyQuantity = Math.min(maxBuyQuantity, buyQuantity + 1)"
+              >
+                +1
+              </button>
+              <button
+                class="btn flex-1 justify-center"
+                :disabled="buyQuantity >= maxBuyQuantity"
+                @click="buyQuantity = Math.min(maxBuyQuantity, buyQuantity + 5)"
+              >
+                +5
+              </button>
+              <button
+                class="btn flex-1 justify-center"
+                :disabled="buyQuantity >= maxBuyQuantity"
+                @click="buyQuantity = Math.min(maxBuyQuantity, buyQuantity + 10)"
+              >
+                +10
+              </button>
+            </div>
+            <div class="flex mt-2 gap-1">
+              <button class="btn flex-1 justify-center" :disabled="buyQuantity <= 1" @click="buyQuantity = 1">最少</button>
+              <button class="btn flex-1 justify-center" :disabled="buyQuantity >= maxBuyQuantity" @click="buyQuantity = maxBuyQuantity">
+                最多
+              </button>
+            </div>
+            <div class="flex items-center justify-between mt-1.5">
+              <span class="text-xs text-muted">总价</span>
+              <span class="text-xs text-accent">{{ buyTotalPrice }}文</span>
             </div>
           </div>
 
           <div class="flex flex-col gap-1.5">
             <button
+              v-if="buyModalData.batchBuy"
+              class="btn text-xs w-full justify-center"
+              :class="{ 'bg-accent! text-bg!': buyModalData.canBuy() }"
+              :disabled="!buyModalData.canBuy()"
+              @click="buyModalData.batchBuy!.onBuy(buyQuantity)"
+            >
+              <ShoppingCart :size="14" />
+              购买 ×{{ buyQuantity }} · {{ buyTotalPrice }}文
+            </button>
+            <button
+              v-else
               class="btn text-xs w-full justify-center"
               :class="{ 'bg-accent! text-bg!': buyModalData.canBuy() }"
               :disabled="!buyModalData.canBuy()"
@@ -724,7 +903,9 @@
     Bomb,
     CircleDot,
     Hammer,
-    X
+    X,
+    Crown,
+    Footprints
   } from 'lucide-vue-next'
   import {
     useShopStore,
@@ -740,10 +921,12 @@
   import { SHOPS, isShopAvailable, getShopClosedReason } from '@/data/shops'
   import type { ShopDef } from '@/data/shops'
   import { SHOP_WEAPONS, WEAPON_TYPE_NAMES } from '@/data/weapons'
-  import type { WeaponDef, RingDef, RingEffectType, Season, Quality } from '@/types'
+  import type { WeaponDef, RingDef, RingEffectType, Season, Quality, HatDef, ShoeDef } from '@/types'
   import { FRUIT_TREE_DEFS } from '@/data/fruitTrees'
   import { BOMBS } from '@/data/processing'
   import { CRAFTABLE_RINGS } from '@/data/rings'
+  import { SHOP_HATS, CRAFTABLE_HATS } from '@/data/hats'
+  import { SHOP_SHOES, CRAFTABLE_SHOES } from '@/data/shoes'
   import { HAY_PRICE } from '@/data/animals'
   import { addLog } from '@/composables/useGameLog'
   import { sfxBuy } from '@/composables/useAudio'
@@ -808,6 +991,10 @@
     canBuy: () => boolean
     extraLines?: string[]
     buttonText?: string
+    batchBuy?: {
+      onBuy: (count: number) => void
+      maxCount: () => number
+    }
   }
 
   type SellModalState = {
@@ -840,6 +1027,25 @@
     return getItemById(data.itemId) ?? null
   })
 
+  const buyQuantity = ref(1)
+
+  const buyTotalPrice = computed(() => {
+    if (!buyModalData.value) return 0
+    return buyModalData.value.price * buyQuantity.value
+  })
+
+  const maxBuyQuantity = computed(() => {
+    if (!buyModalData.value?.batchBuy) return 1
+    return Math.max(1, buyModalData.value.batchBuy.maxCount())
+  })
+
+  const getMaxBuyable = (unitPrice: number, stockLimit?: number): number => {
+    const affordable = unitPrice > 0 ? Math.floor(playerStore.money / unitPrice) : 0
+    let max = Math.max(1, affordable)
+    if (stockLimit !== undefined) max = Math.min(max, stockLimit)
+    return Math.min(max, 999)
+  }
+
   const openBuyModal = (
     name: string,
     description: string,
@@ -850,6 +1056,27 @@
     buttonText?: string
   ) => {
     shopModal.value = { type: 'buy', name, description, price, onBuy, canBuy, extraLines, buttonText }
+  }
+
+  const openBatchBuyModal = (
+    name: string,
+    description: string,
+    unitPrice: number,
+    onBuySingle: () => void,
+    canBuy: () => boolean,
+    batchOnBuy: (count: number) => void,
+    batchMaxCount: () => number
+  ) => {
+    buyQuantity.value = 1
+    shopModal.value = {
+      type: 'buy',
+      name,
+      description,
+      price: unitPrice,
+      onBuy: onBuySingle,
+      canBuy,
+      batchBuy: { onBuy: batchOnBuy, maxCount: batchMaxCount }
+    }
   }
 
   const openSellModal = (itemId: string, quality: Quality) => {
@@ -1046,6 +1273,65 @@
     addLog(`购买了干草。(-${actualPrice}文)`)
   }
 
+  // === 批量购买处理 ===
+
+  const handleBatchBuySeed = (seedId: string, count: number) => {
+    const seed = shopStore.availableSeeds.find(s => s.seedId === seedId)
+    if (!seed) return
+    const unitPrice = discounted(seed.price)
+    if (shopStore.buySeed(seedId, count)) {
+      sfxBuy()
+      showFloat(`-${unitPrice * count}文`, 'danger')
+      addLog(`购买了${count}个${seed.cropName}种子。(-${unitPrice * count}文)`)
+    } else {
+      addLog('金币不足或背包已满。')
+    }
+  }
+
+  const handleBatchBuyItem = (itemId: string, price: number, name: string, count: number) => {
+    const unitPrice = discounted(price)
+    if (shopStore.buyItem(itemId, price, count)) {
+      sfxBuy()
+      showFloat(`-${unitPrice * count}文`, 'danger')
+      addLog(`购买了${count}个${name}。(-${unitPrice * count}文)`)
+    } else {
+      addLog('金币不足或背包已满。')
+    }
+  }
+
+  const handleBatchBuySapling = (saplingId: string, price: number, treeName: string, count: number) => {
+    const unitPrice = discounted(price)
+    let bought = 0
+    for (let i = 0; i < count; i++) {
+      if (!playerStore.spendMoney(unitPrice)) break
+      inventoryStore.addItem(saplingId)
+      bought++
+    }
+    if (bought > 0) {
+      sfxBuy()
+      showFloat(`-${unitPrice * bought}文`, 'danger')
+      addLog(`购买了${bought}个${treeName}苗。(-${unitPrice * bought}文)`)
+    } else {
+      addLog('金币不足或背包已满。')
+    }
+  }
+
+  const handleBatchBuyFromTraveler = (itemId: string, name: string, originalPrice: number, count: number) => {
+    const unitPrice = discounted(originalPrice)
+    let bought = 0
+    for (let i = 0; i < count; i++) {
+      if (!shopStore.buyFromTraveler(itemId)) break
+      bought++
+    }
+    if (bought > 0) {
+      sfxBuy()
+      showFloat(`-${unitPrice * bought}文`, 'danger')
+      addLog(`从旅行商人处购买了${bought}个${name}。(-${unitPrice * bought}文)`)
+    } else {
+      addLog('金币不足或背包已满。')
+    }
+  }
+
   // === 镖局 ===
 
   const shopBombs = computed(() => BOMBS.filter(b => b.shopPrice !== null))
@@ -1104,7 +1390,8 @@
     exp_bonus: '经验加成',
     treasure_find: '宝箱概率',
     ore_bonus: '矿石额外',
-    luck: '幸运'
+    luck: '幸运',
+    travel_speed: '旅行加速'
   }
 
   const craftableRings = computed(() => CRAFTABLE_RINGS)
@@ -1120,6 +1407,147 @@
 
   const handleCraftRing = (defId: string) => {
     const result = inventoryStore.craftRing(defId)
+    if (result.success) {
+      sfxBuy()
+      showFloat(result.message, 'success')
+      addLog(result.message)
+    } else {
+      addLog(result.message)
+    }
+  }
+
+  // === 帽子/鞋子商店 ===
+
+  const formatEffectLabel = (eff: { type: RingEffectType; value: number }): string => {
+    const label = RING_EFFECT_LABELS[eff.type]
+    return label + (eff.value > 0 && eff.value < 1 ? Math.round(eff.value * 100) + '%' : '+' + eff.value)
+  }
+
+  const openHatShopModal = (hat: HatDef) => {
+    const lines = ['效果：' + hat.effects.map(formatEffectLabel).join('、')]
+    openBuyModal(
+      hat.name,
+      hat.description,
+      discounted(hat.shopPrice!),
+      () => handleBuyHat(hat),
+      () => !inventoryStore.hasHat(hat.id) && playerStore.money >= discounted(hat.shopPrice!),
+      lines
+    )
+  }
+
+  const openShoeShopModal = (shoe: ShoeDef) => {
+    const lines = ['效果：' + shoe.effects.map(formatEffectLabel).join('、')]
+    openBuyModal(
+      shoe.name,
+      shoe.description,
+      discounted(shoe.shopPrice!),
+      () => handleBuyShoe(shoe),
+      () => !inventoryStore.hasShoe(shoe.id) && playerStore.money >= discounted(shoe.shopPrice!),
+      lines
+    )
+  }
+
+  const openHatCraftModal = (hat: HatDef) => {
+    const lines = [
+      '效果：' + hat.effects.map(formatEffectLabel).join('、'),
+      '材料：' +
+        (hat.recipe?.map(m => `${getItemById(m.itemId)?.name ?? m.itemId}×${m.quantity}`).join('、') ?? '') +
+        ` + ${hat.recipeMoney}文`
+    ]
+    openBuyModal(
+      hat.name,
+      hat.description,
+      hat.recipeMoney,
+      () => handleCraftHat(hat.id),
+      () => canCraftHat(hat),
+      lines,
+      '合成'
+    )
+  }
+
+  const openShoeCraftModal = (shoe: ShoeDef) => {
+    const lines = [
+      '效果：' + shoe.effects.map(formatEffectLabel).join('、'),
+      '材料：' +
+        (shoe.recipe?.map(m => `${getItemById(m.itemId)?.name ?? m.itemId}×${m.quantity}`).join('、') ?? '') +
+        ` + ${shoe.recipeMoney}文`
+    ]
+    openBuyModal(
+      shoe.name,
+      shoe.description,
+      shoe.recipeMoney,
+      () => handleCraftShoe(shoe.id),
+      () => canCraftShoe(shoe),
+      lines,
+      '合成'
+    )
+  }
+
+  const handleBuyHat = (hat: HatDef) => {
+    if (inventoryStore.hasHat(hat.id)) {
+      addLog('你已经拥有这顶帽子了。')
+      return
+    }
+    if (hat.shopPrice === null) return
+    const actualPrice = discounted(hat.shopPrice)
+    if (!playerStore.spendMoney(actualPrice)) {
+      addLog('金币不足。')
+      return
+    }
+    inventoryStore.addHat(hat.id)
+    sfxBuy()
+    showFloat(`-${actualPrice}文`, 'danger')
+    addLog(`购买了${hat.name}。(-${actualPrice}文)`)
+  }
+
+  const handleBuyShoe = (shoe: ShoeDef) => {
+    if (inventoryStore.hasShoe(shoe.id)) {
+      addLog('你已经拥有这双鞋子了。')
+      return
+    }
+    if (shoe.shopPrice === null) return
+    const actualPrice = discounted(shoe.shopPrice)
+    if (!playerStore.spendMoney(actualPrice)) {
+      addLog('金币不足。')
+      return
+    }
+    inventoryStore.addShoe(shoe.id)
+    sfxBuy()
+    showFloat(`-${actualPrice}文`, 'danger')
+    addLog(`购买了${shoe.name}。(-${actualPrice}文)`)
+  }
+
+  const canCraftHat = (hat: HatDef): boolean => {
+    if (!hat.recipe) return false
+    if (playerStore.money < hat.recipeMoney) return false
+    for (const mat of hat.recipe) {
+      if (inventoryStore.getItemCount(mat.itemId) < mat.quantity) return false
+    }
+    return true
+  }
+
+  const canCraftShoe = (shoe: ShoeDef): boolean => {
+    if (!shoe.recipe) return false
+    if (playerStore.money < shoe.recipeMoney) return false
+    for (const mat of shoe.recipe) {
+      if (inventoryStore.getItemCount(mat.itemId) < mat.quantity) return false
+    }
+    return true
+  }
+
+  const handleCraftHat = (defId: string) => {
+    const result = inventoryStore.craftHat(defId)
+    if (result.success) {
+      sfxBuy()
+      showFloat(result.message, 'success')
+      addLog(result.message)
+    } else {
+      addLog(result.message)
+    }
+  }
+
+  const handleCraftShoe = (defId: string) => {
+    const result = inventoryStore.craftShoe(defId)
     if (result.success) {
       sfxBuy()
       showFloat(result.message, 'success')

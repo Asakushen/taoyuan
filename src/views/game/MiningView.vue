@@ -130,7 +130,9 @@
                 </span>
                 <span v-if="zone.bossDefeated" class="text-success">&#x2713; {{ zone.bossName }}</span>
                 <span v-else-if="zone.reached" class="text-danger/70">{{ zone.bossName }}</span>
-                <span v-else class="text-muted/30">???</span>
+                <span v-else class="text-muted/30">
+                  <Lock :size="12" class="inline" />
+                </span>
               </div>
               <div class="bg-bg rounded-xs h-1.5">
                 <div class="h-1.5 rounded-xs transition-all" :class="zone.barColor" :style="{ width: zone.progress + '%' }" />
@@ -341,7 +343,7 @@
           </div>
 
           <!-- 玩家 HP -->
-          <div class="border border-accent/10 rounded-xs p-2 mb-2">
+          <div class="border border-accent/10 rounded-xs p-2 mb-2 relative" :class="playerAnim">
             <div class="flex items-center justify-between text-xs mb-1">
               <span>你的 HP</span>
               <span :class="playerStore.getIsLowHp() ? 'text-danger' : 'text-muted'">
@@ -355,10 +357,17 @@
                 :style="{ width: `${playerStore.getHpPercent()}%` }"
               />
             </div>
+            <span
+              v-if="playerFloat"
+              :key="playerFloat.key"
+              class="absolute -top-1 right-0 text-danger text-[11px] font-bold anim-float-up pointer-events-none"
+            >
+              {{ playerFloat.text }}
+            </span>
           </div>
 
           <!-- 怪物 HP -->
-          <div class="border border-danger/20 rounded-xs p-2 mb-3">
+          <div class="border border-danger/20 rounded-xs p-2 mb-3 relative" :class="monsterAnim">
             <div class="flex items-center justify-between text-xs mb-1">
               <span class="text-danger">
                 {{ miningStore.combatMonster?.name }}
@@ -372,13 +381,21 @@
                 :style="{ width: `${miningStore.combatMonster ? (miningStore.combatMonsterHp / miningStore.combatMonster.hp) * 100 : 0}%` }"
               />
             </div>
+            <span
+              v-if="monsterFloat"
+              :key="monsterFloat.key"
+              class="absolute -top-1 right-0 text-accent text-[11px] font-bold anim-float-up pointer-events-none"
+            >
+              {{ monsterFloat.text }}
+            </span>
           </div>
 
           <!-- 战斗操作 -->
           <div class="flex flex-col gap-1 mb-3">
             <div
-              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-1.5 cursor-pointer hover:bg-accent/5"
-              @click="handleCombat('attack')"
+              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-1.5"
+              :class="combatAnimLock ? 'opacity-50' : 'cursor-pointer hover:bg-accent/5'"
+              @click="!combatAnimLock && handleCombat('attack')"
             >
               <span class="text-xs">
                 <Swords :size="12" class="inline" />
@@ -387,8 +404,9 @@
               <span class="text-xs text-muted">{{ weaponAttack }}攻击力</span>
             </div>
             <div
-              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-1.5 cursor-pointer hover:bg-accent/5"
-              @click="handleCombat('defend')"
+              class="flex items-center justify-between border border-accent/20 rounded-xs px-3 py-1.5"
+              :class="combatAnimLock ? 'opacity-50' : 'cursor-pointer hover:bg-accent/5'"
+              @click="!combatAnimLock && handleCombat('defend')"
             >
               <span class="text-xs">
                 <Shield :size="12" class="inline" />
@@ -409,8 +427,12 @@
             </div>
             <div
               class="flex items-center justify-between border rounded-xs px-3 py-1.5"
-              :class="miningStore.combatIsBoss ? 'border-accent/10 opacity-50' : 'border-danger/20 cursor-pointer hover:bg-danger/5'"
-              @click="!miningStore.combatIsBoss && handleCombat('flee')"
+              :class="
+                miningStore.combatIsBoss || combatAnimLock
+                  ? 'border-accent/10 opacity-50'
+                  : 'border-danger/20 cursor-pointer hover:bg-danger/5'
+              "
+              @click="!miningStore.combatIsBoss && !combatAnimLock && handleCombat('flee')"
             >
               <span class="text-xs" :class="miningStore.combatIsBoss ? 'text-muted' : 'text-danger'">
                 <MoveRight :size="12" class="inline" />
@@ -473,7 +495,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { Mountain, Pickaxe, Zap, ChevronDown, LogOut, Swords, Shield, MoveRight, Skull, X, Map, Backpack } from 'lucide-vue-next'
+  import { Mountain, Pickaxe, Zap, ChevronDown, LogOut, Swords, Shield, MoveRight, Skull, X, Map, Backpack, Lock } from 'lucide-vue-next'
   import { useMiningStore, useGameStore, usePlayerStore, useInventoryStore, useSkillStore } from '@/stores'
   import { ZONE_NAMES, getFloor, BOSS_MONSTERS } from '@/data'
   import { getWeaponById, getEnchantmentById, getWeaponDisplayName, WEAPON_TYPE_NAMES } from '@/data/weapons'
@@ -502,6 +524,53 @@
 
   /** 战斗道具面板 */
   const showCombatItems = ref(false)
+
+  // 战斗动画状态
+  const combatAnimLock = ref(false)
+  const playerAnim = ref('')
+  const monsterAnim = ref('')
+  const playerFloat = ref<{ text: string; key: number } | null>(null)
+  const monsterFloat = ref<{ text: string; key: number } | null>(null)
+  let floatCounter = 0
+
+  const triggerAnim = (target: 'player' | 'monster', cls: string, duration: number = 400) => {
+    if (target === 'player') {
+      playerAnim.value = cls
+      setTimeout(() => {
+        playerAnim.value = ''
+      }, duration)
+    } else {
+      monsterAnim.value = cls
+      setTimeout(() => {
+        monsterAnim.value = ''
+      }, duration)
+    }
+  }
+
+  const showDamageFloat = (target: 'player' | 'monster', text: string) => {
+    const obj = { text, key: ++floatCounter }
+    if (target === 'player') {
+      playerFloat.value = obj
+      setTimeout(() => {
+        playerFloat.value = null
+      }, 800)
+    } else {
+      monsterFloat.value = obj
+      setTimeout(() => {
+        monsterFloat.value = null
+      }, 800)
+    }
+  }
+
+  const parseDamage = (msg: string): { dealt: number; taken: number; isCrit: boolean } => {
+    const dealt = msg.match(/造成(\d+)点伤害/)
+    const taken = msg.match(/受到(\d+)点伤害/)
+    return {
+      dealt: dealt ? parseInt(dealt[1]!) : 0,
+      taken: taken ? parseInt(taken[1]!) : 0,
+      isCrit: msg.includes('暴击')
+    }
+  }
 
   const recentLog = computed(() => exploreLog.value.slice(-8))
 
@@ -810,20 +879,46 @@
   }
 
   const handleCombat = (action: CombatAction) => {
+    if (combatAnimLock.value) return
+    combatAnimLock.value = true
+
     const result = miningStore.combatAction(action)
+    const { dealt, taken, isCrit } = parseDamage(result.message)
+
     if (action === 'attack') sfxAttack()
     if (action === 'defend') sfxDefend()
     if (action === 'flee') sfxFlee()
     if (result.message.includes('受到')) sfxHurt()
+
+    if (action === 'attack' && dealt > 0) {
+      triggerAnim('monster', isCrit ? 'anim-shake-heavy' : 'anim-shake', isCrit ? 400 : 300)
+      showDamageFloat('monster', isCrit ? `暴击 -${dealt}` : `-${dealt}`)
+    }
+    if (action === 'defend') {
+      triggerAnim('player', 'anim-flash-defend', 400)
+    }
+    if (taken > 0) {
+      triggerAnim('player', isCrit ? 'anim-shake-heavy anim-flash-red' : 'anim-flash-red', 400)
+      showDamageFloat('player', `-${taken}`)
+    }
+
     addLog(result.message)
+
     if (result.combatOver) {
-      if (result.won) sfxVictory()
+      if (result.won) {
+        sfxVictory()
+        triggerAnim('monster', 'anim-victory', 1500)
+      }
       resumeNormalBgm()
       showCombatItems.value = false
       if (!miningStore.isExploring) {
         exploreLog.value.push(result.message)
       }
     }
+
+    setTimeout(() => {
+      combatAnimLock.value = false
+    }, 400)
   }
 
   /** 使用战斗道具 */
@@ -875,3 +970,108 @@
     addLog(msg)
   }
 </script>
+
+<style scoped>
+  /* === 战斗动画 === */
+
+  @keyframes combat-shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-3px);
+    }
+    40% {
+      transform: translateX(3px);
+    }
+    60% {
+      transform: translateX(-2px);
+    }
+    80% {
+      transform: translateX(2px);
+    }
+  }
+
+  @keyframes combat-shake-heavy {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10% {
+      transform: translate(-4px, 2px);
+    }
+    30% {
+      transform: translate(4px, -2px);
+    }
+    50% {
+      transform: translate(-3px, 1px);
+    }
+    70% {
+      transform: translate(3px, -1px);
+    }
+    90% {
+      transform: translate(-2px, 1px);
+    }
+  }
+
+  @keyframes combat-flash-red {
+    0%,
+    100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(195, 64, 67, 0.3);
+    }
+  }
+
+  @keyframes combat-flash-defend {
+    0%,
+    100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(76, 110, 138, 0.3);
+    }
+  }
+
+  @keyframes combat-float-up {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-24px);
+    }
+  }
+
+  @keyframes combat-victory-flash {
+    0%,
+    100% {
+      border-color: rgba(200, 164, 92, 0.3);
+    }
+    50% {
+      border-color: rgba(200, 164, 92, 0.8);
+    }
+  }
+
+  .anim-shake {
+    animation: combat-shake 0.3s ease-in-out;
+  }
+  .anim-shake-heavy {
+    animation: combat-shake-heavy 0.4s ease-in-out;
+  }
+  .anim-flash-red {
+    animation: combat-flash-red 0.3s ease-in-out;
+  }
+  .anim-flash-defend {
+    animation: combat-flash-defend 0.4s ease-in-out;
+  }
+  .anim-victory {
+    animation: combat-victory-flash 0.5s ease-in-out 3;
+  }
+  .anim-float-up {
+    animation: combat-float-up 0.8s ease-out forwards;
+  }
+</style>

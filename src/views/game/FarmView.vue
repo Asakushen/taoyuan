@@ -421,9 +421,23 @@
           =杂草
         </span>
       </div>
-      <p v-if="unwateredCount > 0" class="text-xs text-danger mt-1">还有 {{ unwateredCount }} 块地需要浇水</p>
-      <p v-if="infestedCount > 0" class="text-xs text-danger mt-1">有 {{ infestedCount }} 块地遭受虫害</p>
-      <p v-if="weedyCount > 0" class="text-xs text-success mt-1">有 {{ weedyCount }} 块地长了杂草</p>
+      <div
+        v-if="unwateredCount > 0 || infestedCount > 0 || weedyCount > 0"
+        class="flex flex-wrap gap-2 mt-1.5 border border-accent/20 rounded-xs p-2"
+      >
+        <span v-if="unwateredCount > 0" class="inline-flex items-center gap-0.5 text-xs text-danger">
+          <Droplets :size="10" />
+          还有{{ unwateredCount }}块需浇水
+        </span>
+        <span v-if="infestedCount > 0" class="inline-flex items-center gap-0.5 text-xs text-danger">
+          <Bug :size="10" />
+          有{{ infestedCount }}块虫害
+        </span>
+        <span v-if="weedyCount > 0" class="inline-flex items-center gap-0.5 text-xs text-success">
+          <Leaf :size="10" />
+          有{{ weedyCount }}块杂草
+        </span>
+      </div>
     </div>
 
     <!-- 出货箱入口 -->
@@ -742,42 +756,109 @@
       </div>
     </div>
 
-    <!-- 温室 -->
-    <div v-if="showGreenhouse" class="mt-3 border border-accent/20 rounded-xs p-3">
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-1.5 text-sm text-accent">
-          <Warehouse :size="14" />
-          <span>温室</span>
-        </div>
-        <button class="btn text-xs" :class="{ 'bg-accent! text-bg!': greenhouseMode }" @click="greenhouseMode = !greenhouseMode">
-          <template v-if="greenhouseMode">
-            <ArrowLeft :size="12" />
-            返回
-          </template>
-          <template v-else>
-            <ArrowRight :size="12" />
-            进入
-          </template>
-        </button>
+    <!-- 温室入口 -->
+    <div
+      v-if="showGreenhouse"
+      class="mt-3 flex items-center justify-between border border-accent/20 rounded-xs px-3 py-2 cursor-pointer hover:bg-accent/5"
+      @click="showGreenhouseModal = true"
+    >
+      <div class="flex items-center gap-1.5">
+        <Warehouse :size="14" class="text-accent" />
+        <span class="text-sm text-accent">温室</span>
+        <span v-if="ghHarvestableCount > 0" class="text-xs text-accent">{{ ghHarvestableCount }}块可收获</span>
       </div>
-      <p v-if="!greenhouseMode" class="text-xs text-muted">无季节限制，自动浇水。</p>
-      <template v-if="greenhouseMode">
-        <!-- 温室地块 -->
-        <div class="grid gap-1 max-w-md" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
-          <button
-            v-for="plot in farmStore.greenhousePlots"
-            :key="plot.id"
-            class="aspect-square border border-accent/20 rounded-xs flex flex-col items-center justify-center cursor-pointer transition-colors hover:border-accent/60 hover:bg-panel/80 leading-tight"
-            :class="getPlotDisplay(plot).color"
-            :title="getPlotTooltip(plot)"
-            @click="activeGhPlotId = plot.id"
-          >
-            <span class="text-sm">{{ getPlotDisplay(plot).text }}</span>
-            <span v-if="plot.cropId" class="text-[10px] opacity-70 truncate max-w-full px-0.5">{{ getCropName(plot.cropId) }}</span>
-          </button>
-        </div>
-      </template>
+      <span class="text-xs text-muted">{{ farmStore.greenhousePlots.length }}块地</span>
     </div>
+
+    <!-- 温室弹窗 -->
+    <Transition name="panel-fade">
+      <div
+        v-if="showGreenhouseModal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="showGreenhouseModal = false"
+      >
+        <div class="game-panel max-w-sm w-full relative">
+          <button class="absolute top-2 right-2 text-muted hover:text-text" @click="showGreenhouseModal = false">
+            <X :size="14" />
+          </button>
+          <div class="flex items-center gap-1.5 text-sm text-accent mb-1">
+            <Warehouse :size="14" />
+            <span>温室</span>
+          </div>
+          <p class="text-xs text-muted mb-3">无季节限制 · 自动浇水 · {{ farmStore.greenhousePlots.length }}块地</p>
+
+          <!-- 操作按钮 -->
+          <div class="flex gap-2 mb-3">
+            <button
+              class="btn text-xs flex-1 justify-center"
+              :class="{ 'bg-accent! text-bg!': ghHarvestableCount > 0 }"
+              :disabled="ghHarvestableCount === 0"
+              @click="doGhBatchHarvest"
+            >
+              <Wheat :size="12" />
+              一键收获{{ ghHarvestableCount > 0 ? ` (${ghHarvestableCount}块)` : '' }}
+            </button>
+            <button v-if="nextGhUpgrade" class="btn text-xs flex-1 justify-center" @click="showGhUpgradeModal = true">
+              <ArrowUp :size="12" />
+              升级温室
+            </button>
+          </div>
+
+          <!-- 温室地块网格 -->
+          <div class="grid gap-1 max-w-full" :style="{ gridTemplateColumns: `repeat(${ghGridCols}, minmax(0, 1fr))` }">
+            <button
+              v-for="plot in farmStore.greenhousePlots"
+              :key="plot.id"
+              class="aspect-square border border-accent/20 rounded-xs flex flex-col items-center justify-center cursor-pointer transition-colors hover:border-accent/60 hover:bg-panel/80 leading-tight"
+              :class="getPlotDisplay(plot).color"
+              :title="getPlotTooltip(plot)"
+              @click="activeGhPlotId = plot.id"
+            >
+              <span class="text-sm">{{ getPlotDisplay(plot).text }}</span>
+              <span v-if="plot.cropId" class="text-[10px] opacity-70 truncate max-w-full px-0.5">{{ getCropName(plot.cropId) }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- 温室升级确认弹窗 -->
+    <Transition name="panel-fade">
+      <div
+        v-if="showGhUpgradeModal && nextGhUpgrade"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="showGhUpgradeModal = false"
+      >
+        <div class="game-panel max-w-xs w-full relative">
+          <button class="absolute top-2 right-2 text-muted hover:text-text" @click="showGhUpgradeModal = false">
+            <X :size="14" />
+          </button>
+          <p class="text-accent text-sm mb-2">{{ nextGhUpgrade.name }}</p>
+          <p class="text-xs text-muted mb-3">{{ nextGhUpgrade.description }}</p>
+
+          <div class="border border-accent/10 rounded-xs p-2 mb-3">
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="text-muted">费用</span>
+              <span :class="playerStore.money >= nextGhUpgrade.cost ? 'text-success' : 'text-danger'">{{ nextGhUpgrade.cost }}文</span>
+            </div>
+            <div v-for="mat in nextGhUpgrade.materialCost" :key="mat.itemId" class="flex items-center justify-between text-xs">
+              <span class="text-muted">{{ getItemName(mat.itemId) }}</span>
+              <span :class="inventoryStore.getItemCount(mat.itemId) >= mat.quantity ? 'text-success' : 'text-danger'">
+                {{ inventoryStore.getItemCount(mat.itemId) }}/{{ mat.quantity }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button class="btn text-xs flex-1" @click="showGhUpgradeModal = false">取消</button>
+            <button class="btn text-xs flex-1 bg-accent! text-bg!" @click="handleGhUpgrade">
+              <ArrowUp :size="12" />
+              确认升级
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- 温室地块操作弹窗 -->
     <Transition name="panel-fade">
@@ -864,8 +945,7 @@
     Droplet,
     TreePine,
     TreeDeciduous,
-    ArrowRight,
-    ArrowLeft,
+    ArrowUp,
     Wrench,
     Gift,
     CirclePlus,
@@ -893,11 +973,13 @@
     useSkillStore,
     useShopStore,
     useBreedingStore,
+    useWalletStore,
     SEASON_NAMES
   } from '@/stores'
   import { getCropById, getCropsBySeason, getItemById } from '@/data'
   import { getStarRating } from '@/data/breeding'
   import { FRUIT_TREE_DEFS, MAX_FRUIT_TREES } from '@/data/fruitTrees'
+  import { GREENHOUSE_UPGRADES } from '@/data/buildings'
   import { WILD_TREE_DEFS, MAX_WILD_TREES, getWildTreeDef } from '@/data/wildTrees'
   import { CROPS } from '@/data/crops'
   import { FERTILIZERS, getFertilizerById } from '@/data/processing'
@@ -920,7 +1002,7 @@
     handleBatchClearWeed,
     QUALITY_NAMES
   } from '@/composables/useFarmActions'
-  import type { SprinklerType, FertilizerType, FruitTreeType, WildTreeType } from '@/types'
+  import type { SprinklerType, FertilizerType, FruitTreeType, WildTreeType, Quality } from '@/types'
   import { sfxHarvest } from '@/composables/useAudio'
 
   const { selectedSeed } = useFarmActions()
@@ -929,6 +1011,7 @@
   const inventoryStore = useInventoryStore()
   const gameStore = useGameStore()
   const homeStore = useHomeStore()
+  const playerStore = usePlayerStore()
   const shopStore = useShopStore()
   const breedingStore = useBreedingStore()
 
@@ -938,6 +1021,8 @@
   const showBatchPlant = ref(false)
   const showBatchFertilize = ref(false)
   const showBatchActions = ref(false)
+  const showGreenhouseModal = ref(false)
+  const showGhUpgradeModal = ref(false)
   const chopFruitTreeTarget = ref<{ id: number; type: string } | null>(null)
   const chopWildTreeTarget = ref<{ id: number; type: string; chopCount: number } | null>(null)
 
@@ -951,6 +1036,7 @@
     showBatchPlant.value = false
     showBatchFertilize.value = false
     showBatchActions.value = false
+    showGreenhouseModal.value = false
     navigateToPanel('shop')
   }
 
@@ -976,14 +1062,14 @@
     return shopStore.shippingBox.reduce((sum, entry) => sum + shopStore.calculateSellPrice(entry.itemId, entry.quantity, entry.quality), 0)
   })
 
-  const handleAddToBox = (itemId: string, quantity: number, quality: import('@/types').Quality) => {
+  const handleAddToBox = (itemId: string, quantity: number, quality: Quality) => {
     if (shopStore.addToShippingBox(itemId, quantity, quality)) {
       const name = getItemName(itemId)
       addLog(`将${name}×${quantity}放入了出货箱。`)
     }
   }
 
-  const handleRemoveFromBox = (itemId: string, quantity: number, quality: import('@/types').Quality) => {
+  const handleRemoveFromBox = (itemId: string, quantity: number, quality: Quality) => {
     if (shopStore.removeFromShippingBox(itemId, quantity, quality)) {
       const name = getItemName(itemId)
       addLog(`从出货箱取出了${name}×${quantity}。`)
@@ -1013,12 +1099,20 @@
 
   const plotCropGrowthDays = computed(() => {
     if (!activePlot.value?.cropId) return '?'
-    return getCropById(activePlot.value.cropId)?.growthDays ?? '?'
+    const baseDays = getCropById(activePlot.value.cropId)?.growthDays
+    if (!baseDays) return '?'
+    const fertDef = activePlot.value.fertilizer ? getFertilizerById(activePlot.value.fertilizer) : null
+    const speedup = (fertDef?.growthSpeedup ?? 0) + useWalletStore().getCropGrowthBonus()
+    return speedup > 0 ? Math.max(1, Math.floor(baseDays * (1 - speedup))) : baseDays
   })
 
   const ghPlotCropGrowthDays = computed(() => {
     if (!activeGhPlot.value?.cropId) return '?'
-    return getCropById(activeGhPlot.value.cropId)?.growthDays ?? '?'
+    const baseDays = getCropById(activeGhPlot.value.cropId)?.growthDays
+    if (!baseDays) return '?'
+    const fertDef = activeGhPlot.value.fertilizer ? getFertilizerById(activeGhPlot.value.fertilizer) : null
+    const speedup = (fertDef?.growthSpeedup ?? 0) + useWalletStore().getCropGrowthBonus()
+    return speedup > 0 ? Math.max(1, Math.floor(baseDays * (1 - speedup))) : baseDays
   })
 
   const plotFertName = computed(() => {
@@ -1190,7 +1284,10 @@
         }
       case 'growing': {
         const crop = getCropById(plot.cropId!)
-        const progress = crop ? Math.floor((plot.growthDays / crop.growthDays) * 100) : 0
+        const fertDef = plot.fertilizer ? getFertilizerById(plot.fertilizer) : null
+        const speedup = (fertDef?.growthSpeedup ?? 0) + useWalletStore().getCropGrowthBonus()
+        const effectiveDays = crop ? (speedup > 0 ? Math.max(1, Math.floor(crop.growthDays * (1 - speedup))) : crop.growthDays) : 1
+        const progress = crop ? Math.floor((plot.growthDays / effectiveDays) * 100) : 0
         return {
           text: plot.watered ? '润' : '长',
           color: plot.watered ? 'text-water' : progress > 60 ? 'text-success' : 'text-success/80',
@@ -1213,7 +1310,10 @@
       tip = `${crop?.name ?? ''}已成熟（点击收获）`
     } else if (plot.state === 'planted' || plot.state === 'growing') {
       const crop = getCropById(plot.cropId!)
-      tip = `${crop?.name ?? ''} ${plot.growthDays}/${crop?.growthDays ?? '?'}天 ${plot.watered ? '已浇水' : '需浇水'}`
+      const fertDef = plot.fertilizer ? getFertilizerById(plot.fertilizer) : null
+      const speedup = (fertDef?.growthSpeedup ?? 0) + useWalletStore().getCropGrowthBonus()
+      const effectiveDays = crop ? (speedup > 0 ? Math.max(1, Math.floor(crop.growthDays * (1 - speedup))) : crop.growthDays) : '?'
+      tip = `${crop?.name ?? ''} ${plot.growthDays}/${effectiveDays}天 ${plot.watered ? '已浇水' : '需浇水'}`
     }
     if (hasSprinkler(plot.id)) tip += ' [洒水器]'
     if (plot.fertilizer) {
@@ -1390,7 +1490,6 @@
       addLog('斧头正在升级中，无法砍伐。')
       return
     }
-    const playerStore = usePlayerStore()
     const skillStore = useSkillStore()
     const cost = Math.max(
       1,
@@ -1473,7 +1572,6 @@
       addLog('斧头正在升级中，无法伐木。')
       return
     }
-    const playerStore = usePlayerStore()
     const skillStore = useSkillStore()
     const cost = Math.max(
       1,
@@ -1501,7 +1599,15 @@
   // === 温室 ===
 
   const showGreenhouse = computed(() => homeStore.greenhouseUnlocked)
-  const greenhouseMode = ref(false)
+
+  const ghHarvestableCount = computed(() => farmStore.greenhousePlots.filter(p => p.state === 'harvestable').length)
+
+  const ghGridCols = computed(() => {
+    const upgradeDef = GREENHOUSE_UPGRADES[farmStore.greenhouseLevel - 1]
+    return upgradeDef?.gridCols ?? 4
+  })
+
+  const nextGhUpgrade = computed(() => GREENHOUSE_UPGRADES[farmStore.greenhouseLevel] ?? null)
 
   const allSeeds = computed(() => {
     return CROPS.filter(crop => inventoryStore.hasItem(crop.seedId)).map(crop => ({
@@ -1532,7 +1638,6 @@
 
   const doGhHarvest = () => {
     if (activeGhPlotId.value === null) return
-    const playerStore = usePlayerStore()
     if (!playerStore.consumeStamina(1)) {
       addLog('体力不足，无法收获。')
       return
@@ -1549,5 +1654,44 @@
       addLog(`在温室收获了${cropDef?.name ?? cropId}${qualityLabel}！(-1体力)`)
     }
     activeGhPlotId.value = null
+  }
+
+  const doGhBatchHarvest = () => {
+    const skillStore = useSkillStore()
+    const results = farmStore.greenhouseBatchHarvest()
+    if (results.length === 0) return
+    let harvested = 0
+    for (const { cropId } of results) {
+      if (!playerStore.consumeStamina(1)) break
+      harvested++
+      const quality = skillStore.rollCropQualityWithBonus(0)
+      inventoryStore.addItem(cropId, 1, quality)
+    }
+    if (harvested > 0) {
+      sfxHarvest()
+      showFloat(`温室收获 ×${harvested}`, 'success')
+      addLog(`在温室一键收获了${harvested}株作物。(-${harvested}体力)`)
+    }
+  }
+
+  const handleGhUpgrade = () => {
+    const upgrade = nextGhUpgrade.value
+    if (!upgrade) return
+    for (const mat of upgrade.materialCost) {
+      if (inventoryStore.getItemCount(mat.itemId) < mat.quantity) {
+        addLog('材料不足，无法升级温室。')
+        return
+      }
+    }
+    if (!playerStore.spendMoney(upgrade.cost)) {
+      addLog('金币不足，无法升级温室。')
+      return
+    }
+    for (const mat of upgrade.materialCost) {
+      inventoryStore.removeItem(mat.itemId, mat.quantity)
+    }
+    farmStore.upgradeGreenhouse(upgrade.plotCount)
+    addLog(`温室已升级至${upgrade.name}！（${upgrade.plotCount}个地块）`)
+    showGhUpgradeModal.value = false
   }
 </script>
