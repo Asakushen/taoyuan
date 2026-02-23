@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -52,34 +51,8 @@ public class MainActivity extends BridgeActivity {
             }
         }, 5000);
 
-        // 监听 Capacitor WebView 加载完成
         WebView webView = getBridge().getWebView();
         if (webView != null) {
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    // 注入 MutationObserver，等 Vue 渲染完 #app 后隐藏遮罩
-                    view.evaluateJavascript(
-                        "(function() {" +
-                        "  var app = document.getElementById('app');" +
-                        "  if (app && app.children.length > 0) {" +
-                        "    window.dispatchEvent(new Event('appReady'));" +
-                        "    return;" +
-                        "  }" +
-                        "  var observer = new MutationObserver(function() {" +
-                        "    if (app && app.children.length > 0) {" +
-                        "      observer.disconnect();" +
-                        "      window.dispatchEvent(new Event('appReady'));" +
-                        "    }" +
-                        "  });" +
-                        "  if (app) { observer.observe(app, { childList: true }); }" +
-                        "})();",
-                        null
-                    );
-                }
-            });
-
             // 注册 JS 接口，让 WebView 可以通知 Native 隐藏遮罩
             webView.addJavascriptInterface(new Object() {
                 @android.webkit.JavascriptInterface
@@ -88,16 +61,23 @@ public class MainActivity extends BridgeActivity {
                 }
             }, "NativeApp");
 
-            // 注入 appReady 事件监听器
+            // 延迟注入轮询脚本，等 Capacitor 加载页面后检测 Vue 渲染完成
             handler.postDelayed(() -> {
                 WebView wv = getBridge().getWebView();
                 if (wv != null) {
                     wv.evaluateJavascript(
-                        "window.addEventListener('appReady', function() { NativeApp.hideLoading(); });",
+                        "(function check() {" +
+                        "  var app = document.getElementById('app');" +
+                        "  if (app && app.children.length > 0) {" +
+                        "    NativeApp.hideLoading();" +
+                        "  } else {" +
+                        "    setTimeout(check, 200);" +
+                        "  }" +
+                        "})();",
                         null
                     );
                 }
-            }, 100);
+            }, 500);
         }
     }
 
