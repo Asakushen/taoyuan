@@ -387,7 +387,11 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { ArrowDown, Building, Mountain, Leaf, Pencil, Plus, Trash2, Unlock, Warehouse, X } from 'lucide-vue-next'
-  import { useHomeStore, useInventoryStore, usePlayerStore, useWarehouseStore, useProcessingStore } from '@/stores'
+  import { useHomeStore } from '@/stores/useHomeStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useProcessingStore } from '@/stores/useProcessingStore'
+  import { useWarehouseStore } from '@/stores/useWarehouseStore'
   import { getCombinedItemCount, removeCombinedItem } from '@/composables/useCombinedInventory'
   import { getItemById } from '@/data'
   import { GREENHOUSE_UNLOCK_COST, GREENHOUSE_MATERIAL_COST, WAREHOUSE_UNLOCK_MATERIALS } from '@/data/buildings'

@@ -410,7 +410,12 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { MessageCircle, Heart, Gift, Cake, X, Package, Lightbulb, Circle, CircleCheck } from 'lucide-vue-next'
-  import { useNpcStore, useInventoryStore, useCookingStore, useGameStore, usePlayerStore, useTutorialStore } from '@/stores'
+  import { useCookingStore } from '@/stores/useCookingStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { useNpcStore } from '@/stores/useNpcStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useTutorialStore } from '@/stores/useTutorialStore'
   import { NPCS, getNpcById, getItemById, getHeartEventById } from '@/data'
   import { ACTION_TIME_COSTS, isNpcAvailable } from '@/data/timeConstants'
   import { TIP_NPC_LABELS } from '@/data/npcTips'

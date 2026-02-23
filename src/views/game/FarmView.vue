@@ -935,19 +935,16 @@
     Flower2
   } from 'lucide-vue-next'
   import Button from '@/components/game/Button.vue'
-  import {
-    useFarmStore,
-    useInventoryStore,
-    useGameStore,
-    useHomeStore,
-    usePlayerStore,
-    useSkillStore,
-    useShopStore,
-    useBreedingStore,
-    useWalletStore,
-    useTutorialStore,
-    SEASON_NAMES
-  } from '@/stores'
+  import { useBreedingStore } from '@/stores/useBreedingStore'
+  import { useFarmStore } from '@/stores/useFarmStore'
+  import { useGameStore, SEASON_NAMES } from '@/stores/useGameStore'
+  import { useHomeStore } from '@/stores/useHomeStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useShopStore } from '@/stores/useShopStore'
+  import { useSkillStore } from '@/stores/useSkillStore'
+  import { useTutorialStore } from '@/stores/useTutorialStore'
+  import { useWalletStore } from '@/stores/useWalletStore'
   import { getCropById, getCropsBySeason, getItemById } from '@/data'
   import { getStarRating } from '@/data/breeding'
   import { FRUIT_TREE_DEFS, MAX_FRUIT_TREES } from '@/data/fruitTrees'

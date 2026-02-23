@@ -46,7 +46,10 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { UtensilsCrossed, Zap } from 'lucide-vue-next'
-  import { useCookingStore, useGameStore, useAchievementStore, useTutorialStore } from '@/stores'
+  import { useAchievementStore } from '@/stores/useAchievementStore'
+  import { useCookingStore } from '@/stores/useCookingStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useTutorialStore } from '@/stores/useTutorialStore'
   import { getCombinedItemCount } from '@/composables/useCombinedInventory'
   import { getItemById } from '@/data'
   import { ACTION_TIME_COSTS } from '@/data/timeConstants'

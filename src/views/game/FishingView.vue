@@ -349,15 +349,13 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { Fish, X, Target, MapPin, Box, CircleDot } from 'lucide-vue-next'
-  import {
-    useFishingStore,
-    useGameStore,
-    useInventoryStore,
-    usePlayerStore,
-    useSkillStore,
-    useAchievementStore,
-    useTutorialStore
-  } from '@/stores'
+  import { useAchievementStore } from '@/stores/useAchievementStore'
+  import { useFishingStore } from '@/stores/useFishingStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useSkillStore } from '@/stores/useSkillStore'
+  import { useTutorialStore } from '@/stores/useTutorialStore'
   import { getBaitById, getTackleById } from '@/data/processing'
   import { FISHING_LOCATIONS } from '@/data/fish'
   import type { BaitType, TackleType, FishingLocation, FishDef, MiniGameParams, MiniGameResult } from '@/types'

@@ -150,15 +150,13 @@
   import { Hammer, Trash2, Package, Boxes, X } from 'lucide-vue-next'
   import Button from '@/components/game/Button.vue'
   import type { MachineType, AnimalBuildingType } from '@/types'
-  import {
-    useProcessingStore,
-    useInventoryStore,
-    usePlayerStore,
-    useGameStore,
-    useFarmStore,
-    useAnimalStore,
-    useSkillStore
-  } from '@/stores'
+  import { useAnimalStore } from '@/stores/useAnimalStore'
+  import { useFarmStore } from '@/stores/useFarmStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useProcessingStore } from '@/stores/useProcessingStore'
+  import { useSkillStore } from '@/stores/useSkillStore'
   import { getCombinedItemCount, hasCombinedItem, removeCombinedItem } from '@/composables/useCombinedInventory'
   import {
     PROCESSING_MACHINES,

@@ -1,17 +1,15 @@
 import { ref } from 'vue'
-import {
-  useGameStore,
-  usePlayerStore,
-  useFarmStore,
-  useInventoryStore,
-  useShopStore,
-  useSkillStore,
-  useCookingStore,
-  useAchievementStore,
-  useWalletStore,
-  useQuestStore,
-  useBreedingStore
-} from '@/stores'
+import { useAchievementStore } from '@/stores/useAchievementStore'
+import { useBreedingStore } from '@/stores/useBreedingStore'
+import { useCookingStore } from '@/stores/useCookingStore'
+import { useFarmStore } from '@/stores/useFarmStore'
+import { useGameStore } from '@/stores/useGameStore'
+import { useInventoryStore } from '@/stores/useInventoryStore'
+import { usePlayerStore } from '@/stores/usePlayerStore'
+import { useQuestStore } from '@/stores/useQuestStore'
+import { useShopStore } from '@/stores/useShopStore'
+import { useSkillStore } from '@/stores/useSkillStore'
+import { useWalletStore } from '@/stores/useWalletStore'
 import { getCropById, getItemById } from '@/data'
 import { getFertilizerById } from '@/data/processing'
 import { ACTION_TIME_COSTS } from '@/data/timeConstants'

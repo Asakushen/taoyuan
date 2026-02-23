@@ -232,7 +232,12 @@
 <script setup lang="ts">
   import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import { useGameStore, usePlayerStore, useAnimalStore, useNpcStore, useInventoryStore, useWarehouseStore } from '@/stores'
+  import { useAnimalStore } from '@/stores/useAnimalStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { useNpcStore } from '@/stores/useNpcStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useWarehouseStore } from '@/stores/useWarehouseStore'
   import { useDialogs } from '@/composables/useDialogs'
   import type { MorningChoiceEvent } from '@/data/farmEvents'
   import { handleEndDay } from '@/composables/useEndDay'

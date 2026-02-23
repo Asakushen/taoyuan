@@ -548,7 +548,12 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { ArrowUp, Calendar, Gem, Gift, Hammer, Home, Heart, MessageCircle, UserPlus, Users, X } from 'lucide-vue-next'
-  import { useHomeStore, useInventoryStore, useNpcStore, useGameStore, usePlayerStore, useCookingStore } from '@/stores'
+  import { useCookingStore } from '@/stores/useCookingStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useHomeStore } from '@/stores/useHomeStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { useNpcStore } from '@/stores/useNpcStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
   import { SEASON_NAMES } from '@/stores/useGameStore'
   import { getCombinedItemCount } from '@/composables/useCombinedInventory'
   import { getItemById, getNpcById, NPCS } from '@/data'

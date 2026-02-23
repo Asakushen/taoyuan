@@ -1,4 +1,5 @@
-import { useInventoryStore, useWarehouseStore } from '@/stores'
+import { useInventoryStore } from '@/stores/useInventoryStore'
+import { useWarehouseStore } from '@/stores/useWarehouseStore'
 import type { Quality } from '@/types'
 
 /** 合计背包 + 虚空原料箱中某物品数量 */

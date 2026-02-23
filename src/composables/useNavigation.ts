@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 import router from '@/router'
-import { useGameStore } from '@/stores'
+import { useGameStore } from '@/stores/useGameStore'
 import { isShopOpen, TAB_TO_LOCATION_GROUP } from '@/data/timeConstants'
 import { addLog } from './useGameLog'
 import { handleEndDay } from './useEndDay'
@@ -33,7 +33,7 @@ import {
   Tent,
   Waves
 } from 'lucide-vue-next'
-import { useNpcStore } from '@/stores'
+import { useNpcStore } from '@/stores/useNpcStore'
 
 export type PanelKey =
   | 'farm'

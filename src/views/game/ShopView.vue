@@ -926,16 +926,13 @@
     Footprints
   } from 'lucide-vue-next'
   import Button from '@/components/game/Button.vue'
-  import {
-    useShopStore,
-    usePlayerStore,
-    useInventoryStore,
-    useFarmStore,
-    useWalletStore,
-    useGameStore,
-    useWarehouseStore,
-    SEASON_NAMES
-  } from '@/stores'
+  import { useFarmStore } from '@/stores/useFarmStore'
+  import { useGameStore, SEASON_NAMES } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useShopStore } from '@/stores/useShopStore'
+  import { useWalletStore } from '@/stores/useWalletStore'
+  import { useWarehouseStore } from '@/stores/useWarehouseStore'
   import { getItemById } from '@/data'
   import { SHOPS, isShopAvailable, getShopClosedReason } from '@/data/shops'
   import type { ShopDef } from '@/data/shops'
@@ -953,7 +950,7 @@
   import { getDailyMarketInfo, MARKET_CATEGORY_NAMES, TREND_NAMES } from '@/data/market'
   import type { MarketTrend } from '@/data/market'
   import { useTutorialStore } from '@/stores/useTutorialStore'
-  import { useAchievementStore } from '@/stores'
+  import { useAchievementStore } from '@/stores/useAchievementStore'
 
   const RAIN_TOTEM_PRICE = 300
   const WOOD_PRICE = 50

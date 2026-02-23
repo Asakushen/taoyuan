@@ -666,15 +666,13 @@
     BookMarked
   } from 'lucide-vue-next'
   import Button from '@/components/game/Button.vue'
-  import {
-    useMiningStore,
-    useGameStore,
-    usePlayerStore,
-    useInventoryStore,
-    useSkillStore,
-    useAchievementStore,
-    useTutorialStore
-  } from '@/stores'
+  import { useAchievementStore } from '@/stores/useAchievementStore'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { useMiningStore } from '@/stores/useMiningStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
+  import { useSkillStore } from '@/stores/useSkillStore'
+  import { useTutorialStore } from '@/stores/useTutorialStore'
   import { ZONE_NAMES, getFloor, BOSS_MONSTERS } from '@/data'
   import { getWeaponById, getEnchantmentById, getWeaponDisplayName, WEAPON_TYPE_NAMES } from '@/data/weapons'
   import { getRingById, getHatById, getShoeById } from '@/data'

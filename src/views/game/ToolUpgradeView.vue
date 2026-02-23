@@ -181,7 +181,10 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { ArrowUp, Wrench, Clock, CircleCheck, X } from 'lucide-vue-next'
-  import { useInventoryStore, usePlayerStore, useNpcStore, useGameStore } from '@/stores'
+  import { useGameStore } from '@/stores/useGameStore'
+  import { useInventoryStore } from '@/stores/useInventoryStore'
+  import { useNpcStore } from '@/stores/useNpcStore'
+  import { usePlayerStore } from '@/stores/usePlayerStore'
   import { getCombinedItemCount, removeCombinedItem } from '@/composables/useCombinedInventory'
   import { getUpgradeCost, TOOL_NAMES, TIER_NAMES, getItemById } from '@/data'
   import { ACTION_TIME_COSTS } from '@/data/timeConstants'
