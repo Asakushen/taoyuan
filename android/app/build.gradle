@@ -27,7 +27,7 @@ android {
 
     defaultConfig {
         applicationId "com.games.wenzi.taoyuan"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode
         versionName appVersionName
