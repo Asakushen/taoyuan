@@ -430,14 +430,34 @@ export const handleBatchHarvest = () => {
     return
   }
 
-  const targets = farmStore.plots.filter(p => p.state === 'harvestable' && p.giantCropGroup === null)
-  if (targets.length === 0) {
-    addLog('没有可收获的作物。')
-    return
-  }
-
   let harvested = 0
   const harvestedCrops: string[] = []
+
+  // 先收获巨型作物
+  const giantGroups = new Set<number>()
+  for (const plot of farmStore.plots) {
+    if (plot.state === 'harvestable' && plot.giantCropGroup !== null) {
+      giantGroups.add(plot.giantCropGroup)
+    }
+  }
+  for (const groupId of giantGroups) {
+    const groupPlot = farmStore.plots.find(p => p.giantCropGroup === groupId && p.state === 'harvestable')
+    if (!groupPlot) continue
+    const result = farmStore.harvestGiantCrop(groupPlot.id)
+    if (result) {
+      const cropDef = getCropById(result.cropId)
+      inventoryStore.addItem(result.cropId, result.quantity)
+      achievementStore.discoverItem(result.cropId)
+      achievementStore.recordCropHarvest()
+      useQuestStore().onItemObtained(result.cropId, result.quantity)
+      skillStore.addExp('farming', 10)
+      harvested++
+      harvestedCrops.push(`巨型${cropDef?.name ?? result.cropId}x${result.quantity}`)
+    }
+  }
+
+  // 再收获普通作物
+  const targets = farmStore.plots.filter(p => p.state === 'harvestable' && p.giantCropGroup === null)
 
   for (const plot of targets) {
     const plotFertilizer = plot.fertilizer
@@ -486,6 +506,8 @@ export const handleBatchHarvest = () => {
     const tr = gameStore.advanceTime(ACTION_TIME_COSTS.batchHarvest * inventoryStore.getToolStaminaMultiplier('scythe'))
     if (tr.message) addLog(tr.message)
     if (tr.passedOut) handleEndDay()
+  } else {
+    addLog('没有可收获的作物。')
   }
 }
 

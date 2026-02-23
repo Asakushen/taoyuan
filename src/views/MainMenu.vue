@@ -322,7 +322,9 @@
   import { FARM_MAP_DEFS } from '@/data/farmMaps'
   import _pkg from '../../package.json'
   import { useAudio } from '@/composables/useAudio'
-  import { showFloat } from '@/composables/useGameLog'
+  import { showFloat, addLog } from '@/composables/useGameLog'
+  import { resetAllStoresForNewGame } from '@/composables/useResetGame'
+  import { useTutorialStore } from '@/stores/useTutorialStore'
   import type { FarmMapType, Gender } from '@/types'
 
   const router = useRouter()
@@ -399,6 +401,8 @@
       showFloat('存档槽位已满，请先删除一个旧存档。')
       return
     }
+    // 重置所有游戏 store 到初始状态，防止上一个存档数据残留
+    resetAllStoresForNewGame()
     playerStore.setIdentity((charName.value.trim() || '未命名').slice(0, 4), charGender.value)
     gameStore.startNewGame(selectedMap.value)
     // 标准农场初始6×6，其余4×4
@@ -443,6 +447,12 @@
       )
     }
     questStore.initMainQuest()
+    // 新手引导：游戏开始时立即显示欢迎提示
+    const tutorialStore = useTutorialStore()
+    if (tutorialStore.enabled) {
+      addLog('柳村长说：「欢迎来到桃源乡！背包里有白菜种子，去农场开垦土地、播种吧。」')
+      tutorialStore.markTipShown('tip_welcome')
+    }
     void router.push('/game')
   }
 
