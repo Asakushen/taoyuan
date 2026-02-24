@@ -9,6 +9,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +37,7 @@ public class SaveMigrator {
 
     public interface OnMigrationListener {
         void onMigrationComplete(Map<String, String> saves);
-        void onMigrationSkipped();
+        void onMigrationSkipped(String reason);
     }
 
     public SaveMigrator(Context context) {
@@ -60,9 +61,12 @@ public class SaveMigrator {
         this.listener = listener;
 
         if (!needsMigration()) {
-            listener.onMigrationSkipped();
+            listener.onMigrationSkipped("已迁移过，跳过");
             return;
         }
+
+        Log.d(TAG, "开始存档迁移...");
+        showToast("正在检测旧版存档...");
 
         try {
             // 启动 NanoHTTPD，提供迁移页面
@@ -88,7 +92,7 @@ public class SaveMigrator {
                     public void onReceivedError(WebView view, int errorCode,
                                                 String description, String failingUrl) {
                         Log.e(TAG, "迁移页面加载失败: " + description);
-                        finish(true);
+                        finish("页面加载失败: " + description);
                     }
                 });
 
@@ -99,29 +103,39 @@ public class SaveMigrator {
             handler.postDelayed(() -> {
                 if (!finished) {
                     Log.w(TAG, "迁移超时，跳过");
-                    finish(true);
+                    finish("迁移超时");
                 }
             }, 10000);
 
         } catch (Exception e) {
             Log.e(TAG, "迁移启动失败", e);
-            finish(true);
+            finish("服务器启动失败: " + e.getMessage());
         }
     }
 
     /** 完成迁移并清理资源 */
-    private synchronized void finish(boolean skipped) {
+    private synchronized void finish(String skipReason) {
         if (finished) return;
         finished = true;
         cleanup();
         markDone();
         if (listener != null) {
-            if (skipped || collectedSaves.isEmpty()) {
-                listener.onMigrationSkipped();
+            if (skipReason != null || collectedSaves.isEmpty()) {
+                String reason = skipReason != null ? skipReason : "旧版本无存档数据";
+                Log.d(TAG, "迁移跳过: " + reason);
+                showToast("未发现旧版存档（" + reason + "）");
+                listener.onMigrationSkipped(reason);
             } else {
+                Log.d(TAG, "迁移成功，共 " + collectedSaves.size() + " 条存档");
+                showToast("发现 " + collectedSaves.size() + " 个旧版存档，正在迁移...");
                 listener.onMigrationComplete(collectedSaves);
             }
         }
+    }
+
+    /** 显示 Toast 提示 */
+    private void showToast(String message) {
+        handler.post(() -> Toast.makeText(context, message, Toast.LENGTH_LONG).show());
     }
 
     /** 清理资源 */
@@ -183,20 +197,20 @@ public class SaveMigrator {
 
         @JavascriptInterface
         public void onComplete(int count) {
-            Log.d(TAG, "迁移完成，共 " + count + " 个存档");
-            handler.post(() -> finish(false));
+            Log.d(TAG, "迁移读取完成，共 " + count + " 个存档");
+            handler.post(() -> finish(null));
         }
 
         @JavascriptInterface
         public void onNoData() {
             Log.d(TAG, "旧 origin 无存档数据");
-            handler.post(() -> finish(true));
+            handler.post(() -> finish("旧版本无存档数据"));
         }
 
         @JavascriptInterface
         public void onError(String message) {
             Log.e(TAG, "迁移 JS 错误: " + message);
-            handler.post(() -> finish(true));
+            handler.post(() -> finish("JS错误: " + message));
         }
     }
 

@@ -101,8 +101,8 @@ public class MainActivity extends BridgeActivity {
                 }
 
                 @Override
-                public void onMigrationSkipped() {
-                    Log.d(TAG, "无需存档迁移");
+                public void onMigrationSkipped(String reason) {
+                    Log.d(TAG, "存档迁移跳过: " + reason);
                 }
             });
         }
